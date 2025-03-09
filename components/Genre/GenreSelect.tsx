@@ -1,5 +1,6 @@
 "use client";
 
+import { genres } from "@/constants";
 import * as RadixSelect from "@radix-ui/react-select";
 import { BsChevronDown } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
@@ -9,25 +10,6 @@ interface GenreSelectProps {
   onGenreChange: (genres: string) => void;
   value?: string;
 }
-
-const genres = [
-  { id: "j-pop", name: "J-Pop" },
-  { id: "synth wave", name: "Synth Wave" },
-  { id: "nu disco", name: "Nu Disco" },
-  { id: "city pop", name: "City Pop" },
-  { id: "tropical house", name: "Tropical House" },
-  { id: "vapor wave", name: "Vapor Wave" },
-  { id: "future funk", name: "Future Funk" },
-  { id: "pop", name: "Pop" },
-  { id: "electronic", name: "Electronic" },
-  { id: "dance pop", name: "Dance Pop" },
-  { id: "electro house", name: "Electro House" },
-  { id: "classical", name: "Classical" },
-  { id: "hip-hop", name: "Hip-Hop" },
-  { id: "dnb", name: "DnB" },
-  { id: "r&b", name: "R&B" },
-  { id: "other", name: "Other" },
-];
 
 const GenreSelect: React.FC<GenreSelectProps> = ({
   disabled,

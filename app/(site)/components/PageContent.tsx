@@ -13,14 +13,6 @@ const PageContent: React.FC<PageContentProps> = ({ songs }) => {
   const player = usePlayer();
   const onPlay = useOnPlay(songs);
 
-  if (!songs) {
-    return (
-      <div className="mt-4 text-neutral-400">
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-
   const handlePlay = (id: string) => {
     onPlay(id);
     player.setId(id);
