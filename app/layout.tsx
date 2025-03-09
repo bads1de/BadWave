@@ -1,0 +1,50 @@
+import type { Metadata } from "next";
+import { Figtree } from "next/font/google";
+
+import getPlaylists from "@/actions/getPlaylists";
+
+import Player from "@/components/Player/Player";
+import RightSidebar from "@/components/RightSidebar/RightSidebar";
+import Sidebar from "@/components/Sidebar/Sidebar";
+
+import ModalProvider from "@/providers/ModelProvider";
+import SupabaseProvider from "@/providers/SupabaseProvider";
+import TanStackProvider from "@/providers/TanstackProvider";
+import ToasterProvider from "@/providers/ToasterProvider";
+import UserProvider from "@/providers/UserProvider";
+
+import "./globals.css";
+
+const font = Figtree({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "BadWave",
+  description: "Listen to music!",
+};
+
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const playlists = await getPlaylists();
+
+  return (
+    <html lang="en">
+      <body className={font.className}>
+        <ToasterProvider />
+        <TanStackProvider>
+          <SupabaseProvider>
+            <UserProvider>
+              <ModalProvider />
+              <Sidebar>
+                <RightSidebar>{children}</RightSidebar>
+              </Sidebar>
+              <Player playlists={playlists} />
+            </UserProvider>
+          </SupabaseProvider>
+        </TanStackProvider>
+      </body>
+    </html>
+  );
+}
