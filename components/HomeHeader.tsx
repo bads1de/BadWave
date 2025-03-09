@@ -84,7 +84,7 @@ const HomeHeader: React.FC<HeaderProps> = ({ className }) => {
               />
             </div>
             <h1 className="font-bold text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-neutral-400 md:inline">
-              Badwave
+              BadWave
             </h1>
           </div>
 

@@ -90,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
             </div>
             {!isCollapsed && (
               <h1 className="ml-2 font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-neutral-400">
-                Badwave
+                BadWave
               </h1>
             )}
           </div>
