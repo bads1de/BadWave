@@ -9,7 +9,7 @@ import { Playlist } from "@/types";
  */
 const getPlaylists = async (): Promise<Playlist[]> => {
   const supabase = createServerComponentClient({
-    cookies: cookies,
+    cookies
   });
 
   const {

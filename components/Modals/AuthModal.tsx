@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import useAuthModal from "@/hooks/auth/useAuthModal";
+import ja from "@/constants/ja.json";
 import Modal from "./Modal";
 
 const AuthModal = () => {
@@ -41,6 +42,9 @@ const AuthModal = () => {
         theme="dark"
         magicLink
         providers={["google"]}
+        localization={{
+          variables: ja,
+        }}
         supabaseClient={supabaseClient}
         appearance={{
           theme: ThemeSupa,
