@@ -18,9 +18,10 @@ const AccountContent = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
+
     try {
       await supabaseClient.auth.signOut();
-      router.refresh();
+      router.push("/");
       toast.success("ログアウトしました");
     } catch (error) {
       toast.error("エラーが発生しました");

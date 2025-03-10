@@ -17,16 +17,21 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
   const router = useRouter();
   const supabaseClient = useSupabaseClient();
+  const [isLoading, setIsLoading] = useState(false);
   const authModal = useAuthModal();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoading(true);
+
     try {
       await supabaseClient.auth.signOut();
+      router.push("/");
       toast.success("ログアウトしました");
-      router.refresh();
     } catch (error) {
       toast.error("エラーが発生しました");
+    } finally {
+      setIsLoading(false);
     }
   };
 

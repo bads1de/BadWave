@@ -30,6 +30,16 @@ const AuthModal = () => {
     }
   };
 
+  const getURL = () => {
+    let url = process.env.NEXT_PUBLIC_VERCEL_URL ?? "http://localhost:3000/";
+
+    // Make sure to include `https://` when not localhost.
+    url = url.startsWith("http") ? url : `https://${url}`;
+    // Make sure to include a trailing `/`.
+    url = url.endsWith("/") ? url : `${url}/`;
+    return url;
+  };
+
   return (
     <Modal
       title="おかえりなさい"
@@ -42,13 +52,14 @@ const AuthModal = () => {
         magicLink
         providers={["google"]}
         supabaseClient={supabaseClient}
+        redirectTo={getURL()}
         appearance={{
           theme: ThemeSupa,
           variables: {
             default: {
               colors: {
                 brand: "#404040",
-                brandAccent: "#22c55e",
+                brandAccent: "#4c1d95",
               },
             },
           },
