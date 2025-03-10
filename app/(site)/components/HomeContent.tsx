@@ -5,18 +5,25 @@ import PageContent from "./PageContent";
 import TrendBoard from "@/components/TrendBoard";
 import { Song, Spotlight } from "@/types";
 import GenreBoard from "@/components/Genre/GenreBoard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import dynamic from "next/dynamic";
-import { videoIds } from "@/constants";
+// import { ChevronLeft, ChevronRight } from "lucide-react";
+// import dynamic from "next/dynamic";
+// import { videoIds } from "@/constants";
 import SpotlightBoard from "@/components/SpotlightBoard";
 import HomeHeader from "@/components/HomeHeader";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
-import ScrollableContainer from "@/components/ScrollableContainer";
+// import ScrollableContainer from "@/components/ScrollableContainer";
 import { cn } from "@/libs/utils";
 
-const YouTubePlayer = dynamic(() => import("@/components/YouTubePlayer"), {
-  ssr: false,
-});
+// const YouTubePlayer = dynamic(() => import("@/components/YouTubePlayer"), {
+//   ssr: false,
+// });
+
+const TREND_PERIODS = [
+  { label: "All Time", value: "all" },
+  { label: "This Month", value: "month" },
+  { label: "This Week", value: "week" },
+  { label: "Today", value: "day" },
+] as const;
 
 interface HomeClientProps {
   songs: Song[];
@@ -25,10 +32,10 @@ interface HomeClientProps {
 
 const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
   const { isMobilePlayer } = useMobilePlayer();
-  const [showVideoArrows, setShowVideoArrows] = useState(false);
+  // const [showVideoArrows, setShowVideoArrows] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  // const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [selectedPeriod, setSelectedPeriod] = useState<
     "all" | "month" | "week" | "day"
   >("all");
@@ -47,21 +54,20 @@ const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
     return null;
   }
 
-  const changeVideo = (direction: "prev" | "next") => {
-    setCurrentVideoIndex((prevIndex) => {
-      if (direction === "prev") {
-        return prevIndex > 0 ? prevIndex - 1 : videoIds.length - 1;
-      } else {
-        return prevIndex < videoIds.length - 1 ? prevIndex + 1 : 0;
-      }
-    });
-  };
+  // const changeVideo = (direction: "prev" | "next") => {
+  //   setCurrentVideoIndex((prevIndex) => {
+  //     if (direction === "prev") {
+  //       return prevIndex > 0 ? prevIndex - 1 : videoIds.length - 1;
+  //     } else {
+  //       return prevIndex < videoIds.length - 1 ? prevIndex + 1 : 0;
+  //     }
+  //   });
+  // };
 
   return (
     <div className="flex bg-[#0d0d0d] h-full overflow-hidden">
       <div className="w-full h-full overflow-y-auto custom-scrollbar">
         {isMobile && !isMobilePlayer && (
-          // ヘッダーセクション
           <section>
             <HomeHeader />
           </section>
@@ -84,12 +90,7 @@ const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
               </div>
 
               <div className="inline-flex h-10 items-center justify-center rounded-xl bg-neutral-900/40 backdrop-blur-xl border border-white/[0.02] p-1">
-                {[
-                  { label: "All Time", value: "all" },
-                  { label: "This Month", value: "month" },
-                  { label: "This Week", value: "week" },
-                  { label: "Today", value: "day" },
-                ].map((period) => (
+                {TREND_PERIODS.map((period) => (
                   <button
                     key={period.value}
                     onClick={() =>
@@ -118,7 +119,7 @@ const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
           </section>
 
           {/* ユーチューブプレイヤーセクション */}
-          <section>
+          {/* <section>
             <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
               Featured Videos
             </h2>
@@ -163,7 +164,7 @@ const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
                 </ScrollableContainer>
               )}
             </div>
-          </section>
+          </section> */}
 
           {/* スポットライトセクション */}
           <section>

@@ -21,8 +21,8 @@ const genreData: GenreData[] = [
   { id: 4, name: "City Pop", color: "bg-green-500" },
   { id: 5, name: "Tropical House", color: "bg-yellow-500" },
   { id: 6, name: "Vapor Wave", color: "bg-indigo-500" },
-  { id: 7, name: "Trance", color: "bg-pink-500" },
-  { id: 8, name: "Drum and Bass", color: "bg-orange-500" },
+  { id: 7, name: "r&b", color: "bg-pink-500" },
+  { id: 8, name: "Chill House", color: "bg-orange-500" },
 ];
 
 const GenreBoard: React.FC<GenreBoardProps> = ({ className = "" }) => {
