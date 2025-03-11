@@ -51,7 +51,7 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
       case "r&b":
         return "🎤";
       case "Chill House":
-        return "🌬️";
+        return "🎧";
       default:
         return "🎵";
     }

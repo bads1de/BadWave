@@ -11,7 +11,7 @@ import SeekBar from "./Seekbar";
 import AddPlaylist from "../Playlist/AddPlaylist";
 import MobilePlayerContent from "../Mobile/MobilePlayerContent";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
-import useLyricsStore from "@/stores/useLyricsStore";
+import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface PlayerContentProps {
   song: Song;

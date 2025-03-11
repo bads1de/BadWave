@@ -2,7 +2,7 @@ import React from "react";
 import { Song } from "@/types";
 import NextSongPreview from "./NextSongPreview";
 import CurrentSongDisplay from "./CurrentSongDisplay";
-import useLyricsStore from "@/stores/useLyricsStore";
+import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface FullScreenLayoutProps {
   song: Song;
