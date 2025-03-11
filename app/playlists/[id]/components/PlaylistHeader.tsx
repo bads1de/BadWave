@@ -3,14 +3,18 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { format } from "date-fns";
+import { ja } from "date-fns/locale";
 import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
-import { RiPlayListFill } from "react-icons/ri";
+import { Globe, Lock } from "lucide-react";
 
 interface PlaylistHeaderProps {
   playlistId: string;
   playlistTitle: string;
   imageUrl: string;
   songCount: number;
+  isPublic: boolean;
+  createdAt: string;
 }
 
 const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
@@ -18,13 +22,19 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
   playlistTitle,
   imageUrl,
   songCount,
+  isPublic,
+  createdAt,
 }) => {
+  const formattedDate = format(new Date(createdAt), "yyyy年MM月dd日", {
+    locale: ja,
+  });
+
   return (
     <div className="relative w-full h-[250px] md:h-[400px]">
       {/* 背景画像 */}
       <div className="absolute inset-0 w-full h-full">
         <Image
-          src={imageUrl || "/images/playlist.png"}
+          src={imageUrl}
           alt="Playlist background"
           fill
           className="object-cover"
@@ -56,7 +66,7 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
             <div className="absolute -top-2 -left-2 w-full h-full bg-purple-900/50 transform rotate-3 rounded-xl hidden md:block" />
             <div className="absolute -top-1 -left-1 w-full h-full bg-purple-800/50 transform rotate-2 rounded-xl hidden md:block" />
             <Image
-              src={imageUrl || "/images/playlist.png"}
+              src={imageUrl}
               alt="Playlist"
               fill
               className="object-cover rounded-xl shadow-2xl"
@@ -77,11 +87,21 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
               <PlaylistOptionsPopover
                 playlistId={playlistId}
                 currentTitle={playlistTitle}
+                isPublic={isPublic}
               />
             </div>
-            <p className="text-sm text-white/80">
-              {songCount} {songCount === 1 ? "曲" : "曲"}
-            </p>
+            <div className="flex items-center gap-x-2 text-sm text-white/80">
+              {isPublic ? (
+                <Globe className="w-4 h-4" />
+              ) : (
+                <Lock className="w-4 h-4" />
+              )}
+              <span>{isPublic ? "公開" : "非公開"}</span>
+              <span className="mx-2">•</span>
+              <span>{songCount} 曲</span>
+              <span className="mx-2">•</span>
+              <span>作成日: {formattedDate}</span>
+            </div>
           </motion.div>
         </div>
       </div>

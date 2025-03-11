@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Globe2, Lock } from "lucide-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,11 +19,13 @@ import { CACHED_QUERIES } from "@/constants";
 interface PlaylistOptionsPopoverProps {
   playlistId: string;
   currentTitle: string;
+  isPublic: boolean;
 }
 
 const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
   playlistId,
   currentTitle,
+  isPublic,
 }) => {
   const [newTitle, setNewTitle] = useState(currentTitle);
   const [isEditing, setIsEditing] = useState(false);
@@ -58,18 +60,43 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
     },
   });
 
+  const togglePublicMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Unauthorized");
+
+      const { error } = await supabase
+        .from("playlists")
+        .update({ is_public: !isPublic })
+        .eq("id", playlistId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      return { isPublic: !isPublic };
+    },
+    onSuccess: ({ isPublic }) => {
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      toast.success(
+        isPublic
+          ? "プレイリストを公開しました"
+          : "プレイリストを非公開にしました"
+      );
+      router.refresh();
+    },
+    onError: () => {
+      toast.error("プレイリストの公開設定の更新に失敗しました");
+    },
+  });
+
   const deletePlaylistMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Unauthorized");
 
-      // playlist_songs からデータを削除
       await supabase
         .from("playlist_songs")
         .delete()
         .eq("playlist_id", playlistId)
         .eq("user_id", user.id);
 
-      // playlists からデータを削除
       await supabase
         .from("playlists")
         .delete()
@@ -89,6 +116,10 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
 
   const handleTitleUpdate = () => {
     updatePlaylistMutation.mutate();
+  };
+
+  const handleTogglePublic = () => {
+    togglePublicMutation.mutate();
   };
 
   const handleDeletePlaylist = () => {
@@ -147,6 +178,25 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
                 名前を変更
               </button>
             )}
+          </div>
+          <div className="px-3 py-2 border-t border-neutral-700">
+            <button
+              className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
+              onClick={handleTogglePublic}
+              disabled={togglePublicMutation.isPending}
+            >
+              {isPublic ? (
+                <>
+                  <Lock size={16} className="mr-2" />
+                  非公開にする
+                </>
+              ) : (
+                <>
+                  <Globe2 size={16} className="mr-2" />
+                  公開する
+                </>
+              )}
+            </button>
           </div>
           <div className="px-3 py-2 border-t border-neutral-700">
             <button

@@ -1,34 +1,27 @@
 import getPlaylistSongs from "@/actions/getPlaylistSongs";
 import PlaylistPageContent from "./components/PlaylistPageContent";
-import getPlaylistsImage from "@/actions/getPlaylistsImage";
+import getPlaylist from "@/actions/getPlaylist";
 import { Song } from "@/types";
+import { notFound } from "next/navigation";
 
 type CombinedSong = Song & { songType: "regular" };
 
-const PlaylistPage = async (
-  props: {
-    params: Promise<{ id: string }>;
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  }
-) => {
-  const searchParams = await props.searchParams;
+const PlaylistPage = async (props: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
   const params = await props.params;
+  const { id: playlistId } = params;
 
-  const {
-    id: playlistId
-  } = params;
-
-  const playlistTitle = searchParams.title as string;
-  const imageUrl = await getPlaylistsImage(playlistId);
+  const playlist = await getPlaylist(playlistId);
   const songs = await getPlaylistSongs(playlistId);
 
+  if (!playlist) {
+    return notFound();
+  }
+
   return (
-    <PlaylistPageContent
-      playlistId={playlistId}
-      playlistTitle={playlistTitle}
-      songs={songs as CombinedSong[]}
-      imageUrl={imageUrl}
-    />
+    <PlaylistPageContent playlist={playlist} songs={songs as CombinedSong[]} />
   );
 };
 
