@@ -15,7 +15,7 @@ const PlaylistModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const playlistModal = usePlaylistModal();
   const supabaseClient = useSupabaseClient();
-  const { user } = useUser();
+  const { userDetails: user } = useUser();
   const router = useRouter();
 
   const { register, handleSubmit, reset } = useForm<FieldValues>({
@@ -42,7 +42,9 @@ const PlaylistModal = () => {
 
       const { error } = await supabaseClient.from("playlists").insert({
         user_id: user.id,
+        user_name: user.full_name,
         title: values.title,
+        is_public: false,
       });
 
       if (error) {
