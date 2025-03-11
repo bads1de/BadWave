@@ -1,8 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
-import useAuthModal from "@/hooks/auth/useAuthModal";
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -10,9 +8,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ children, className }) => {
-  const router = useRouter();
-  const authModal = useAuthModal();
-
   return (
     <div
       className={twMerge(

@@ -67,7 +67,7 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
             </div>
 
             {playlistId && (
-              <div className="px-4 py-3">
+              <div className="px-4 py-3 border-t border-neutral-700">
                 <DeletePlaylistSongsBtn
                   songId={song.id}
                   playlistId={playlistId}
@@ -75,10 +75,9 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
                 />
               </div>
             )}
-            {/* ダウンロードオプション */}
-            <div className="px-4 py-3">
+            <div className="px-4 py-3 border-t border-neutral-700">
               <button
-                className=" w-full flex items-center text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
+                className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
                 onClick={() => setIsDownloadModalOpen(true)}
               >
                 <Download size={28} className="mr-2" />
@@ -89,7 +88,6 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
         </PopoverContent>
       </Popover>
 
-      {/* ダウンロードプレビューモーダル */}
       <PreviewDownloadModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
