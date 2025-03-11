@@ -13,7 +13,8 @@ import HomeHeader from "@/components/HomeHeader";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
 // import ScrollableContainer from "@/components/ScrollableContainer";
 import { cn } from "@/libs/utils";
-
+import { Playlist } from "@/types";
+import PublicPlaylistBoard from "@/components/Playlist/PublicPlaylistBoard";
 // const YouTubePlayer = dynamic(() => import("@/components/YouTubePlayer"), {
 //   ssr: false,
 // });
@@ -28,9 +29,14 @@ const TREND_PERIODS = [
 interface HomeClientProps {
   songs: Song[];
   spotlightData: Spotlight[];
+  playlists: Playlist[];
 }
 
-const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
+const HomeContent: React.FC<HomeClientProps> = ({
+  songs,
+  spotlightData,
+  playlists,
+}) => {
   const { isMobilePlayer } = useMobilePlayer();
   // const [showVideoArrows, setShowVideoArrows] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -165,6 +171,17 @@ const HomeContent: React.FC<HomeClientProps> = ({ songs, spotlightData }) => {
               )}
             </div>
           </section> */}
+
+          {/* パブリックプレイリストセクション */}
+          <section>
+            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
+              Featured Playlists
+            </h2>
+            <p className="text-sm text-neutral-400 mb-6">
+              Explore playlists shared by the community
+            </p>
+            <PublicPlaylistBoard playlists={playlists} />
+          </section>
 
           {/* スポットライトセクション */}
           <section>

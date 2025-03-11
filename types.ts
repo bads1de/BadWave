@@ -30,7 +30,10 @@ export interface Playlist {
   user_id: string;
   image_path?: string;
   title: string;
-  songs?: any[];
+  songs?: Song[];
+  is_public: boolean;
+  created_at: string;
+  user_name?: string;
 }
 
 export interface PlaylistSong {

@@ -20,7 +20,7 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
   songCount,
 }) => {
   return (
-    <div className="relative w-full h-[400px]">
+    <div className="relative w-full h-[250px] md:h-[400px]">
       {/* 背景画像 */}
       <div className="absolute inset-0 w-full h-full">
         <Image
@@ -44,23 +44,23 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
         />
       </div>
       {/* コンテンツ */}
-      <div className="relative h-full max-w-7xl mx-auto px-6 py-6 flex items-end">
-        <div className="flex items-end gap-x-6">
+      <div className="relative h-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex items-end">
+        <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-x-6 w-full">
           {/* プレイリストアートワーク */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative h-52 w-52 group"
+            className="relative h-32 w-32 md:h-52 md:w-52 group mx-auto md:mx-0"
           >
-            <div className="absolute -top-2 -left-2 w-full h-full bg-purple-900/50 transform rotate-3 rounded-xl" />
-            <div className="absolute -top-1 -left-1 w-full h-full bg-purple-800/50 transform rotate-2 rounded-xl" />
+            <div className="absolute -top-2 -left-2 w-full h-full bg-purple-900/50 transform rotate-3 rounded-xl hidden md:block" />
+            <div className="absolute -top-1 -left-1 w-full h-full bg-purple-800/50 transform rotate-2 rounded-xl hidden md:block" />
             <Image
               src={imageUrl || "/images/playlist.png"}
               alt="Playlist"
               fill
               className="object-cover rounded-xl shadow-2xl"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 208px"
+              sizes="(max-width: 640px) 128px, (max-width: 768px) 208px, 208px"
             />
           </motion.div>
           {/* プレイリスト情報 */}
@@ -68,10 +68,10 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col gap-y-2 mb-2"
+            className="flex flex-col gap-y-2 text-center md:text-left"
           >
-            <div className="flex items-center gap-x-4">
-              <h1 className="text-5xl font-bold text-white tracking-wide drop-shadow-lg">
+            <div className="flex items-center justify-center md:justify-start gap-x-4">
+              <h1 className="text-3xl md:text-5xl font-bold text-white tracking-wide drop-shadow-lg break-all">
                 {playlistTitle}
               </h1>
               <PlaylistOptionsPopover
