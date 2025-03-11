@@ -1,10 +1,12 @@
 "use client";
 
+import * as React from "react";
 import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { Edit2, Trash2 } from "lucide-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
   Popover,
@@ -12,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useUser } from "@/hooks/auth/useUser";
+import { CACHED_QUERIES } from "@/constants";
 
 interface PlaylistOptionsPopoverProps {
   playlistId: string;
@@ -22,19 +25,17 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
   playlistId,
   currentTitle,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [newTitle, setNewTitle] = useState(currentTitle);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
   const supabase = createClientComponentClient();
   const { user } = useUser();
+  const queryClient = useQueryClient();
 
-  const handleTitleUpdate = async () => {
-    if (!user) return;
+  const updatePlaylistMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Unauthorized");
 
-    setIsLoading(true);
-
-    try {
       const { error } = await supabase
         .from("playlists")
         .update({ title: newTitle })
@@ -42,23 +43,25 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
         .eq("user_id", user.id);
 
       if (error) throw error;
-
+      return { newTitle };
+    },
+    onSuccess: ({ newTitle }) => {
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       toast.success("プレイリスト名を更新しました");
-      router.refresh();
+      router.push(
+        `/playlists/${playlistId}?title=${encodeURIComponent(newTitle)}`
+      );
       setIsEditing(false);
-    } catch (error) {
+    },
+    onError: () => {
       toast.error("プレイリスト名の更新に失敗しました");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+  });
 
-  const handleDeletePlaylist = async () => {
-    if (!user) return;
+  const deletePlaylistMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Unauthorized");
 
-    setIsLoading(true);
-
-    try {
       // playlist_songs からデータを削除
       await supabase
         .from("playlist_songs")
@@ -72,15 +75,24 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
         .delete()
         .eq("id", playlistId)
         .eq("user_id", user.id);
-
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       toast.success("プレイリストを削除しました");
       router.push("/playlists");
       router.refresh();
-    } catch (error) {
+    },
+    onError: () => {
       toast.error("プレイリストの削除に失敗しました");
-    } finally {
-      setIsLoading(false);
-    }
+    },
+  });
+
+  const handleTitleUpdate = () => {
+    updatePlaylistMutation.mutate();
+  };
+
+  const handleDeletePlaylist = () => {
+    deletePlaylistMutation.mutate();
   };
 
   return (
@@ -107,20 +119,20 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full px-2 py-1 bg-neutral-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="プレイリスト名"
-                  disabled={isLoading}
+                  disabled={updatePlaylistMutation.isPending}
                 />
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => setIsEditing(false)}
                     className="px-2 py-1 text-xs text-neutral-400 hover:text-white transition"
-                    disabled={isLoading}
+                    disabled={updatePlaylistMutation.isPending}
                   >
                     キャンセル
                   </button>
                   <button
                     onClick={handleTitleUpdate}
                     className="px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 transition"
-                    disabled={isLoading}
+                    disabled={updatePlaylistMutation.isPending}
                   >
                     保存
                   </button>
@@ -140,7 +152,7 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
             <button
               className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-red-500 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,0,0,0.8)] transition-all duration-300"
               onClick={handleDeletePlaylist}
-              disabled={isLoading}
+              disabled={deletePlaylistMutation.isPending}
             >
               <Trash2 size={16} className="mr-2" />
               削除
