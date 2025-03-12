@@ -56,7 +56,7 @@ const PlaylistModal = () => {
         playlistModal.onClose();
       }
     } catch (error) {
-      toast.error("An error occurred");
+      toast.error("エラーが発生しました");
     } finally {
       setIsLoading(false);
     }
