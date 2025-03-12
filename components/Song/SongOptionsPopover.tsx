@@ -46,8 +46,11 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
     setIsLoading(false);
   };
 
-  // プレイリスト作成者かどうかを確認
-  const isPlaylistCreator = playlistId && playlistUserId && user?.id === playlistUserId;
+  const isPlaylistCreator =
+    playlistId && playlistUserId && user?.id === playlistUserId;
+
+  // ダウンロード以外のオプションが表示されるかどうかを確認
+  const hasOtherOptions = user || isPlaylistCreator;
 
   return (
     <>
@@ -65,13 +68,15 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
           className="w-48 p-0 bg-neutral-800 border-neutral-700"
         >
           <div className="flex flex-col text-sm">
-            <div className="px-4 py-3">
-              <LikeButton
-                songId={song.id}
-                songType={"regular"}
-                showText={true}
-              />
-            </div>
+            {user && (
+              <div className="px-4 py-3">
+                <LikeButton
+                  songId={song.id}
+                  songType={"regular"}
+                  showText={true}
+                />
+              </div>
+            )}
 
             {isPlaylistCreator && (
               <div className="px-4 py-3 border-t border-neutral-700">
@@ -82,7 +87,11 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
                 />
               </div>
             )}
-            <div className="px-4 py-3 border-t border-neutral-700">
+            <div
+              className={`px-4 py-3 ${
+                hasOtherOptions ? "border-t border-neutral-700" : ""
+              }`}
+            >
               <button
                 className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
                 onClick={() => setIsDownloadModalOpen(true)}
