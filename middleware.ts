@@ -5,20 +5,18 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
-  // getUser()を使用
   const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
   // 保護されたルートのパターン
-  const protectedRoutes = ["/account", "/liked", "/playlists"];
+  const protectedRoutes = ["/account", "/liked"];
   const isProtectedRoute = protectedRoutes.some((route) =>
     req.nextUrl.pathname.startsWith(route)
   );
 
   // ユーザーが存在しない場合（未認証）で、保護されたルートにアクセスしようとした場合
-  if (!user && isProtectedRoute) {
+  if (!session && isProtectedRoute) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -26,5 +24,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*", "/liked/:path*", "/playlists/:path*"],
+  matcher: ["/account/:path*", "/liked/:path*"],
 };

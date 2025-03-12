@@ -14,16 +14,20 @@ import PreviewDownloadModal from "@/components/Modals/DownloadPreviewModal";
 import useDownload from "@/hooks/data/useDownload";
 import { Download } from "lucide-react";
 import { downloadFile } from "@/libs/helpers";
+import { useUser } from "@/hooks/auth/useUser";
 
 interface SongOptionsPopoverProps {
   song: Song;
   playlistId?: string;
+  playlistUserId?: string;
 }
 
 const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
   song,
   playlistId,
+  playlistUserId,
 }) => {
+  const { user } = useUser();
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const { fileUrl: audioUrl } = useDownload(song.song_path);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,6 +45,9 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
 
     setIsLoading(false);
   };
+
+  // プレイリスト作成者かどうかを確認
+  const isPlaylistCreator = playlistId && playlistUserId && user?.id === playlistUserId;
 
   return (
     <>
@@ -66,7 +73,7 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = ({
               />
             </div>
 
-            {playlistId && (
+            {isPlaylistCreator && (
               <div className="px-4 py-3 border-t border-neutral-700">
                 <DeletePlaylistSongsBtn
                   songId={song.id}

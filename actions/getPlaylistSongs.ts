@@ -16,11 +16,25 @@ const getPlaylistSongs = async (
     cookies: cookies,
   });
 
+  // まずプレイリストの情報を取得して public かどうかを確認
+  const { data: playlist, error: playlistError } = await supabase
+    .from("playlists")
+    .select("is_public, user_id")
+    .eq("id", playlistId)
+    .single();
+
+  if (playlistError) {
+    console.error("Error fetching playlist:", playlistError);
+    return [];
+  }
+
+  // 現在のユーザー情報を取得
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user?.id) {
+  // プレイリストが非公開で、ユーザーが未ログインまたはプレイリストの所有者でない場合
+  if (!playlist.is_public && (!user?.id || user.id !== playlist.user_id)) {
     return [];
   }
 
@@ -28,7 +42,6 @@ const getPlaylistSongs = async (
     .from("playlist_songs")
     .select("*, songs(*)")
     .eq("playlist_id", playlistId)
-    .eq("user_id", user.id)
     .eq("song_type", "regular")
     .order("created_at", { ascending: false });
 

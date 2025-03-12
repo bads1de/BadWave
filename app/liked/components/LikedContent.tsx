@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Song } from "@/types";
-import { useUser } from "@/hooks/auth/useUser";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import SongOptionsPopover from "@/components/Song/SongOptionsPopover";
 import SongList from "@/components/Song/SongList";
@@ -11,20 +8,12 @@ import SongList from "@/components/Song/SongList";
 interface LikedContentProps {
   songs: Song[];
   playlistId?: string;
+  playlistUserId?: string;
 }
 
-const LikedContent: React.FC<LikedContentProps> = ({ songs, playlistId }) => {
-  const router = useRouter();
-  const { isLoading, user } = useUser();
+const LikedContent: React.FC<LikedContentProps> = ({ songs, playlistId, playlistUserId }) => {
   const onPlay = useOnPlay(songs);
-
   const displayedSongs = playlistId ? [...songs].reverse() : songs;
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.replace("/");
-    }
-  }, [isLoading, user, router]);
 
   if (songs.length === 0) {
     return (
@@ -41,7 +30,7 @@ const LikedContent: React.FC<LikedContentProps> = ({ songs, playlistId }) => {
           <div className="flex-1 min-w-0">
             <SongList data={song} onClick={(id: string) => onPlay(id)} />
           </div>
-          <SongOptionsPopover song={song} playlistId={playlistId} />
+          <SongOptionsPopover song={song} playlistId={playlistId} playlistUserId={playlistUserId} />
         </div>
       ))}
     </div>

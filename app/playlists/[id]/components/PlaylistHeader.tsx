@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
 import { Globe, Lock } from "lucide-react";
+import { useUser } from "@/hooks/auth/useUser";
 
 interface PlaylistHeaderProps {
   playlistId: string;
@@ -15,6 +16,7 @@ interface PlaylistHeaderProps {
   songCount: number;
   isPublic: boolean;
   createdAt: string;
+  userId: string;
 }
 
 const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
@@ -24,7 +26,9 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
   songCount,
   isPublic,
   createdAt,
+  userId,
 }) => {
+  const { user } = useUser();
   const formattedDate = format(new Date(createdAt), "yyyy年MM月dd日", {
     locale: ja,
   });
@@ -84,11 +88,13 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
               <h1 className="text-3xl md:text-5xl font-bold text-white tracking-wide drop-shadow-lg break-all">
                 {playlistTitle}
               </h1>
-              <PlaylistOptionsPopover
-                playlistId={playlistId}
-                currentTitle={playlistTitle}
-                isPublic={isPublic}
-              />
+              {user?.id === userId && ( // 条件付きレンダリングを追加
+                <PlaylistOptionsPopover
+                  playlistId={playlistId}
+                  currentTitle={playlistTitle}
+                  isPublic={isPublic}
+                />
+              )}
             </div>
             <div className="flex items-center gap-x-2 text-sm text-white/80">
               {isPublic ? (
