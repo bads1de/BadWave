@@ -1,5 +1,11 @@
 import { UserDetails } from "@/types";
-import { useEffect, useState, createContext, useContext } from "react";
+import {
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+} from "react";
 import {
   useUser as useSupaUser,
   useSessionContext,
@@ -41,7 +47,9 @@ export const MyUserContextProvider = (props: Props) => {
   const [isLoadingData, setIsloadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 
-  const getUserDetails = () => supabase.from("users").select("*").single();
+  const getUserDetails = useCallback(() => {
+    return supabase.from("users").select("*").single();
+  }, [supabase]);
 
   // ユーザー情報とサブスクリプション情報の取得
   useEffect(() => {
@@ -61,7 +69,14 @@ export const MyUserContextProvider = (props: Props) => {
       setUserDetails(null);
       setIsloadingData(false);
     }
-  }, [user, isLoadingUser]);
+  }, [
+    user,
+    isLoadingUser,
+    supabase,
+    isLoadingData,
+    userDetails,
+    getUserDetails,
+  ]);
 
   const value = {
     accessToken,

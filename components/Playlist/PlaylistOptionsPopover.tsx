@@ -45,6 +45,7 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
         .eq("user_id", user.id);
 
       if (error) throw error;
+
       return { newTitle };
     },
     onSuccess: ({ newTitle }) => {

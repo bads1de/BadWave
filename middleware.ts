@@ -1,5 +1,6 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
+import { PROTECTED_ROUTES } from "./constants";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
@@ -9,9 +10,8 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // 保護されたルートのパターン
-  const protectedRoutes = ["/account", "/liked"];
-  const isProtectedRoute = protectedRoutes.some((route) =>
+  // 保護されたルートのパターンをチェック
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
     req.nextUrl.pathname.startsWith(route)
   );
 
@@ -24,5 +24,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*", "/liked/:path*"],
+  // PROTECTED_ROUTESの各ルートに対してマッチャーを生成
+  matcher: PROTECTED_ROUTES.map((route) => `${route}/:path*`),
 };

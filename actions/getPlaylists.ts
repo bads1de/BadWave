@@ -9,7 +9,7 @@ import { Playlist } from "@/types";
  */
 const getPlaylists = async (): Promise<Playlist[]> => {
   const supabase = createServerComponentClient({
-    cookies
+    cookies,
   });
 
   const {
@@ -27,7 +27,7 @@ const getPlaylists = async (): Promise<Playlist[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.log(error.message);
+    console.error(`Failed to fetch playlists: ${error.message}`);
     return [];
   }
 
