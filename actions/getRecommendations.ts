@@ -14,7 +14,6 @@ const getRecommendations = async (limit: number = 10): Promise<Song[]> => {
   } = await supabase.auth.getUser();
 
   if (!user?.id) {
-    console.log("ユーザーが見つかりません");
     return [];
   }
 
