@@ -9,18 +9,21 @@ import TrendPeriodSelector from "@/components/TrendPeriodSelector";
 import GenreBoard from "@/components/Genre/GenreBoard";
 import SpotlightBoard from "@/components/SpotlightBoard";
 import PublicPlaylistBoard from "@/components/Playlist/PublicPlaylistBoard";
+import ForYouBoard from "@/components/ForYou/ForYouBoard";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
 
 interface HomeClientProps {
   songs: Song[];
   spotlightData: Spotlight[];
   playlists: Playlist[];
+  recommendations: Song[];
 }
 
 const HomeContent: React.FC<HomeClientProps> = ({
   songs,
   spotlightData,
   playlists,
+  recommendations,
 }) => {
   const { isMobilePlayer } = useMobilePlayer();
   const [isClient, setIsClient] = useState(false);
@@ -76,6 +79,17 @@ const HomeContent: React.FC<HomeClientProps> = ({
               selectedPeriod={selectedPeriod}
               onPeriodChange={setSelectedPeriod}
             />
+          </section>
+
+          {/* あなたへのおすすめセクション */}
+          <section>
+            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
+              For You
+            </h2>
+            <p className="text-sm text-neutral-400 mb-6">
+              Personalized recommendations based on your taste
+            </p>
+            <ForYouBoard recommendations={recommendations} />
           </section>
 
           {/* パブリックプレイリストセクション */}
