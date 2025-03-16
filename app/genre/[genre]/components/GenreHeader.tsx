@@ -9,7 +9,6 @@ interface GenreHeaderProps {
 }
 
 const GenreHeader: React.FC<GenreHeaderProps> = ({ genre }) => {
-  // GenreCard.tsxから関数を再利用
   const getGradient = () => {
     switch (genre) {
       case "Retro Wave":

@@ -81,6 +81,28 @@ const HomeContent: React.FC<HomeClientProps> = ({
             />
           </section>
 
+          {/* スポットライトセクション */}
+          <section>
+            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
+              Spotlight
+            </h2>
+            <p className="text-sm text-neutral-400 mb-6">
+              Featured artists and songs
+            </p>
+            <SpotlightBoard spotlightData={spotlightData} />
+          </section>
+
+          {/* 最新曲セクション */}
+          <section>
+            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
+              Latest Releases
+            </h2>
+            <p className="text-sm text-neutral-400 mb-6">
+              Fresh new music just for you
+            </p>
+            <PageContent songs={songs} />
+          </section>
+
           {/* あなたへのおすすめセクション */}
           <section>
             <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
@@ -103,17 +125,6 @@ const HomeContent: React.FC<HomeClientProps> = ({
             <PublicPlaylistBoard playlists={playlists} />
           </section>
 
-          {/* スポットライトセクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              Spotlight
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Featured artists and songs
-            </p>
-            <SpotlightBoard spotlightData={spotlightData} />
-          </section>
-
           {/* ジャンルボードセクション */}
           <section>
             <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
@@ -123,17 +134,6 @@ const HomeContent: React.FC<HomeClientProps> = ({
               Discover music by genre
             </p>
             <GenreBoard />
-          </section>
-
-          {/* 最新曲セクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              Latest Releases
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Fresh new music just for you
-            </p>
-            <PageContent songs={songs} />
           </section>
         </main>
       </div>

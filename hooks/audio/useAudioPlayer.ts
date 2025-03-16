@@ -53,7 +53,8 @@ const useAudioPlayer = (songUrl: string) => {
       setCurrentTime(time);
     }
   };
-
+  
+  // 次の曲を再生する関数
   const onPlayNext = () => {
     if (isRepeating) {
       player.toggleRepeat();
@@ -63,7 +64,8 @@ const useAudioPlayer = (songUrl: string) => {
       player.setId(nextSongId);
     }
   };
-
+  
+  // 前の曲を再生する関数
   const onPlayPrevious = () => {
     if (isRepeating) {
       if (audioRef.current) {
@@ -76,15 +78,19 @@ const useAudioPlayer = (songUrl: string) => {
       }
     }
   };
-
+  
+  // リピート切り替え関数
   const toggleRepeat = () => {
     player.toggleRepeat();
   };
-
+  
+  // シャッフル切り替え関数
   const toggleShuffle = () => {
     player.toggleShuffle();
   };
+  
 
+  // オーディオ要素のイベントリスナーを設定
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
