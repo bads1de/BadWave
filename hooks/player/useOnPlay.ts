@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { Song } from "@/types";
 import usePlayer from "./usePlayer";
 import { createClient } from "@/libs/supabase/client";
@@ -6,11 +6,14 @@ import usePlayHistory from "./usePlayHistory";
 
 const DEFAULT_COOLDOWN = 1000;
 
-const debounce = (func: (...args: any[]) => void, wait: number) => {
-  let timeout: NodeJS.Timeout;
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+// デバウンス関数を定義
+const createDebounce = (wait: number) => {
+  return (func: (...args: any[]) => void) => {
+    let timeout: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
   };
 };
 
@@ -30,41 +33,44 @@ const useOnPlay = (songs: Song[]) => {
   const playHistory = usePlayHistory();
 
   // 再生処理のメイン関数
-  const processPlay = async (id: string) => {
-    try {
-      // プレイヤーの状態を設定
-      player.setId(id);
-      player.setIds(songs.map((song) => song.id));
+  const processPlay = useCallback(
+    async (id: string) => {
+      try {
+        // プレイヤーの状態を設定
+        player.setId(id);
+        player.setIds(songs.map((song) => song.id));
 
-      // songデータを取得
-      const { data: songData, error: selectError } = await supabase
-        .from("songs")
-        .select("count")
-        .eq("id", id)
-        .single();
+        // songデータを取得
+        const { data: songData, error: selectError } = await supabase
+          .from("songs")
+          .select("count")
+          .eq("id", id)
+          .single();
 
-      if (selectError || !songData) throw selectError;
+        if (selectError || !songData) throw selectError;
 
-      // カウントをインクリメント
-      const { data: incrementedCount, error: incrementError } =
-        await supabase.rpc("increment", { x: songData.count });
+        // カウントをインクリメント
+        const { data: incrementedCount, error: incrementError } =
+          await supabase.rpc("increment", { x: songData.count });
 
-      if (incrementError) throw incrementError;
+        if (incrementError) throw incrementError;
 
-      // インクリメントされたカウントでsongを更新
-      const { error: updateError } = await supabase
-        .from("songs")
-        .update({ count: incrementedCount })
-        .eq("id", id);
+        // インクリメントされたカウントでsongを更新
+        const { error: updateError } = await supabase
+          .from("songs")
+          .update({ count: incrementedCount })
+          .eq("id", id);
 
-      if (updateError) throw updateError;
+        if (updateError) throw updateError;
 
-      // 再生履歴を記録
-      await playHistory.recordPlay(id);
-    } catch (error) {
-      console.error("エラーが発生しました:", error);
-    }
-  };
+        // 再生履歴を記録
+        await playHistory.recordPlay(id);
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+      }
+    },
+    [player, songs, supabase, playHistory]
+  );
 
   const onPlay = useCallback(
     async (id: string) => {
@@ -103,8 +109,11 @@ const useOnPlay = (songs: Song[]) => {
     [lastPlayTime, player, songs, supabase]
   );
 
+  // デバウンス関数をメモ化
+  const debounce = useMemo(() => createDebounce(DEFAULT_COOLDOWN), []);
+
   // デバウンスされた再生関数を返す
-  return debounce(onPlay, DEFAULT_COOLDOWN);
+  return useMemo(() => debounce(onPlay), [debounce, onPlay]);
 };
 
 export default useOnPlay;

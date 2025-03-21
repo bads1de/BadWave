@@ -1,7 +1,7 @@
 import { Song } from "@/types";
 import dayjs from "dayjs";
 import { createClient } from "@/libs/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 
 /**
@@ -65,6 +65,7 @@ const useGetTrendSongs = (period: "all" | "month" | "week" | "day" = "all") => {
     },
     staleTime: CACHE_CONFIG.staleTime,
     gcTime: CACHE_CONFIG.gcTime,
+    placeholderData: keepPreviousData,
   });
 
   if (error) {

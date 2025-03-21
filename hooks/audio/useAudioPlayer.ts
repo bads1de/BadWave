@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import usePlayer from "@/hooks/player/usePlayer";
 import { isMobile } from "react-device-detect";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
@@ -43,19 +43,19 @@ const useAudioPlayer = (songUrl: string) => {
   const Icon = isPlaying ? BsPauseFill : BsPlayFill;
   const VolumeIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
 
-  const handlePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
+  const handlePlay = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
 
-  const handleSeek = (time: number) => {
+  const handleSeek = useCallback((time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
       setCurrentTime(time);
     }
-  };
-  
+  }, []);
+
   // 次の曲を再生する関数
-  const onPlayNext = () => {
+  const onPlayNext = useCallback(() => {
     if (isRepeating) {
       player.toggleRepeat();
     }
@@ -63,10 +63,10 @@ const useAudioPlayer = (songUrl: string) => {
     if (nextSongId) {
       player.setId(nextSongId);
     }
-  };
-  
+  }, [isRepeating, player]);
+
   // 前の曲を再生する関数
-  const onPlayPrevious = () => {
+  const onPlayPrevious = useCallback(() => {
     if (isRepeating) {
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
@@ -77,18 +77,17 @@ const useAudioPlayer = (songUrl: string) => {
         player.setId(prevSongId);
       }
     }
-  };
-  
+  }, [isRepeating, player]);
+
   // リピート切り替え関数
-  const toggleRepeat = () => {
+  const toggleRepeat = useCallback(() => {
     player.toggleRepeat();
-  };
-  
+  }, [player]);
+
   // シャッフル切り替え関数
-  const toggleShuffle = () => {
+  const toggleShuffle = useCallback(() => {
     player.toggleShuffle();
-  };
-  
+  }, [player]);
 
   // オーディオ要素のイベントリスナーを設定
   useEffect(() => {
@@ -161,14 +160,17 @@ const useAudioPlayer = (songUrl: string) => {
 
   const formattedCurrentTime = useMemo(
     () => formatTime(currentTime),
-    [currentTime]
+    [currentTime, formatTime]
   );
 
-  const formattedDuration = useMemo(() => formatTime(duration), [duration]);
+  const formattedDuration = useMemo(
+    () => formatTime(duration),
+    [duration, formatTime]
+  );
 
-  const handleVolumeClick = () => {
-    setShowVolumeSlider(!showVolumeSlider);
-  };
+  const handleVolumeClick = useCallback(() => {
+    setShowVolumeSlider((prev) => !prev);
+  }, []);
 
   return {
     Icon,

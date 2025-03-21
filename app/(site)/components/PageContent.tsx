@@ -34,14 +34,12 @@ const PageContent: React.FC<PageContentProps> = ({ songs }) => {
 
   if (songs.length === 0) {
     return (
-      <p className="text-neutral-400 text-center">
-        曲が見つかりませんでした
-      </p>
+      <p className="text-neutral-400 text-center">曲が見つかりませんでした</p>
     );
   }
 
   return (
-    <div 
+    <div
       className="flex flex-col h-full"
       onMouseEnter={() => setShowArrows(true)}
       onMouseLeave={() => setShowArrows(false)}
@@ -59,10 +57,7 @@ const PageContent: React.FC<PageContentProps> = ({ songs }) => {
               variants={itemVariants}
               className="group relative transform transition duration-300 ease-in-out hover:scale-105 min-w-[200px] w-[200px]"
             >
-              <SongItem
-                onClick={(id) => handlePlay(id)}
-                data={item}
-              />
+              <SongItem onClick={(id) => handlePlay(id)} data={item} />
             </motion.div>
           ))}
         </motion.div>
