@@ -11,7 +11,7 @@ import ModalProvider from "@/providers/ModalProvider";
 
 import ToasterProvider from "@/providers/ToasterProvider";
 import UserProvider from "@/providers/UserProvider";
-import TanStackProvider from "@/providers/TanstackProvider";
+import TanStackProvider from "@/providers/TanStackProvider";
 import "./globals.css";
 
 const font = Figtree({ subsets: ["latin"] });

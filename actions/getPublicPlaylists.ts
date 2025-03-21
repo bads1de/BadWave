@@ -16,7 +16,7 @@ const getPublicPlaylists = async (limit: number = 6): Promise<Playlist[]> => {
     .limit(limit);
 
   if (error) {
-    console.log(error.message);
+    console.log("Error fetching public playlists:", error.message);
     return [];
   }
 

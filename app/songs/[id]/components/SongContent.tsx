@@ -63,17 +63,31 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
   }, [songId]);
 
   const handlePlayClick = async () => {
-    if (!fileUrl) return;
+    if (!song?.song_path) {
+      console.error("曲のパスが存在しません");
+      return;
+    }
 
-    if (currentSongId !== songId) {
-      await initializeAudio(fileUrl!, songId);
-      await play();
-    } else {
-      if (isPlaying) {
-        pause();
-      } else {
+    if (!fileUrl) {
+      console.error("ファイルURLが取得できませんでした", song.song_path);
+      return;
+    }
+
+    try {
+      console.log("再生を開始します", { songId, currentSongId, fileUrl });
+
+      if (currentSongId !== songId) {
+        await initializeAudio(fileUrl, songId);
         await play();
+      } else {
+        if (isPlaying) {
+          pause();
+        } else {
+          await play();
+        }
       }
+    } catch (error) {
+      console.error("再生処理中にエラーが発生しました:", error);
     }
   };
 
@@ -128,7 +142,7 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
         />
         <AudioWaveform
           key={audioWaveformKey}
-          audioUrl={song.song_path!}
+          audioUrl={fileUrl || song.song_path!}
           isPlaying={isPlaying}
           onPlayPause={handlePlayClick}
           onEnded={handlePlaybackEnded}

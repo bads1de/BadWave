@@ -17,7 +17,8 @@ const getSpotlight = async (): Promise<Spotlight[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.log(error.message);
+    console.log("Error fetching spotlights:", error.message);
+    return [];
   }
 
   return (data as Spotlight[]) || [];
