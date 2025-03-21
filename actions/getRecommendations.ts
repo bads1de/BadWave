@@ -1,6 +1,10 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 
+interface SongWithRecommendation extends Song {
+  recommendation_score: string;
+}
+
 const getRecommendations = async (limit: number = 10): Promise<Song[]> => {
   // supabaseクライアントを初期化
   const supabase = await createClient();
@@ -32,18 +36,18 @@ const getRecommendations = async (limit: number = 10): Promise<Song[]> => {
     }
 
     // データを整形して返す
-    return data.map((item: any) => ({
+    return data.map((item: SongWithRecommendation) => ({
       id: item.id,
       title: item.title,
       author: item.author,
       song_path: item.song_path,
       image_path: item.image_path,
       genre: item.genre,
-      count: item.count || 0,
-      like_count: item.like_count || 0,
+      count: item.count,
+      like_count: item.like_count,
       created_at: item.created_at,
       user_id: user.id,
-      recommendation_score: item.score,
+      recommendation_score: item.recommendation_score,
     }));
   } catch (e) {
     console.error("Exception in getRecommendations:", e);
