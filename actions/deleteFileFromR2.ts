@@ -26,6 +26,7 @@ const deleteFileFromR2 = async ({
     }
   } catch (error) {
     console.error("R2 delete error:", error);
+
     if (showToast) {
       toast.error("ファイルを削除できませんでした");
     }
