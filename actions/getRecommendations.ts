@@ -1,12 +1,9 @@
 import { Song } from "@/types";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/libs/supabase/server";
 
 const getRecommendations = async (limit: number = 10): Promise<Song[]> => {
   // supabaseクライアントを初期化
-  const supabase = createServerComponentClient({
-    cookies: cookies,
-  });
+  const supabase = await createClient();
 
   // 現在のユーザーセッションを取得
   const {

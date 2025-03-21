@@ -1,6 +1,6 @@
 import useAuthModal from "@/hooks/auth/useAuthModal";
 import { useUser } from "@/hooks/auth/useUser";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -18,7 +18,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   size,
   showText = false,
 }) => {
-  const { supabaseClient } = useSessionContext();
+  const supabaseClient = createClient();
   const { user } = useUser();
   const authModal = useAuthModal();
   const [isLiked, setIsLiked] = useState(false);

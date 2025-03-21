@@ -1,6 +1,5 @@
 import { Song } from "@/types";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/libs/supabase/server";
 
 type PlaylistSong = Song & { songType: "regular" };
 
@@ -12,9 +11,7 @@ type PlaylistSong = Song & { songType: "regular" };
 const getPlaylistSongs = async (
   playlistId: string
 ): Promise<PlaylistSong[]> => {
-  const supabase = createServerComponentClient({
-    cookies: cookies,
-  });
+  const supabase = await createClient();
 
   // まずプレイリストの情報を取得して public かどうかを確認
   const { data: playlist, error: playlistError } = await supabase

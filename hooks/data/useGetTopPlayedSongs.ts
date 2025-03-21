@@ -1,5 +1,5 @@
 import { Song } from "@/types";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 
@@ -10,7 +10,7 @@ interface TopPlayedSong extends Song {
 type Period = "day" | "week" | "month" | "all";
 
 const useGetTopPlayedSongs = (userId?: string, period: Period = "day") => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const {
     data: topSongs,

@@ -4,7 +4,7 @@ import * as React from "react";
 import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { Edit2, Trash2, Globe2, Lock } from "lucide-react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -30,7 +30,7 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
   const [newTitle, setNewTitle] = useState(currentTitle);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { user } = useUser();
   const queryClient = useQueryClient();
 

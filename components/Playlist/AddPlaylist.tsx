@@ -10,9 +10,8 @@ import { RiPlayListAddFill, RiPlayListFill } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth/useUser";
 import useAuthModal from "@/hooks/auth/useAuthModal";
-import { useSessionContext } from "@supabase/auth-helpers-react";
 import useGetSongById from "@/hooks/data/useGetSongById";
-import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
+import { createClient } from "@/libs/supabase/client";
 
 interface PlaylistMenuProps {
   playlists: Playlist[];
@@ -42,7 +41,7 @@ const AddPlaylist: React.FC<PlaylistMenuProps> = ({
   songType = "regular",
   children,
 }) => {
-  const { supabaseClient } = useSessionContext();
+  const supabaseClient = createClient();
   const { user } = useUser();
   const authModal = useAuthModal();
   const { song } = useGetSongById(songId);
@@ -87,7 +86,7 @@ const AddPlaylist: React.FC<PlaylistMenuProps> = ({
     } catch (error) {
       console.error("プレイリストの追加状況取得中にエラーが発生:", error);
     }
-  }, [user?.id, songId, songType, supabaseClient, playlists]);
+  }, [user?.id, songId, supabaseClient, playlists]);
 
   useEffect(() => {
     fetchAddedSongs();

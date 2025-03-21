@@ -1,6 +1,6 @@
 import { Song } from "@/types";
 import dayjs from "dayjs";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 
@@ -21,7 +21,7 @@ const useGetTrendSongs = (period: "all" | "month" | "week" | "day" = "all") => {
   } = useQuery({
     queryKey: [CACHED_QUERIES.trendSongs, period],
     queryFn: async () => {
-      const supabase = createClientComponentClient();
+      const supabase = createClient();
 
       let query = supabase.from("songs").select("*");
 

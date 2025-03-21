@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +23,7 @@ const DeletePlaylistSongsBtn: React.FC<DeletePlaylistSongsBtnProps> = ({
   const handleDeletePlaylistSongs = async () => {
     setIsDeleting(true);
 
-    const supabase = createClientComponentClient();
+    const supabase = createClient();
 
     // 現在のユーザーセッションを取得
     const {

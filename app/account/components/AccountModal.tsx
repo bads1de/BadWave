@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Modal from "@/components/Modals/Modal";
@@ -22,7 +22,7 @@ interface AccountModalProps {
 
 const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
   const router = useRouter();
-  const supabaseClient = createClientComponentClient();
+  const supabaseClient = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [newFullName, setNewFullName] = useState(user?.full_name || "");
   const [currentAvatar, setCurrentAvatar] = useState(user?.avatar_url);

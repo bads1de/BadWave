@@ -1,6 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-
+import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
 
 /**
@@ -8,9 +6,7 @@ import { Playlist } from "@/types";
  * @returns {Promise<Playlist[]>} プレイリストの配列
  */
 const getPlaylists = async (): Promise<Playlist[]> => {
-  const supabase = createServerComponentClient({
-    cookies,
-  });
+  const supabase = await createClient();
 
   const {
     data: { user },

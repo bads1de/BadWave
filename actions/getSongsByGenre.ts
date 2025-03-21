@@ -1,6 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-
+import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 
 const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
@@ -8,9 +6,7 @@ const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
   const genreArray =
     typeof genre === "string" ? genre.split(",").map((g) => g.trim()) : genre;
 
-  const supabase = createServerComponentClient({
-    cookies: cookies,
-  });
+  const supabase = await createClient();
 
   // データベースから曲を検索
   const { data, error } = await supabase

@@ -6,17 +6,15 @@ import {
   useContext,
   useCallback,
 } from "react";
-import {
-  useUser as useSupaUser,
-  useSessionContext,
-  User,
-} from "@supabase/auth-helpers-react";
+import { User, Session } from "@supabase/supabase-js";
+import { createClient } from "@/libs/supabase/client";
 
 type UserContextType = {
   accessToken: string | null;
   user: User | null;
   userDetails: UserDetails | null;
   isLoading: boolean;
+  getUserDetails: () => Promise<any>;
 };
 
 /**
@@ -37,21 +35,43 @@ export interface Props {
  * @returns {JSX.Element} ユーザーコンテキストプロバイダー
  */
 export const MyUserContextProvider = (props: Props) => {
-  const {
-    session,
-    isLoading: isLoadingUser,
-    supabaseClient: supabase,
-  } = useSessionContext();
-  const user = useSupaUser();
+  const supabase = createClient();
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
   const accessToken = session?.access_token ?? null;
   const [isLoadingData, setIsloadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 
-  const getUserDetails = useCallback(() => {
-    return supabase.from("users").select("*").single();
+  const getUserDetails = useCallback(async () => {
+    return await supabase.from("users").select("*").single();
   }, [supabase]);
 
-  // ユーザー情報とサブスクリプション情報の取得
+  // セッション状態を監視
+  useEffect(() => {
+    const getSession = async () => {
+      setIsLoadingUser(true);
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
+      setIsLoadingUser(false);
+    };
+
+    getSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  // ユーザー情報の取得
   useEffect(() => {
     if (user && !isLoadingData && !userDetails) {
       setIsloadingData(true);

@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { Song } from "@/types";
 import usePlayer from "./usePlayer";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import usePlayHistory from "./usePlayHistory";
 
 const DEFAULT_COOLDOWN = 1000;
@@ -23,7 +23,7 @@ const debounce = (func: (...args: any[]) => void, wait: number) => {
 // プレイヤーの再生イベントを処理するカスタムフック
 const useOnPlay = (songs: Song[]) => {
   const player = usePlayer();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [lastPlayTime, setLastPlayTime] = useState<number>(0);
   const cooldownRef = useRef<boolean>(false);
   const pendingPlayRef = useRef<string | null>(null);

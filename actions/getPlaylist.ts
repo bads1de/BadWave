@@ -1,6 +1,5 @@
 import { Playlist } from "@/types";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/libs/supabase/server";
 
 /**
  * 指定されたプレイリストIDのプレイリスト情報を取得する
@@ -8,9 +7,7 @@ import { cookies } from "next/headers";
  * @returns {Promise<Playlist | null>} プレイリスト情報。取得できない場合はnullを返す
  */
 const getPlaylist = async (playlistId: string): Promise<Playlist | null> => {
-  const supabase = createServerComponentClient({
-    cookies: cookies,
-  });
+  const supabase = await createClient();
 
   const { data: playlist, error } = await supabase
     .from("playlists")

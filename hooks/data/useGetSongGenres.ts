@@ -1,5 +1,5 @@
 import { Song } from "@/types";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 
@@ -11,7 +11,7 @@ import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
  * @returns 取得した曲の配列、ローディング状態、エラー
  */
 const useGetSongsByGenres = (genres: string[], excludeId?: string) => {
-  const { supabaseClient } = useSessionContext();
+  const supabaseClient = createClient();
 
   const {
     data: songGenres = [],

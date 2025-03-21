@@ -1,5 +1,5 @@
 import { Song } from "@/types";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
@@ -13,7 +13,7 @@ import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
  * @property {Song|undefined} song - 取得した曲データ
  */
 const useGetSongById = (id?: string) => {
-  const { supabaseClient } = useSessionContext();
+  const supabaseClient = createClient();
 
   const {
     isLoading,

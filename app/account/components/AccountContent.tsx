@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { useUser } from "@/hooks/auth/useUser";
 import Image from "next/image";
 import AccountModal from "./AccountModal";
@@ -12,7 +12,7 @@ import TopPlayedSongs from "./TopPlayedSongs";
 const AccountContent = () => {
   const router = useRouter();
   const { userDetails: user } = useUser();
-  const supabaseClient = createClientComponentClient();
+  const supabaseClient = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 

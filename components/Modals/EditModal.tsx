@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -15,6 +14,7 @@ import GenreSelect from "../Genre/GenreSelect";
 import Button from "../Button";
 import uploadFileToR2 from "@/actions/uploadFileToR2";
 import deleteFileFromR2 from "@/actions/deleteFileFromR2";
+import { createClient } from "@/libs/supabase/client";
 
 interface EditFormValues extends Partial<Song> {
   video?: FileList;
@@ -31,7 +31,7 @@ interface EditModalProps {
 const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createClient();
 
   const { register, handleSubmit, reset, setValue, watch } =
     useForm<EditFormValues>({

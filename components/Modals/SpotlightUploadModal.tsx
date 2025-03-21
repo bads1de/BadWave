@@ -4,7 +4,7 @@ import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
 import { useUser } from "@/hooks/auth/useUser";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 
 import Modal from "./Modal";
 import Input from "@/components/Input";
@@ -18,7 +18,7 @@ const SpotlightUploadModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const spotlightUploadModal = useSpotLightUploadModal();
   const { user } = useUser();
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createClient();
   const router = useRouter();
 
   const { register, handleSubmit, reset } = useForm<FieldValues>({

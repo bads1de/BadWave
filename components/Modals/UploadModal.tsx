@@ -2,7 +2,7 @@
 
 import uniqid from "uniqid";
 import React, { useState, useRef, useEffect, DragEvent } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,7 @@ const UploadModal: React.FC = () => {
   const dropRef = useRef<HTMLDivElement>(null);
 
   const uploadModal = useUploadModal();
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createClient();
   const { user } = useUser();
   const router = useRouter();
 

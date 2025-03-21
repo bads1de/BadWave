@@ -2,7 +2,7 @@
 
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
 import { useUser } from "@/hooks/auth/useUser";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import React, { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -14,7 +14,7 @@ import Button from "../Button";
 const PlaylistModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const playlistModal = usePlaylistModal();
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createClient();
   const { userDetails: user } = useUser();
   const router = useRouter();
 

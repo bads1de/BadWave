@@ -1,4 +1,4 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { useCallback } from "react";
 import { useUser } from "../auth/useUser";
 
@@ -7,7 +7,7 @@ import { useUser } from "../auth/useUser";
  * @returns {{recordPlay: (songId: string) => Promise<void>}} 再生を記録する関数を含むオブジェクト
  */
 const usePlayHistory = () => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { userDetails } = useUser();
 
   /**

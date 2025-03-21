@@ -65,7 +65,7 @@ const PlayerContent: React.FC<PlayerContentProps> = ({
     }, 3000);
 
     return () => clearTimeout(timeout);
-  }, [showVolumeSlider]);
+  }, [showVolumeSlider, setShowVolumeSlider]);
 
   return (
     <>

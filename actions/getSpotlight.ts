@@ -1,6 +1,5 @@
 import { Spotlight } from "@/types";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/libs/supabase/server";
 
 /**
  * @returns Spotlight[]
@@ -10,9 +9,7 @@ import { cookies } from "next/headers";
  * @async
  */
 const getSpotlight = async (): Promise<Spotlight[]> => {
-  const supabase = createServerComponentClient({
-    cookies: cookies,
-  });
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("spotlights")
