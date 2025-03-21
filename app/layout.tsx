@@ -7,11 +7,11 @@ import Player from "@/components/Player/Player";
 import RightSidebar from "@/components/RightSidebar/RightSidebar";
 import Sidebar from "@/components/Sidebar/Sidebar";
 
-import ModalProvider from "@/providers/ModelProvider";
-import TanStackProvider from "@/providers/TanstackProvider";
+import ModalProvider from "@/providers/ModalProvider";
+
 import ToasterProvider from "@/providers/ToasterProvider";
 import UserProvider from "@/providers/UserProvider";
-
+import TanStackProvider from "@/providers/TanstackProvider";
 import "./globals.css";
 
 const font = Figtree({ subsets: ["latin"] });
