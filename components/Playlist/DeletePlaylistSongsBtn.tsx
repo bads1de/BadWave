@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { createClient } from "@/libs/supabase/client";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import useMutatePlaylistSong from "@/hooks/data/useMutatePlaylistSong";
 
 interface DeletePlaylistSongsBtnProps {
   songId: string;
@@ -12,53 +10,30 @@ interface DeletePlaylistSongsBtnProps {
   showText?: boolean;
 }
 
+/**
+ * プレイリストから曲を削除するボタンコンポーネント
+ *
+ * @param songId 削除する曲のID
+ * @param playlistId 対象のプレイリストID
+ * @param showText テキストを表示するかどうか
+ */
 const DeletePlaylistSongsBtn: React.FC<DeletePlaylistSongsBtnProps> = ({
   songId,
   playlistId,
   showText = false,
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
+  // プレイリスト曲の削除ミューテーションを取得
+  const { deletePlaylistSong } = useMutatePlaylistSong();
 
-  const handleDeletePlaylistSongs = async () => {
-    setIsDeleting(true);
-
-    const supabase = createClient();
-
-    // 現在のユーザーセッションを取得
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.user) {
-      console.error("User not authenticated.");
-      setIsDeleting(false);
-      return;
-    }
-
-    try {
-      // playlist_songs からデータを削除
-      await supabase
-        .from("playlist_songs")
-        .delete()
-        .eq("playlist_id", playlistId)
-        .eq("user_id", session.user.id)
-        .eq("song_id", songId);
-
-      toast.success("プレイリストから曲が削除されました！");
-      router.refresh();
-    } catch (error: any) {
-      toast.error("Error deleting playlist songs:", error);
-      // エラー処理
-    } finally {
-      setIsDeleting(false);
-    }
+  // 削除ハンドラー
+  const handleDeletePlaylistSongs = () => {
+    deletePlaylistSong.mutate({ songId, playlistId });
   };
 
   return (
     <button
       className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-red-500 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,0,0,0.8)] transition-all duration-300"
-      disabled={isDeleting}
+      disabled={deletePlaylistSong.isPending}
       onClick={handleDeletePlaylistSongs}
     >
       <RiDeleteBin5Line size={28} className="mr-2" />
