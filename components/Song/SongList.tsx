@@ -7,6 +7,7 @@ import usePlayer from "@/hooks/player/usePlayer";
 import { twMerge } from "tailwind-merge";
 import { Play, Heart, PlayIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface SongListProps {
   data: Song;
@@ -74,12 +75,16 @@ const SongList: React.FC<SongListProps> = ({ data, onClick, className }) => {
         </div>
       </div>
       <div className="flex flex-col py-1 truncate flex-grow min-w-0">
-        <p className="text-white font-semibold text-xs sm:text-sm truncate tracking-wide">
-          {data.title}
-        </p>
-        <p className="text-neutral-400 text-xs truncate mt-0.5 font-medium">
-          {data?.genre}
-        </p>
+        <Link href={`/songs/${data.id}`}>
+          <p className="text-white font-semibold text-xs sm:text-sm truncate tracking-wide hover:underline">
+            {data.title}
+          </p>
+        </Link>
+        <Link href={`/genre/${data.genre}`}>
+          <p className="text-neutral-400 text-xs truncate mt-0.5 font-medium hover:underline">
+            {data?.genre}
+          </p>
+        </Link>
         <p className="text-neutral-500 text-xs truncate mt-0.5 hidden sm:block">
           {data?.author}
         </p>
