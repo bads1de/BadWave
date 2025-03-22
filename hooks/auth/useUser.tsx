@@ -1,60 +1,69 @@
+/**
+ * @fileoverview ユーザー認証状態を管理するためのカスタムフック
+ *
+ * このモジュールはSupabaseを使用した認証状態の管理と、
+ * ユーザー情報の取得を行うためのコンテキストとフックを提供します。
+ * TanStack Queryを使用してユーザーデータのキャッシュと再取得を最適化しています。
+ */
+
 import { UserDetails } from "@/types";
-import {
-  useEffect,
-  useState,
-  createContext,
-  useContext,
-  useCallback,
-} from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/libs/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 
+/**
+ * ユーザーコンテキストの型定義
+ * @typedef {Object} UserContextType
+ * @property {string|null} accessToken - ユーザーの認証トークン
+ * @property {User|null} user - Supabaseのユーザーオブジェクト
+ * @property {UserDetails|null} userDetails - データベースから取得したユーザー詳細情報
+ * @property {boolean} isLoading - ユーザー情報の読み込み状態
+ */
 type UserContextType = {
   accessToken: string | null;
   user: User | null;
   userDetails: UserDetails | null;
   isLoading: boolean;
-  getUserDetails: () => Promise<any>;
 };
 
 /**
- * ユーザーコンテキストを作成
+ * ユーザー情報を保持するReactコンテキスト
+ * アプリケーション全体でユーザー状態を共有するために使用
  */
 export const UserContext = createContext<UserContextType | undefined>(
   undefined
 );
 
+/**
+ * コンテキストプロバイダーのプロパティ型
+ * @interface Props
+ * @property {any} [propName] - 任意のプロパティを受け入れる
+ */
 export interface Props {
   [propName: string]: any;
 }
 
 /**
  * ユーザーコンテキストプロバイダーコンポーネント
- *
- * @param {Props} props - プロパティ
- * @returns {JSX.Element} ユーザーコンテキストプロバイダー
+ * アプリケーション内でユーザー認証状態を管理し、子コンポーネントに提供する
+ * @param {Props} props - コンポーネントのプロパティ
  */
 export const MyUserContextProvider = (props: Props) => {
   const supabase = createClient();
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const accessToken = session?.access_token ?? null;
-  const [isLoadingData, setIsloadingData] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 
-  const getUserDetails = useCallback(async () => {
-    return await supabase.from("users").select("*").single();
-  }, [supabase]);
-
-  // セッション状態を監視
+  /**
+   * セッション状態を監視するエフェクト
+   * 初期セッションの取得と認証状態の変更を監視する
+   */
   useEffect(() => {
     const getSession = async () => {
-      setIsLoadingUser(true);
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
       setUser(data.session?.user ?? null);
-      setIsLoadingUser(false);
     };
 
     getSession();
@@ -71,48 +80,50 @@ export const MyUserContextProvider = (props: Props) => {
     };
   }, [supabase]);
 
-  // ユーザー情報の取得
-  useEffect(() => {
-    if (user && !isLoadingData && !userDetails) {
-      setIsloadingData(true);
+  /**
+   * ユーザー詳細情報をデータベースから取得するクエリ
+   * TanStack Queryを使用してキャッシュと再取得を最適化
+   */
+  const { data: userDetails, isLoading: isLoadingUserDetails } = useQuery({
+    queryKey: [CACHED_QUERIES.userDetails, user?.id],
+    queryFn: async () => {
+      if (!user) return null;
 
-      Promise.allSettled([getUserDetails()]).then((results) => {
-        const userDetailsPromise = results[0];
+      const { data, error } = await supabase.from("users").select("*").single();
 
-        if (userDetailsPromise.status === "fulfilled") {
-          setUserDetails(userDetailsPromise.value.data as UserDetails);
-        }
+      if (error) {
+        throw new Error(`ユーザー情報の取得に失敗しました: ${error.message}`);
+      }
 
-        setIsloadingData(false);
-      });
-    } else if (!user && !isLoadingUser && !isLoadingData) {
-      setUserDetails(null);
-      setIsloadingData(false);
-    }
-  }, [
-    user,
-    isLoadingUser,
-    supabase,
-    isLoadingData,
-    userDetails,
-    getUserDetails,
-  ]);
+      return data as UserDetails;
+    },
+    enabled: !!user, // ユーザーが存在する場合のみクエリを実行
+    staleTime: CACHE_CONFIG.staleTime,
+    gcTime: CACHE_CONFIG.gcTime,
+  });
 
+  /**
+   * コンテキストに提供する値の構築
+   * セッション、ユーザー、詳細情報、ローディング状態を含む
+   */
   const value = {
-    accessToken,
+    accessToken: session?.access_token ?? null,
     user,
-    userDetails,
-    isLoading: isLoadingUser || isLoadingData,
-    getUserDetails,
+    userDetails: userDetails ?? null,
+    isLoading: !session || isLoadingUserDetails,
   };
 
   return <UserContext.Provider value={value} {...props} />;
 };
 
 /**
- * ユーザーコンテキストを使用するカスタムフック
+ * ユーザー情報にアクセスするためのカスタムフック
  *
- * @returns {UserContextType} ユーザーコンテキスト
+ * このフックを使用することで、コンポーネントからユーザーの認証状態や
+ * 詳細情報に簡単にアクセスできます。
+ *
+ * @returns {UserContextType} ユーザーコンテキスト情報
+ * @throws {Error} MyUserContextProviderの外部で使用された場合にエラーをスロー
  */
 export const useUser = () => {
   const context = useContext(UserContext);
