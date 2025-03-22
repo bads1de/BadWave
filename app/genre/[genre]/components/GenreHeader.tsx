@@ -10,22 +10,25 @@ interface GenreHeaderProps {
 
 const GenreHeader: React.FC<GenreHeaderProps> = ({ genre }) => {
   const getGradient = () => {
-    switch (genre) {
-      case "Retro Wave":
+    // 大文字小文字を区別せずに比較するために小文字に変換
+    const genreLower = genre.toLowerCase();
+
+    switch (genreLower) {
+      case "retro wave":
         return "bg-gradient-to-br from-[#FF0080] via-[#7928CA] to-[#4A00E0]";
-      case "Electro House":
+      case "electro house":
         return "bg-gradient-to-r from-[#00F5A0] to-[#00D9F5]";
-      case "Nu Disco":
+      case "nu disco":
         return "bg-gradient-to-r from-[#FFD700] via-[#FF6B6B] to-[#FF1493]";
-      case "City Pop":
+      case "city pop":
         return "bg-gradient-to-br from-[#6366F1] via-[#A855F7] to-[#EC4899]";
-      case "Tropical House":
+      case "tropical house":
         return "bg-gradient-to-r from-[#00B4DB] to-[#0083B0]";
-      case "Vapor Wave":
+      case "vapor wave":
         return "bg-gradient-to-br from-[#FF61D2] via-[#FE9090] to-[#FF9C7D]";
       case "r&b":
         return "bg-gradient-to-r from-[#6A0DAD] via-[#9370DB] to-[#D4AF37]";
-      case "Chill House":
+      case "chill house":
         return "bg-gradient-to-r from-[#43cea2] via-[#185a9d] to-[#6DD5FA]";
       default:
         return "bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900";
@@ -33,22 +36,25 @@ const GenreHeader: React.FC<GenreHeaderProps> = ({ genre }) => {
   };
 
   const getIcon = () => {
-    switch (genre) {
-      case "Retro Wave":
+    // 大文字小文字を区別せずに比較するために小文字に変換
+    const genreLower = genre.toLowerCase();
+
+    switch (genreLower) {
+      case "retro wave":
         return "🌆";
-      case "Electro House":
+      case "electro house":
         return "⚡";
-      case "Nu Disco":
+      case "nu disco":
         return "💿";
-      case "City Pop":
+      case "city pop":
         return "🏙️";
-      case "Tropical House":
+      case "tropical house":
         return "🌴";
-      case "Vapor Wave":
+      case "vapor wave":
         return "📼";
       case "r&b":
         return "🎤";
-      case "Chill House":
+      case "chill house":
         return "🎧";
       default:
         return "🎵";
@@ -56,22 +62,25 @@ const GenreHeader: React.FC<GenreHeaderProps> = ({ genre }) => {
   };
 
   const getBackgroundImage = () => {
-    switch (genre) {
-      case "Retro Wave":
+    // 大文字小文字を区別せずに比較するために小文字に変換
+    const genreLower = genre.toLowerCase();
+
+    switch (genreLower) {
+      case "retro wave":
         return "/images/Retro.jpg";
-      case "Electro House":
+      case "electro house":
         return "/images/ElectroHouse.jpg";
-      case "Nu Disco":
+      case "nu disco":
         return "/images/NuDisco.jpg";
-      case "City Pop":
+      case "city pop":
         return "/images/CityPop.jpg";
-      case "Tropical House":
+      case "tropical house":
         return "/images/TropicalHouse.jpg";
-      case "Vapor Wave":
+      case "vapor wave":
         return "/images/VaporWave.jpg";
       case "r&b":
         return "/images/R&B.jpg";
-      case "Chill House":
+      case "chill house":
         return "/images/ChillHouse.jpg";
       default:
         return "/images/DefaultMusic.jpg";

@@ -38,6 +38,7 @@ export const CACHED_QUERIES = {
   likeStatus: "likeStatus",
   likedSongs: "likedSongs",
   userDetails: "userDetails",
+  spotlight: "spotlight",
 } as const;
 
 export const CACHE_CONFIG = {

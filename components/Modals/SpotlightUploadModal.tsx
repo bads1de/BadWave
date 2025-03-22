@@ -1,25 +1,23 @@
-import React, { useState } from "react";
-import { toast } from "react-hot-toast";
+import React from "react";
 import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
-import { useRouter } from "next/navigation";
 
 import { useUser } from "@/hooks/auth/useUser";
-import { createClient } from "@/libs/supabase/client";
 
 import Modal from "./Modal";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 
-import uploadFileToR2 from "@/actions/uploadFileToR2";
 import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
+import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
 import { Textarea } from "../ui/textarea";
 
 const SpotlightUploadModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const spotlightUploadModal = useSpotLightUploadModal();
   const { user } = useUser();
-  const supabaseClient = createClient();
-  const router = useRouter();
+
+  // TanStack Queryを使用したミューテーション
+  const { mutateAsync, isPending: isLoading } =
+    useSpotlightUploadMutation(spotlightUploadModal);
 
   const { register, handleSubmit, reset } = useForm<FieldValues>({
     defaultValues: {
@@ -40,54 +38,19 @@ const SpotlightUploadModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (values) => {
     try {
-      setIsLoading(true);
-
-      if (!user) {
-        toast.error("ログインが必要です");
-        return;
-      }
-
-      const videoFile = values.video?.[0];
-
-      if (!videoFile) {
-        toast.error("動画ファイルを選択してください");
-        return;
-      }
-
-      const videoUrl = await uploadFileToR2({
-        file: videoFile,
-        bucketName: "spotlight",
-        fileType: "video",
-        fileNamePrefix: "spotlight",
-      });
-
-      if (!videoUrl) {
-        toast.error("動画のアップロードに失敗しました");
-        return;
-      }
-
-      const { error } = await supabaseClient.from("spotlights").insert({
-        video_path: videoUrl,
+      // TanStack Queryのミューテーションを使用
+      await mutateAsync({
         title: values.title,
         author: values.author,
         genre: values.genre,
         description: values.description,
+        videoFile: values.video?.[0] || null,
       });
 
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      router.refresh();
-      setIsLoading(false);
-      toast.success("Spotlightに投稿しました!");
-      spotlightUploadModal.onClose();
+      // 成功時の処理はミューテーションのonSuccessで行われる
     } catch (error) {
-      console.error(error);
-      toast.error("エラーが発生しました");
-    } finally {
-      setIsLoading(false);
+      // エラー処理はミューテーション内で行われる
+      console.error("Spotlight upload error:", error);
     }
   };
 

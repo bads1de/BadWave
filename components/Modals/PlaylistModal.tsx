@@ -2,21 +2,19 @@
 
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
 import { useUser } from "@/hooks/auth/useUser";
-import { createClient } from "@/libs/supabase/client";
-import React, { useState } from "react";
+import React from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import Modal from "./Modal";
 import Input from "../Input";
 import Button from "../Button";
+import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
 
 const PlaylistModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const playlistModal = usePlaylistModal();
-  const supabaseClient = createClient();
-  const { userDetails: user } = useUser();
-  const router = useRouter();
+
+  // TanStack Queryを使用したミューテーション
+  const { mutateAsync, isPending: isLoading } =
+    useCreatePlaylistMutation(playlistModal);
 
   const { register, handleSubmit, reset } = useForm<FieldValues>({
     defaultValues: {
@@ -33,32 +31,15 @@ const PlaylistModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (values) => {
     try {
-      setIsLoading(true);
-
-      if (!values.title || !user) {
-        toast.error("タイトルを入力してください");
-        return;
-      }
-
-      const { error } = await supabaseClient.from("playlists").insert({
-        user_id: user.id,
-        user_name: user.full_name,
+      // TanStack Queryのミューテーションを使用
+      await mutateAsync({
         title: values.title,
-        is_public: false,
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else {
-        router.refresh();
-        toast.success("プレイリストを作成しました");
-        reset();
-        playlistModal.onClose();
-      }
+      // 成功時の処理はミューテーションのonSuccessで行われる
     } catch (error) {
-      toast.error("エラーが発生しました");
-    } finally {
-      setIsLoading(false);
+      // エラー処理はミューテーション内で行われる
+      console.error("Create playlist error:", error);
     }
   };
 
