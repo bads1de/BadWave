@@ -1,9 +1,9 @@
 import getSongsByTitle from "@/actions/getSongsByTitle";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import SearchInput from "@/components/SearchInput";
 import SearchContent from "./components/SearchContent";
 import getPlaylistsByTitle from "@/actions/getPlaylistsByTitle";
-import HeaderNav from "@/components/HeaderNav";
+import HeaderNav from "@/components/Header/HeaderNav";
 
 interface SearchProps {
   searchParams: Promise<{ title: string; tab?: string }>;

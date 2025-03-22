@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Song, Spotlight, Playlist } from "@/types";
 import PageContent from "./PageContent";
-import HomeHeader from "@/components/HomeHeader";
+import HomeHeader from "@/components/Header/HomeHeader";
 import TrendBoard from "@/components/Trend/TrendBoard";
 import TrendPeriodSelector from "@/components/Trend/TrendPeriodSelector";
 import GenreBoard from "@/components/Genre/GenreBoard";
