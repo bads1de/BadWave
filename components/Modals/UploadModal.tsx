@@ -1,26 +1,22 @@
 "use client";
 
-import uniqid from "uniqid";
-import React, { useState, useRef, useEffect, DragEvent } from "react";
-import { createClient } from "@/libs/supabase/client";
+import * as React from "react";
+import { useState, useRef, useEffect, DragEvent } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import useUploadModal from "@/hooks/modal/useUploadModal";
 import { useUser } from "@/hooks/auth/useUser";
+import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
 
-import { sanitizeTitle } from "@/libs/helpers";
 import Modal from "./Modal";
 import Input from "../Input";
 import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
 import Button from "../Button";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
 
 const UploadModal: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
@@ -30,9 +26,11 @@ const UploadModal: React.FC = () => {
   const dropRef = useRef<HTMLDivElement>(null);
 
   const uploadModal = useUploadModal();
-  const supabaseClient = createClient();
   const { user } = useUser();
-  const router = useRouter();
+
+  // TanStack Queryを使用したミューテーション
+  const { mutateAsync, isPending: isLoading } =
+    useUploadSongMutation(uploadModal);
 
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<FieldValues>({
@@ -111,8 +109,6 @@ const UploadModal: React.FC = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (values) => {
     try {
-      setIsLoading(true);
-
       const imageFile = values.image?.[0];
       const songFile = values.song?.[0];
 
@@ -121,62 +117,23 @@ const UploadModal: React.FC = () => {
         return;
       }
 
-      const uniqueID = uniqid();
-      const songFileNamePrefix = `song-${sanitizeTitle(
-        values.title
-      )}-${uniqueID}`;
-      const imageFileNamePrefix = `image-${sanitizeTitle(
-        values.title
-      )}-${uniqueID}`;
-      // Upload song to R2
-      const songUrl = await uploadFileToR2({
-        file: songFile,
-        bucketName: "song",
-        fileType: "audio",
-        fileNamePrefix: songFileNamePrefix,
+      // TanStack Queryのミューテーションを使用
+      await mutateAsync({
+        title: values.title,
+        author: values.author,
+        lyrics: values.lyrics,
+        genre: selectedGenres,
+        songFile,
+        imageFile,
       });
 
-      // Upload image to R2
-      const imageUrl = await uploadFileToR2({
-        file: imageFile,
-        bucketName: "image",
-        fileType: "image",
-        fileNamePrefix: imageFileNamePrefix,
-      });
-      if (!songUrl || !imageUrl) {
-        toast.error("ファイルのアップロードに失敗しました");
-        return;
-      }
-
-      // Create record
-      const { error: supabaseError } = await supabaseClient
-        .from("songs")
-        .insert({
-          user_id: user.id,
-          title: values.title,
-          author: values.author,
-          lyrics: values.lyrics,
-          image_path: imageUrl,
-          song_path: songUrl,
-          genre: selectedGenres.join(", "),
-          count: 0,
-        });
-
-      if (supabaseError) {
-        return toast.error(supabaseError.message);
-      }
-
-      router.refresh();
-      setIsLoading(false);
-      toast.success("曲をアップロードしました");
+      // 成功時の処理（ミューテーションのonSuccessで処理されるため、ここでは最小限の処理のみ）
       reset();
       setImagePreview(null);
       setAudioPreview(null);
-      uploadModal.onClose();
     } catch (error) {
-      toast.error("不具合が発生しました");
-    } finally {
-      setIsLoading(false);
+      // エラー処理はミューテーション内で行われるため、ここでは何もしない
+      console.error("Upload error:", error);
     }
   };
 
