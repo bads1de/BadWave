@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Playlist } from "@/types";
 import { motion } from "framer-motion";
-import { RiPlayListFill } from "react-icons/ri";
 
 interface PlaylistContentProps {
   playlists: Playlist[];

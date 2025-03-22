@@ -33,7 +33,6 @@ const SongList: React.FC<SongListProps> = ({ data, onClick, className }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
-      onClick={handleClick}
       className={twMerge(
         `
         flex
@@ -60,7 +59,10 @@ const SongList: React.FC<SongListProps> = ({ data, onClick, className }) => {
         className
       )}
     >
-      <div className="relative w-12 h-12 sm:w-16 sm:h-16 min-w-12 sm:min-w-16 rounded-lg overflow-hidden group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
+      <div
+        onClick={handleClick}
+        className="relative w-12 h-12 sm:w-16 sm:h-16 min-w-12 sm:min-w-16 rounded-lg overflow-hidden group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300"
+      >
         {data.image_path && (
           <Image
             fill
