@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { User, Settings, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import { toast } from "react-hot-toast";
 import useAuthModal from "@/hooks/auth/useAuthModal";
 
@@ -16,7 +16,7 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
   const router = useRouter();
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const authModal = useAuthModal();
   const [isHovered, setIsHovered] = useState(false);

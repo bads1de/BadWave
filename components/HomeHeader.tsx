@@ -9,8 +9,8 @@ import Button from "./Button";
 import Image from "next/image";
 import { User, LogOut, Menu, X, Home, Search, Settings } from "lucide-react";
 import Link from "next/link";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import toast from "react-hot-toast";
+import { createClient } from "@/libs/supabase/client";
 import { RiPlayListFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa";
 
@@ -22,7 +22,7 @@ const HomeHeader: React.FC<HeaderProps> = ({ className }) => {
   const router = useRouter();
   const authModal = useAuthModal();
   const { user, userDetails } = useUser();
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createClient();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

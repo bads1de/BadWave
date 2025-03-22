@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { HiTrash } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
+import { createClient } from "@/libs/supabase/client";
 
 interface DeleteButtonProps {
   songId: string;
@@ -20,7 +21,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   imagePath,
   className,
 }) => {
-  const { supabaseClient } = useSessionContext();
+  const supabaseClient = createClient();
   const router = useRouter();
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
