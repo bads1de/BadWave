@@ -50,7 +50,7 @@ describe("EditModal", () => {
     video_path: "https://example.com/video.mp4",
     genre: "Rock, Pop",
     created_at: new Date().toISOString(),
-    count: 0,
+    count: "0",
   };
 
   const mockMutation = {
