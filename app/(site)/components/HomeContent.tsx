@@ -9,6 +9,7 @@ import SectionSkeleton from "./sections/SectionSkeleton";
 
 // メモ化されたセクションコンポーネント
 import TrendSection from "./sections/TrendSection";
+import LatestSection from "./sections/LatestSection";
 
 // 動的インポートによるコード分割
 const SpotlightSection = dynamic(() => import("./sections/SpotlightSection"), {
@@ -22,7 +23,7 @@ const SpotlightSection = dynamic(() => import("./sections/SpotlightSection"), {
 });
 
 const LatestReleasesSection = dynamic(
-  () => import("./sections/LatestReleasesSection"),
+  () => import("./sections/LatestSection"),
   {
     loading: () => (
       <SectionSkeleton

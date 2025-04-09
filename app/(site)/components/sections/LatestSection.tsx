@@ -2,7 +2,7 @@ import React from "react";
 import { Song } from "@/types";
 import LatestBoard from "@/components/Latest/LatestBoard";
 
-interface LatestReleasesSectionProps {
+interface LatestSectionProps {
   songs: Song[];
 }
 
@@ -11,9 +11,7 @@ interface LatestReleasesSectionProps {
  *
  * @param songs - 曲データ
  */
-const LatestReleasesSection: React.FC<LatestReleasesSectionProps> = ({
-  songs,
-}) => {
+const LatestSection: React.FC<LatestSectionProps> = ({ songs }) => {
   return (
     <section>
       <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
@@ -27,4 +25,4 @@ const LatestReleasesSection: React.FC<LatestReleasesSectionProps> = ({
   );
 };
 
-export default React.memo(LatestReleasesSection);
+export default React.memo(LatestSection);
