@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import useAudioWaveStore from "@/hooks/audio/useAudioWave";
@@ -321,4 +321,15 @@ const AudioWaveform = ({
   );
 };
 
-export default AudioWaveform;
+// メモ化されたコンポーネントをエクスポート
+// パフォーマンスが重要なコンポーネントなのでメモ化する
+export default memo(AudioWaveform, (prevProps, nextProps) => {
+  // カスタム比較関数 - 必要な変更がある場合のみ再レンダリング
+  return (
+    prevProps.audioUrl === nextProps.audioUrl &&
+    prevProps.isPlaying === nextProps.isPlaying &&
+    prevProps.songId === nextProps.songId &&
+    prevProps.primaryColor === nextProps.primaryColor &&
+    prevProps.secondaryColor === nextProps.secondaryColor
+  );
+});

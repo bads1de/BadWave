@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import SongItem from "@/components/Song/SongItem";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import { Song } from "@/types";
@@ -27,10 +27,14 @@ const PageContent: React.FC<PageContentProps> = ({ songs }) => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
-  const handlePlay = (id: string) => {
-    onPlay(id);
-    player.setId(id);
-  };
+  // メモ化された再生処理関数
+  const handlePlay = useCallback(
+    (id: string) => {
+      onPlay(id);
+      player.setId(id);
+    },
+    [onPlay, player]
+  );
 
   if (songs.length === 0) {
     return (
@@ -66,4 +70,5 @@ const PageContent: React.FC<PageContentProps> = ({ songs }) => {
   );
 };
 
-export default PageContent;
+// メモ化されたコンポーネントをエクスポート
+export default memo(PageContent);

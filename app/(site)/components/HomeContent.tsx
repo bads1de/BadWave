@@ -1,16 +1,68 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Song, Spotlight, Playlist } from "@/types";
-import PageContent from "./PageContent";
 import HomeHeader from "@/components/Header/HomeHeader";
-import TrendBoard from "@/components/Trend/TrendBoard";
-import TrendPeriodSelector from "@/components/Trend/TrendPeriodSelector";
-import GenreBoard from "@/components/Genre/GenreBoard";
-import SpotlightBoard from "@/components/SpotlightBoard";
-import PublicPlaylistBoard from "@/components/Playlist/PublicPlaylistBoard";
-import ForYouBoard from "@/components/ForYou/ForYouBoard";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
+import dynamic from "next/dynamic";
+import SectionSkeleton from "./sections/SectionSkeleton";
+
+// メモ化されたセクションコンポーネント
+import TrendSection from "./sections/TrendSection";
+
+// 動的インポートによるコード分割
+const SpotlightSection = dynamic(() => import("./sections/SpotlightSection"), {
+  loading: () => (
+    <SectionSkeleton
+      title="Spotlight"
+      description="Featured artists and songs"
+    />
+  ),
+  ssr: false,
+});
+
+const LatestReleasesSection = dynamic(
+  () => import("./sections/LatestReleasesSection"),
+  {
+    loading: () => (
+      <SectionSkeleton
+        title="Latest Releases"
+        description="Fresh new music just for you"
+      />
+    ),
+    ssr: false,
+  }
+);
+
+const ForYouSection = dynamic(() => import("./sections/ForYouSection"), {
+  loading: () => (
+    <SectionSkeleton
+      title="For You"
+      description="Personalized recommendations based on your taste"
+    />
+  ),
+  ssr: false,
+});
+
+const PlaylistsSection = dynamic(() => import("./sections/PlaylistsSection"), {
+  loading: () => (
+    <SectionSkeleton
+      title="Featured Playlists"
+      description="Explore playlists shared by the community"
+    />
+  ),
+  ssr: false,
+});
+
+const GenreSection = dynamic(() => import("./sections/GenreSection"), {
+  loading: () => (
+    <SectionSkeleton
+      title="Browse by Genre"
+      description="Discover music by genre"
+    />
+  ),
+  ssr: false,
+});
 
 interface HomeClientProps {
   songs: Song[];
@@ -42,103 +94,59 @@ const HomeContent: React.FC<HomeClientProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (!isClient) {
-    return null;
-  }
+  // メモ化されたコンテンツ - クライアントサイドレンダリング時のみ表示
+  const content = useMemo(() => {
+    if (!isClient) return null;
 
-  return (
-    <div className="flex bg-[#0d0d0d] h-full overflow-hidden">
-      <div className="w-full h-full overflow-y-auto custom-scrollbar">
-        {isMobile && !isMobilePlayer && (
-          <section>
-            <HomeHeader />
-          </section>
-        )}
-        <main
-          className={`px-6 py-8 pb-[70px] md:pb-8 space-y-8 ${
-            isMobile && !isMobilePlayer ? "pt-24" : ""
-          }`}
-        >
-          {/* トレンドボードセクション */}
-          <section>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-3xl font-bold text-white tracking-tight">
-                  Trending Now
-                </h2>
-                <p className="text-sm text-neutral-400 mt-2">
-                  Most popular songs this {selectedPeriod}
-                </p>
-              </div>
-              <TrendPeriodSelector
-                selectedPeriod={selectedPeriod}
-                onPeriodChange={setSelectedPeriod}
-              />
-            </div>
-            <TrendBoard
+    return (
+      <div className="flex bg-[#0d0d0d] h-full overflow-hidden">
+        <div className="w-full h-full overflow-y-auto custom-scrollbar">
+          {isMobile && !isMobilePlayer && (
+            <section>
+              <HomeHeader />
+            </section>
+          )}
+          <main
+            className={`px-6 py-8 pb-[70px] md:pb-8 space-y-8 ${
+              isMobile && !isMobilePlayer ? "pt-24" : ""
+            }`}
+          >
+            {/* トレンドボードセクション - メモ化済み */}
+            <TrendSection
               selectedPeriod={selectedPeriod}
               onPeriodChange={setSelectedPeriod}
             />
-          </section>
 
-          {/* スポットライトセクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              Spotlight
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Featured artists and songs
-            </p>
-            <SpotlightBoard spotlightData={spotlightData} />
-          </section>
+            {/* スポットライトセクション - コード分割 */}
+            <SpotlightSection spotlightData={spotlightData} />
 
-          {/* 最新曲セクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              Latest Releases
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Fresh new music just for you
-            </p>
-            <PageContent songs={songs} />
-          </section>
+            {/* 最新曲セクション - コード分割 */}
+            <LatestReleasesSection songs={songs} />
 
-          {/* あなたへのおすすめセクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              For You
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Personalized recommendations based on your taste
-            </p>
-            <ForYouBoard recommendations={recommendations} />
-          </section>
+            {/* あなたへのおすすめセクション - コード分割 */}
+            <ForYouSection recommendations={recommendations} />
 
-          {/* パブリックプレイリストセクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              Featured Playlists
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Explore playlists shared by the community
-            </p>
-            <PublicPlaylistBoard playlists={playlists} />
-          </section>
+            {/* パブリックプレイリストセクション - コード分割 */}
+            <PlaylistsSection playlists={playlists} />
 
-          {/* ジャンルボードセクション */}
-          <section>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">
-              Browse by Genre
-            </h2>
-            <p className="text-sm text-neutral-400 mb-6">
-              Discover music by genre
-            </p>
-            <GenreBoard />
-          </section>
-        </main>
+            {/* ジャンルボードセクション - コード分割 */}
+            <GenreSection />
+          </main>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }, [
+    isClient,
+    isMobile,
+    isMobilePlayer,
+    selectedPeriod,
+    spotlightData,
+    songs,
+    recommendations,
+    playlists,
+  ]);
+
+  return content;
 };
 
 export default HomeContent;
