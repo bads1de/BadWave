@@ -28,6 +28,9 @@ const AudioWaveform = ({
   imageUrl,
   audioUrl,
   songId,
+  onPlayPause,
+  onEnded,
+  isPlaying: externalIsPlaying,
 }: AudioWaveformProps) => {
   // キャンバスとアニメーションの参照
   const canvasRef = useRef<HTMLCanvasElement>(null); // 波形描画用キャンバスの参照
@@ -52,24 +55,42 @@ const AudioWaveform = ({
   } = useAudioWaveStore();
 
   /**
+   * 外部の再生状態と内部の再生状態を同期させる
+   */
+  useEffect(() => {
+    if (externalIsPlaying !== isPlaying) {
+      if (externalIsPlaying) {
+        play();
+      } else {
+        pause();
+      }
+    }
+  }, [externalIsPlaying, isPlaying, play, pause]);
+
+  /**
    * 再生状態が変化したときの処理
    * 再生が開始されたら再生開始フラグをセット
    */
   useEffect(() => {
     if (isPlaying) {
+      console.log("Playback started, setting flags");
       setHasPlaybackStarted(true);
+      setIsEnded(false); // 再生が開始されたら終了フラグをリセット
     }
-  }, [isPlaying]);
+  }, [isPlaying, setIsEnded]);
 
   /**
    * 再生終了状態が変化したときの処理
-   * 再生が終了したら再生開始フラグをリセット
+   * 再生が終了したら再生開始フラグをリセットし、コールバックを呼び出す
    */
   useEffect(() => {
     if (isEnded) {
       setHasPlaybackStarted(false);
+
+      // 親コンポーネントに再生終了を通知
+      onEnded && onEnded();
     }
-  }, [isEnded]);
+  }, [isEnded, onEnded]);
 
   /**
    * コンポーネントのマウント時と依存値変更時の処理
@@ -89,6 +110,10 @@ const AudioWaveform = ({
   useEffect(() => {
     if (isPlaying) {
       setIsTransitioning(false);
+      // 再生開始時に必ず波形を描画開始
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
       draw();
     } else {
       if (animationRef.current) {
@@ -120,11 +145,20 @@ const AudioWaveform = ({
    */
   const handleExitComplete = async () => {
     if (isEnded) {
+      console.log("Animation exit complete, resetting audio");
+      // オーディオをリセットして再初期化
       cleanup();
       await initializeAudio(audioUrl, songId);
 
+      // 状態をリセット
       setIsEnded(false);
       setHasPlaybackStarted(false);
+
+      // キャンバスのアニメーションをリセット
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = undefined;
+      }
     }
   };
 
@@ -268,7 +302,16 @@ const AudioWaveform = ({
               className={`w-full h-full cursor-pointer transition-all duration-500 ${
                 isTransitioning ? "opacity-0" : "opacity-100"
               }`}
-              onClick={isPlaying ? pause : play} // クリックで再生/一時停止切り替え
+              onClick={() => {
+                if (isPlaying) {
+                  pause();
+                } else {
+                  setHasPlaybackStarted(true);
+                  play();
+                }
+                // 親コンポーネントに再生/一時停止を通知
+                onPlayPause && onPlayPause();
+              }} // クリックで再生/一時停止切り替え
               onMouseMove={handleMouseMove} // マウス移動でインタラクティブな効果
             />
           </motion.div>
