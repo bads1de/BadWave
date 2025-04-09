@@ -12,12 +12,15 @@ module.exports = {
       "ts-jest",
       {
         useESM: true,
-        tsconfig: 'tsconfig.json',
+        tsconfig: "tsconfig.json",
         babelConfig: true,
       },
     ],
   },
   transformIgnorePatterns: ["node_modules/(?!(node-fetch)/)"],
-  testMatch: ["<rootDir>/tests/**/*.test.ts", "<rootDir>/tests/**/*.test.tsx"],
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+  testMatch: [
+    "<rootDir>/__tests__/**/*.test.ts",
+    "<rootDir>/__tests__/**/*.test.tsx",
+  ],
+  setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import GenreCard from "./GenreCard";
 import ScrollableContainer from "@/components/ScrollableContainer";
 
@@ -14,6 +14,7 @@ interface GenreBoardProps {
   className?: string;
 }
 
+// ジャンルデータは変更されないのでコンポーネント外で定義
 const genreData: GenreData[] = [
   { id: 1, name: "Retro Wave", color: "bg-purple-500" },
   { id: 2, name: "Electro House", color: "bg-blue-500" },
@@ -25,7 +26,7 @@ const genreData: GenreData[] = [
   { id: 8, name: "Chill House", color: "bg-orange-500" },
 ];
 
-const GenreBoard: React.FC<GenreBoardProps> = ({ className = "" }) => {
+const GenreBoard: React.FC<GenreBoardProps> = memo(({ className = "" }) => {
   const [showArrows, setShowArrows] = useState(false);
 
   return (
@@ -41,6 +42,9 @@ const GenreBoard: React.FC<GenreBoardProps> = ({ className = "" }) => {
       </ScrollableContainer>
     </div>
   );
-};
+});
+
+// 表示名を設定
+GenreBoard.displayName = "GenreBoard";
 
 export default GenreBoard;

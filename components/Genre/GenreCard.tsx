@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -8,9 +8,9 @@ interface GenreCardProps {
   color: string;
 }
 
-const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
-  // ジャンルに基づいて背景グラデーションを設定
-  const getGradient = () => {
+const GenreCard: React.FC<GenreCardProps> = memo(({ genre }) => {
+  // ジャンルに基づいて背景グラデーションを設定 - メモ化
+  const gradient = useMemo(() => {
     switch (genre) {
       case "Retro Wave":
         return "bg-gradient-to-br from-[#FF0080] via-[#7928CA] to-[#4A00E0]"; // レトロな紫とピンク
@@ -31,10 +31,10 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
       default:
         return "bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900"; // デフォルトのダークグラデーション
     }
-  };
+  }, [genre]);
 
-  // ジャンルに基づいてアイコンを設定
-  const getIcon = () => {
+  // ジャンルに基づいてアイコンを設定 - メモ化
+  const icon = useMemo(() => {
     switch (genre) {
       case "Retro Wave":
         return "🌆";
@@ -55,10 +55,10 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
       default:
         return "🎵";
     }
-  };
+  }, [genre]);
 
-  // 背景画像のパスを取得する関数を追加
-  const getBackgroundImage = () => {
+  // 背景画像のパスを取得する関数を追加 - メモ化
+  const backgroundImage = useMemo(() => {
     switch (genre) {
       case "Retro Wave":
         return "/images/Retro.jpg";
@@ -79,7 +79,7 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
       default:
         return "/images/DefaultMusic.jpg";
     }
-  };
+  }, [genre]);
 
   return (
     <Link href={`/genre/${genre}`}>
@@ -98,10 +98,10 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
           }}
         >
           {/* 背景画像 - 透明度を上げる */}
-          {getBackgroundImage() && (
+          {backgroundImage && (
             <div className="absolute inset-0">
               <Image
-                src={getBackgroundImage()!}
+                src={backgroundImage}
                 alt={genre}
                 fill
                 className="object-cover opacity-90"
@@ -111,7 +111,7 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
           )}
 
           {/* グラデーションオーバーレイ - ジャンルに応じたグラデーションを適用 */}
-          <div className={`absolute inset-0 ${getGradient()} opacity-30`} />
+          <div className={`absolute inset-0 ${gradient} opacity-30`} />
 
           {/* グラスモーフィズム効果 - 透明度を下げる */}
           <div className="absolute inset-0 backdrop-blur-[2px] bg-white/5">
@@ -138,7 +138,7 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
           <div className="relative h-full p-6 flex flex-col justify-between">
             {/* ジャンル名とアイコン - テキストに影を追加して視認性を向上 */}
             <div className="flex items-center space-x-3">
-              <span className="text-3xl drop-shadow-lg">{getIcon()}</span>
+              <span className="text-3xl drop-shadow-lg">{icon}</span>
               <h2 className="text-white text-2xl font-bold tracking-wide drop-shadow-lg">
                 {genre}
               </h2>
@@ -167,6 +167,9 @@ const GenreCard: React.FC<GenreCardProps> = ({ genre }) => {
       </motion.div>
     </Link>
   );
-};
+});
+
+// 表示名を設定
+GenreCard.displayName = "GenreCard";
 
 export default GenreCard;

@@ -5,31 +5,36 @@ import Image from "next/image";
 import Link from "next/link";
 import { CiHeart, CiPlay1 } from "react-icons/ci";
 import ScrollingText from "../ScrollingText";
+import { memo, useCallback } from "react";
 
 interface SongItemProps {
   onClick: (id: string) => void;
   data: Song;
 }
 
-const SongItem: React.FC<SongItemProps> = ({ onClick, data }) => {
+const SongItem: React.FC<SongItemProps> = memo(({ onClick, data }) => {
+  // クリックハンドラーをメモ化
+  const handleClick = useCallback(() => {
+    onClick(data.id);
+  }, [onClick, data.id]);
   return (
     <div
       className="
-        relative 
-        group 
-        flex 
-        flex-col 
-        items-center 
-        justify-center 
+        relative
+        group
+        flex
+        flex-col
+        items-center
+        justify-center
         rounded-xl
-        overflow-hidden 
-        bg-gradient-to-b 
-        from-gray-900/10 
+        overflow-hidden
+        bg-gradient-to-b
+        from-gray-900/10
         to-gray-900/20
-        cursor-pointer 
-        hover:from-gray-800/20 
-        hover:to-gray-800/30 
-        transition-all 
+        cursor-pointer
+        hover:from-gray-800/20
+        hover:to-gray-800/30
+        transition-all
         duration-300
         aspect-[9/16]
       "
@@ -41,7 +46,7 @@ const SongItem: React.FC<SongItemProps> = ({ onClick, data }) => {
             src={data.image_path}
             fill
             alt="Image"
-            onClick={() => onClick(data.id)}
+            onClick={handleClick}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
           />
         )}
@@ -71,6 +76,9 @@ const SongItem: React.FC<SongItemProps> = ({ onClick, data }) => {
       </div>
     </div>
   );
-};
+});
+
+// 表示名を設定
+SongItem.displayName = "SongItem";
 
 export default SongItem;
