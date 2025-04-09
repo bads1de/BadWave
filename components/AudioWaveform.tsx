@@ -187,8 +187,9 @@ const AudioWaveform = ({
               className="object-cover opacity-40"
               style={{
                 maxWidth: "100%",
-                height: "auto"
-              }} />
+                height: "auto",
+              }}
+            />
           </motion.div>
         ) : (
           <motion.div
