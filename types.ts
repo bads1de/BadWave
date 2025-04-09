@@ -15,6 +15,10 @@ export interface Song {
   created_at: string;
 }
 
+export interface SongWithRecommendation extends Song {
+  recommendation_score: string;
+}
+
 export interface UserDetails {
   id: string;
   first_name: string;

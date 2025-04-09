@@ -1,11 +1,9 @@
-import { Song } from "@/types";
+import { SongWithRecommendation } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 
-interface SongWithRecommendation extends Song {
-  recommendation_score: string;
-}
-
-const getRecommendations = async (limit: number = 10): Promise<Song[]> => {
+const getRecommendations = async (
+  limit: number = 10
+): Promise<SongWithRecommendation[]> => {
   // supabaseクライアントを初期化
   const supabase = await createClient();
 
