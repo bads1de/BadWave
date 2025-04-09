@@ -8,11 +8,11 @@ import usePlayer from "@/hooks/player/usePlayer";
 import ScrollableContainer from "@/components/ScrollableContainer";
 import { motion } from "framer-motion";
 
-interface PageContentProps {
+interface LatestBoardProps {
   songs: Song[];
 }
 
-const PageContent: React.FC<PageContentProps> = ({ songs }) => {
+const LatestBoard: React.FC<LatestBoardProps> = ({ songs }) => {
   const player = usePlayer();
   const onPlay = useOnPlay(songs);
   const [showArrows, setShowArrows] = useState(false);
@@ -71,4 +71,4 @@ const PageContent: React.FC<PageContentProps> = ({ songs }) => {
 };
 
 // メモ化されたコンポーネントをエクスポート
-export default memo(PageContent);
+export default memo(LatestBoard);

@@ -1,6 +1,6 @@
 import React from "react";
 import { Song } from "@/types";
-import PageContent from "@/app/(site)/components/PageContent";
+import LatestBoard from "@/components/Latest/LatestBoard";
 
 interface LatestReleasesSectionProps {
   songs: Song[];
@@ -8,11 +8,11 @@ interface LatestReleasesSectionProps {
 
 /**
  * 最新リリースセクションコンポーネント
- * 
+ *
  * @param songs - 曲データ
  */
-const LatestReleasesSection: React.FC<LatestReleasesSectionProps> = ({ 
-  songs 
+const LatestReleasesSection: React.FC<LatestReleasesSectionProps> = ({
+  songs,
 }) => {
   return (
     <section>
@@ -22,7 +22,7 @@ const LatestReleasesSection: React.FC<LatestReleasesSectionProps> = ({
       <p className="text-sm text-neutral-400 mb-6">
         Fresh new music just for you
       </p>
-      <PageContent songs={songs} />
+      <LatestBoard songs={songs} />
     </section>
   );
 };
