@@ -17,7 +17,6 @@ import { MdLyrics } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
 import useGetSongById from "@/hooks/data/useGetSongById";
-import useDownload from "@/hooks/data/useDownload";
 import { useUser } from "@/hooks/auth/useUser";
 import useGetSongsByGenres from "@/hooks/data/useGetSongGenres";
 import EditModal from "@/components/Modals/EditModal";
@@ -52,8 +51,6 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
 
   const { songGenres } = useGetSongsByGenres(genres, songId);
 
-  const { fileUrl, isLoading: loading } = useDownload(song?.song_path!);
-
   const { isPlaying, play, pause, currentSongId, initializeAudio } =
     useAudioWaveStore();
 
@@ -68,16 +65,16 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
       return;
     }
 
-    if (!fileUrl) {
+    if (!song.song_path) {
       console.error("ファイルURLが取得できませんでした", song.song_path);
       return;
     }
 
     try {
-      console.log("再生を開始します", { songId, currentSongId, fileUrl });
+      console.log("再生を開始します", { songId, currentSongId });
 
       if (currentSongId !== songId) {
-        await initializeAudio(fileUrl, songId);
+        await initializeAudio(song.song_path, songId);
         await play();
       } else {
         if (isPlaying) {
@@ -97,21 +94,21 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
   };
 
   useEffect(() => {
-    if (fileUrl) {
-      const audio = new Audio(fileUrl);
+    if (song?.song_path) {
+      const audio = new Audio(song.song_path);
       audio.addEventListener("loadedmetadata", () => {
         const minutes = Math.floor(audio.duration / 60);
         const seconds = Math.floor(audio.duration % 60);
         setDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
       });
     }
-  }, [fileUrl]);
+  }, [song?.song_path]);
 
   const handleDownloadClick = async () => {
     setIsLoading(true);
 
-    if (song?.song_path && fileUrl) {
-      await downloadFile(fileUrl, `${song.title || "Untitled"}.mp3`);
+    if (song?.song_path) {
+      await downloadFile(song.song_path, `${song.title || "Untitled"}.mp3`);
     }
 
     setIsLoading(false);
@@ -142,13 +139,13 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
         />
         <AudioWaveform
           key={audioWaveformKey}
-          audioUrl={fileUrl || song.song_path!}
+          audioUrl={song.song_path!}
           isPlaying={isPlaying}
           onPlayPause={handlePlayClick}
           onEnded={handlePlaybackEnded}
           primaryColor={primaryColor}
           secondaryColor={secondaryColor}
-          imageUrl={song?.image_path!}
+          imageUrl={song.image_path!}
           songId={songId}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-black" />
@@ -221,12 +218,12 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
                   </Button>
                   <Button
                     onClick={handleDownloadClick}
-                    disabled={loading}
+                    disabled={isLoading}
                     variant="outline"
                     className="border-blue-600 text-blue-600 hover:bg-blue-600/10"
                   >
                     <Download className="mr-2" size={16} />
-                    {loading ? "Downloading..." : "Download"}
+                    {isLoading ? "Downloading..." : "Download"}
                   </Button>
                   <Button
                     variant="outline"
