@@ -34,7 +34,7 @@ const getRecommendations = async (
     }
 
     // データがない場合は空配列を返す
-    if (!data || !Array.isArray(data) || data.length === 0) {
+    if (!data) {
       return [];
     }
 

@@ -23,7 +23,6 @@ import EditModal from "@/components/Modals/EditModal";
 import { downloadFile } from "@/libs/helpers";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import toast from "react-hot-toast";
 import AudioWaveform from "@/components/AudioWaveform";
 import { getRandomColor } from "@/libs/utils";
@@ -123,7 +122,7 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
     }
   };
 
-  if (!song) return <SongSkeleton />;
+  if (!song) return;
 
   return (
     <div className="min-h-screen bg-gradient-to-b bg-black text-white">
@@ -380,24 +379,5 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
     </div>
   );
 };
-
-const SongSkeleton = () => (
-  <div className="min-h-screen bg-gradient-to-b bg-black p-6">
-    <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row gap-6">
-        <Skeleton className="w-48 h-48 md:w-64 md:h-64 rounded-lg" />
-        <div className="flex-grow">
-          <Skeleton className="h-12 w-3/4 mb-4" />
-          <Skeleton className="h-8 w-1/2 mb-6" />
-          <div className="flex gap-3">
-            <Skeleton className="h-10 w-32" />
-            <Skeleton className="h-10 w-32" />
-            <Skeleton className="h-10 w-32" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 export default SongContent;
