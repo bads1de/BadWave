@@ -2,7 +2,7 @@
 
 import useGetSongById from "@/hooks/data/useGetSongById";
 import usePlayer from "@/hooks/player/usePlayer";
-import React from "react";
+import React, { memo } from "react";
 import PlayerContent from "./PlayerContent";
 import MobileTabs from "../Mobile/MobileTabs";
 import { Playlist } from "@/types";
@@ -48,4 +48,5 @@ const Player = ({ playlists }: PlayerProps) => {
   );
 };
 
-export default Player;
+// メモ化してパフォーマンスを改善
+export default memo(Player);
