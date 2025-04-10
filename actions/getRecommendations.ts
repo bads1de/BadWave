@@ -1,6 +1,11 @@
 import { SongWithRecommendation } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 
+/**
+ * 現在のユーザーに対する推薦曲を取得する
+ * @param {number} [limit=10] - 取得する曲数の上限
+ * @returns {Promise<SongWithRecommendation[]>} 推薦曲の配列
+ */
 const getRecommendations = async (
   limit: number = 10
 ): Promise<SongWithRecommendation[]> => {

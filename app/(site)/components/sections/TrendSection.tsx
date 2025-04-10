@@ -1,22 +1,27 @@
-import React from "react";
+"use client";
+
 import TrendBoard from "@/components/Trend/TrendBoard";
 import TrendPeriodSelector from "@/components/Trend/TrendPeriodSelector";
+import { Song } from "@/types";
 
 interface TrendSectionProps {
   selectedPeriod: "all" | "month" | "week" | "day";
   onPeriodChange: (period: "all" | "month" | "week" | "day") => void;
+  initialSongs: Song[];
 }
 
 /**
  * トレンドセクションコンポーネント
- * 
+ *
  * @param selectedPeriod - 選択された期間
  * @param onPeriodChange - 期間変更時のコールバック
+ * @param initialSongs - 親コンポーネントから渡された初期トレンドデータ
  */
-const TrendSection: React.FC<TrendSectionProps> = ({ 
-  selectedPeriod, 
-  onPeriodChange 
-}) => {
+export default function TrendSection({
+  selectedPeriod,
+  onPeriodChange,
+  initialSongs,
+}: TrendSectionProps) {
   return (
     <section>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -36,9 +41,8 @@ const TrendSection: React.FC<TrendSectionProps> = ({
       <TrendBoard
         selectedPeriod={selectedPeriod}
         onPeriodChange={onPeriodChange}
+        initialSongs={initialSongs}
       />
     </section>
   );
-};
-
-export default React.memo(TrendSection);
+}

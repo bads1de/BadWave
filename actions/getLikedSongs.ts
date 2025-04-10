@@ -3,6 +3,11 @@ import { createClient } from "@/libs/supabase/server";
 
 type SongType = "regular";
 
+/**
+ * 現在のユーザーが「いいね」した曲一覧を取得する
+ * @param {'regular'} [songType='regular'] - 曲のタイプ
+ * @returns {Promise<Song[]>} いいねした曲の配列
+ */
 const getLikedSongs = async (
   songType: SongType = "regular"
 ): Promise<Song[]> => {

@@ -70,6 +70,7 @@ interface HomeClientProps {
   spotlightData: Spotlight[];
   playlists: Playlist[];
   recommendations: Song[];
+  trendSongs: Song[];
 }
 
 const HomeContent: React.FC<HomeClientProps> = ({
@@ -77,6 +78,7 @@ const HomeContent: React.FC<HomeClientProps> = ({
   spotlightData,
   playlists,
   recommendations,
+  trendSongs,
 }) => {
   const { isMobilePlayer } = useMobilePlayer();
   const [isClient, setIsClient] = useState(false);
@@ -116,6 +118,7 @@ const HomeContent: React.FC<HomeClientProps> = ({
             <TrendSection
               selectedPeriod={selectedPeriod}
               onPeriodChange={setSelectedPeriod}
+              initialSongs={trendSongs}
             />
 
             {/* スポットライトセクション - コード分割 */}
@@ -145,6 +148,7 @@ const HomeContent: React.FC<HomeClientProps> = ({
     songs,
     recommendations,
     playlists,
+    trendSongs,
   ]);
 
   return content;

@@ -1,6 +1,11 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 
+/**
+ * 指定したジャンルの曲一覧を取得する
+ * @param {string | string[]} genre - ジャンル名またはジャンル名の配列
+ * @returns {Promise<Song[]>} 曲の配列
+ */
 const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
   // ジャンルが文字列の場合は、カンマで分割して配列に変換
   const genreArray =

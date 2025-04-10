@@ -8,6 +8,14 @@ interface DeleteFileFromR2Props {
   filePath: string;
 }
 
+/**
+ * Cloudflare R2から指定したファイルを削除する
+ * @param {Object} params
+ * @param {'spotlight' | 'song' | 'image' | 'video'} params.bucketName - バケット名
+ * @param {string} params.filePath - 削除するファイルのパス
+ * @param {boolean} [params.showToast] - トースト通知を表示するか
+ * @returns {Promise<void>}
+ */
 const deleteFileFromR2 = async ({
   bucketName,
   filePath,

@@ -7,17 +7,22 @@ import useGetTrendSongs from "@/hooks/data/useGetTrendSongs";
 import { motion } from "framer-motion";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import ScrollableContainer from "@/components/ScrollableContainer";
+import { Song } from "@/types";
 
 interface TrendBoardProps {
   className?: string;
   selectedPeriod: "all" | "month" | "week" | "day";
   onPeriodChange: (period: "all" | "month" | "week" | "day") => void;
+  initialSongs?: Song[];
 }
 
 const TrendBoard: React.FC<TrendBoardProps> = memo(
-  ({ className = "", selectedPeriod }) => {
+  ({ className = "", selectedPeriod, initialSongs = [] }) => {
     const [showArrows, setShowArrows] = useState(false);
-    const { trends, isLoading, error } = useGetTrendSongs(selectedPeriod);
+    const { trends, isLoading, error } = useGetTrendSongs(
+      selectedPeriod,
+      initialSongs
+    );
     const onPlay = useOnPlay(trends || []);
 
     // アニメーションの設定
