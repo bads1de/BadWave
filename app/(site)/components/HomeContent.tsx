@@ -13,6 +13,7 @@ const TrendSection = dynamic(() => import("./sections/TrendSection"), {
     <SectionSkeleton
       title="Trending Now"
       description="Loading most popular songs..."
+      type="trend"
     />
   ),
   ssr: false,
@@ -23,6 +24,7 @@ const SpotlightSection = dynamic(() => import("./sections/SpotlightSection"), {
     <SectionSkeleton
       title="Spotlight"
       description="Featured artists and songs"
+      type="spotlight"
     />
   ),
   ssr: false,
@@ -35,6 +37,7 @@ const LatestReleasesSection = dynamic(
       <SectionSkeleton
         title="Latest Releases"
         description="Fresh new music just for you"
+        type="latest"
       />
     ),
     ssr: false,
@@ -46,6 +49,7 @@ const ForYouSection = dynamic(() => import("./sections/ForYouSection"), {
     <SectionSkeleton
       title="For You"
       description="Personalized recommendations based on your taste"
+      type="forYou"
     />
   ),
   ssr: false,
@@ -56,6 +60,7 @@ const PlaylistsSection = dynamic(() => import("./sections/PlaylistsSection"), {
     <SectionSkeleton
       title="Featured Playlists"
       description="Explore playlists shared by the community"
+      type="playlists"
     />
   ),
   ssr: false,
@@ -66,6 +71,7 @@ const GenreSection = dynamic(() => import("./sections/GenreSection"), {
     <SectionSkeleton
       title="Browse by Genre"
       description="Discover music by genre"
+      type="genre"
     />
   ),
   ssr: false,
