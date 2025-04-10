@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps
@@ -7,8 +7,20 @@ export interface ButtonProps
   size?: "sm" | "md" | "lg" | "icon";
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, children, disabled, type = "button", variant = "default", size = "md", ...props }, ref) => {
+// forwardRef でラップされたコンポーネントを定義
+const ButtonComponent = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      className,
+      children,
+      disabled,
+      type = "button",
+      variant = "default",
+      size = "md",
+      ...props
+    },
+    ref
+  ) => {
     return (
       <button
         type={type}
@@ -41,6 +53,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = "Button";
+// displayName を設定
+ButtonComponent.displayName = "Button";
+
+// memo でラップしてエクスポート
+const Button = memo(ButtonComponent);
 
 export default Button;

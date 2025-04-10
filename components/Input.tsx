@@ -1,11 +1,12 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+// forwardRef でラップされたコンポーネントを定義
+const InputComponent = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, disabled, ...props }, ref) => {
     return (
       <div className="relative w-full group">
@@ -44,6 +45,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = "Input";
+// displayName を設定
+InputComponent.displayName = "Input";
+
+// memo でラップしてエクスポート
+const Input = memo(InputComponent);
 
 export default Input;

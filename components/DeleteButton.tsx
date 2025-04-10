@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -15,7 +15,8 @@ interface DeleteButtonProps {
   className?: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({
+// コンポーネント関数を定義
+const DeleteButtonComponent: React.FC<DeleteButtonProps> = ({
   songId,
   songPath,
   imagePath,
@@ -98,5 +99,11 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
     </button>
   );
 };
+
+// displayName を設定
+DeleteButtonComponent.displayName = "DeleteButton";
+
+// memo でラップしてエクスポート
+const DeleteButton = memo(DeleteButtonComponent);
 
 export default DeleteButton;

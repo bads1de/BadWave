@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, memo } from "react";
 import { Spotlight } from "@/types";
 import useSpotlightModal from "@/hooks/modal/useSpotlightModal";
 import ScrollableContainer from "./ScrollableContainer";
@@ -7,7 +7,10 @@ interface SpotlightBoardProps {
   spotlightData: Spotlight[];
 }
 
-const SpotlightBoard: React.FC<SpotlightBoardProps> = ({ spotlightData }) => {
+// コンポーネント関数を定義
+const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
+  spotlightData,
+}) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [showArrows, setShowArrows] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -97,5 +100,11 @@ const SpotlightBoard: React.FC<SpotlightBoardProps> = ({ spotlightData }) => {
     </div>
   );
 };
+
+// displayName を設定
+SpotlightBoardComponent.displayName = "SpotlightBoard";
+
+// memo でラップしてエクスポート
+const SpotlightBoard = memo(SpotlightBoardComponent);
 
 export default SpotlightBoard;
