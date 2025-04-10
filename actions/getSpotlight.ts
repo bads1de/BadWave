@@ -6,7 +6,7 @@ import { createClient } from "@/libs/supabase/server";
  * サーバーコンポーネントクライアントを作成し、データベースからスポットライトを取得します。
  * スポットライトは、作成日の降順で並べ替えられます。
  * エラーが発生した場合は、エラーメッセージをコンソールに出力します。
- * @async
+ *
  */
 const getSpotlight = async (): Promise<Spotlight[]> => {
   const supabase = await createClient();

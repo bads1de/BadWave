@@ -7,11 +7,17 @@ import useMobilePlayer from "@/hooks/player/useMobilePlayer";
 import dynamic from "next/dynamic";
 import SectionSkeleton from "./sections/SectionSkeleton";
 
-// メモ化されたセクションコンポーネント
-import TrendSection from "./sections/TrendSection";
-import LatestSection from "./sections/LatestSection";
-
 // 動的インポートによるコード分割
+const TrendSection = dynamic(() => import("./sections/TrendSection"), {
+  loading: () => (
+    <SectionSkeleton
+      title="Trending Now"
+      description="Loading most popular songs..."
+    />
+  ),
+  ssr: false,
+});
+
 const SpotlightSection = dynamic(() => import("./sections/SpotlightSection"), {
   loading: () => (
     <SectionSkeleton
@@ -114,7 +120,7 @@ const HomeContent: React.FC<HomeClientProps> = ({
               isMobile && !isMobilePlayer ? "pt-24" : ""
             }`}
           >
-            {/* トレンドボードセクション - メモ化済み */}
+            {/* トレンドボードセクション - コード分割 */}
             <TrendSection
               selectedPeriod={selectedPeriod}
               onPeriodChange={setSelectedPeriod}
