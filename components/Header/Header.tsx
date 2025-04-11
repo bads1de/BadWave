@@ -1,14 +1,13 @@
 "use client";
 
 import { twMerge } from "tailwind-merge";
-import { memo } from "react";
 
 interface HeaderProps {
   children: React.ReactNode;
   className?: string;
 }
 
-const Header: React.FC<HeaderProps> = memo(({ children, className }) => {
+const Header: React.FC<HeaderProps> = ({ children, className }) => {
   return (
     <div
       className={twMerge(
@@ -35,7 +34,7 @@ const Header: React.FC<HeaderProps> = memo(({ children, className }) => {
       </div>
     </div>
   );
-});
+};
 
 // displayName を設定
 Header.displayName = "Header";
