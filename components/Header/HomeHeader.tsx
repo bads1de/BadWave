@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
@@ -18,7 +18,7 @@ interface HeaderProps {
   className?: string;
 }
 
-const HomeHeader: React.FC<HeaderProps> = ({ className }) => {
+const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
   const router = useRouter();
   const authModal = useAuthModal();
   const { user, userDetails } = useUser();
@@ -51,12 +51,12 @@ const HomeHeader: React.FC<HeaderProps> = ({ className }) => {
     <div
       className={twMerge(
         `
-        fixed 
-        top-0 
-        z-50 
-        w-full 
-        h-fit 
-        bg-gradient-to-b 
+        fixed
+        top-0
+        z-50
+        w-full
+        h-fit
+        bg-gradient-to-b
         from-purple-900/10
         via-neutral-900/95
         to-neutral-900/90
@@ -220,6 +220,9 @@ const HomeHeader: React.FC<HeaderProps> = ({ className }) => {
       </div>
     </div>
   );
-};
+});
+
+// displayName を設定
+HomeHeader.displayName = "HomeHeader";
 
 export default HomeHeader;

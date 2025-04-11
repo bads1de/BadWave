@@ -1,24 +1,25 @@
 "use client";
 
 import { twMerge } from "tailwind-merge";
+import { memo } from "react";
 
 interface HeaderProps {
   children: React.ReactNode;
   className?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ children, className }) => {
+const Header: React.FC<HeaderProps> = memo(({ children, className }) => {
   return (
     <div
       className={twMerge(
         `
         relative
-        h-fit 
-        bg-gradient-to-b 
+        h-fit
+        bg-gradient-to-b
         from-purple-900/10
         via-neutral-900/95
         to-neutral-900/90
-        backdrop-blur-xl      
+        backdrop-blur-xl
         `,
         className
       )}
@@ -34,6 +35,9 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
       </div>
     </div>
   );
-};
+});
+
+// displayName を設定
+Header.displayName = "Header";
 
 export default Header;

@@ -1,6 +1,5 @@
 "use client";
 
-import { memo } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface BoxProps {
@@ -8,8 +7,7 @@ interface BoxProps {
   className?: string;
 }
 
-// コンポーネント関数を定義
-const BoxComponent: React.FC<BoxProps> = ({ children, className }) => {
+const Box: React.FC<BoxProps> = ({ children, className }) => {
   return (
     <div
       className={twMerge(
@@ -33,11 +31,5 @@ const BoxComponent: React.FC<BoxProps> = ({ children, className }) => {
     </div>
   );
 };
-
-// displayName を設定
-BoxComponent.displayName = "Box";
-
-// memo でラップしてエクスポート
-const Box = memo(BoxComponent);
 
 export default Box;
