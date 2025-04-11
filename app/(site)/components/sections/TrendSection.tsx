@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import TrendBoard from "@/components/Trend/TrendBoard";
 import TrendPeriodSelector from "@/components/Trend/TrendPeriodSelector";
 import { Song } from "@/types";
@@ -17,11 +18,11 @@ interface TrendSectionProps {
  * @param onPeriodChange - 期間変更時のコールバック
  * @param initialSongs - 親コンポーネントから渡された初期トレンドデータ
  */
-export default function TrendSection({
+const TrendSection: React.FC<TrendSectionProps> = ({
   selectedPeriod,
   onPeriodChange,
   initialSongs,
-}: TrendSectionProps) {
+}: TrendSectionProps) => {
   return (
     <section>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -45,4 +46,8 @@ export default function TrendSection({
       />
     </section>
   );
-}
+};
+
+// メモ化されたコンポーネントをエクスポート
+TrendSection.displayName = "TrendSection";
+export default memo(TrendSection);

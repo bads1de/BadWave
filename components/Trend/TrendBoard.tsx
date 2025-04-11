@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo } from "react";
+import { useState, memo, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import useGetTrendSongs from "@/hooks/data/useGetTrendSongs";
@@ -25,6 +25,18 @@ const TrendBoard: React.FC<TrendBoardProps> = memo(
     );
     const onPlay = useOnPlay(trends || []);
 
+    // マウスイベントハンドラをメモ化
+    const handleMouseEnter = useCallback(() => setShowArrows(true), []);
+    const handleMouseLeave = useCallback(() => setShowArrows(false), []);
+
+    // 再生クリックハンドラをメモ化
+    const handlePlay = useCallback(
+      (id: string) => {
+        onPlay(id);
+      },
+      [onPlay]
+    );
+
     // アニメーションの設定
 
     const itemVariants = {
@@ -35,8 +47,8 @@ const TrendBoard: React.FC<TrendBoardProps> = memo(
     return (
       <div
         className={`${className}`}
-        onMouseEnter={() => setShowArrows(true)}
-        onMouseLeave={() => setShowArrows(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {isLoading ? (
           <p className="text-center text-cyan-400 animate-pulse">LOADING...</p>
@@ -66,7 +78,7 @@ const TrendBoard: React.FC<TrendBoardProps> = memo(
                   <div
                     onClick={(e) => {
                       e.preventDefault();
-                      onPlay(song.id);
+                      handlePlay(song.id);
                     }}
                     className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out cursor-pointer"
                   >

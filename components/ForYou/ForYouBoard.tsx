@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import { Song } from "@/types";
 import { motion } from "framer-motion";
 import useOnPlay from "@/hooks/player/useOnPlay";
@@ -18,6 +18,14 @@ const ForYouBoard: React.FC<ForYouBoardProps> = ({
 }) => {
   const [showArrows, setShowArrows] = useState(false);
   const onPlay = useOnPlay(recommendations);
+
+  // クリックハンドラをメモ化
+  const handlePlay = useCallback(
+    (id: string) => {
+      onPlay(id);
+    },
+    [onPlay]
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,10 +64,7 @@ const ForYouBoard: React.FC<ForYouBoardProps> = ({
               variants={itemVariants}
               className="group relative transform transition duration-300 ease-in-out hover:scale-105 min-w-[200px] w-[200px]"
             >
-              <SongItem
-                onClick={(id: string) => onPlay(id)}
-                data={song}
-              />
+              <SongItem onClick={handlePlay} data={song} />
             </motion.div>
           ))}
         </motion.div>
@@ -68,4 +73,8 @@ const ForYouBoard: React.FC<ForYouBoardProps> = ({
   );
 };
 
-export default ForYouBoard;
+// 表示名を設定
+ForYouBoard.displayName = "ForYouBoard";
+
+// メモ化されたコンポーネントをエクスポート
+export default memo(ForYouBoard);
