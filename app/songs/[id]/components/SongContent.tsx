@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Play,
@@ -32,7 +32,7 @@ interface SongContentProps {
   songId: string;
 }
 
-const SongContent: React.FC<SongContentProps> = ({ songId }) => {
+const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const { song } = useGetSongById(songId);
   const { user } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -58,7 +58,7 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
     setSecondaryColor(getRandomColor());
   }, [songId]);
 
-  const handlePlayClick = async () => {
+  const handlePlayClick = useCallback(async () => {
     if (!song?.song_path) {
       console.error("曲のパスが存在しません");
       return;
@@ -85,12 +85,20 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
     } catch (error) {
       console.error("再生処理中にエラーが発生しました:", error);
     }
-  };
+  }, [
+    song?.song_path,
+    songId,
+    currentSongId,
+    isPlaying,
+    initializeAudio,
+    play,
+    pause,
+  ]);
 
-  const handlePlaybackEnded = () => {
+  const handlePlaybackEnded = useCallback(() => {
     pause();
     setAudioWaveformKey((prevKey) => prevKey + 1);
-  };
+  }, [pause]);
 
   useEffect(() => {
     if (song?.song_path) {
@@ -103,7 +111,7 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
     }
   }, [song?.song_path]);
 
-  const handleDownloadClick = async () => {
+  const handleDownloadClick = useCallback(async () => {
     setIsLoading(true);
 
     if (song?.song_path) {
@@ -111,16 +119,16 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
     }
 
     setIsLoading(false);
-  };
+  }, [song?.song_path, song?.title]);
 
-  const copyLyricsToClipboard = () => {
+  const copyLyricsToClipboard = useCallback(() => {
     try {
       navigator.clipboard.writeText(song?.lyrics || "");
       toast.success("Lyrics copied to clipboard!");
     } catch (error) {
       toast.error("Failed to copy lyrics.");
     }
-  };
+  }, [song?.lyrics]);
 
   if (!song) return;
 
@@ -336,7 +344,7 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
               exit={{ opacity: 0, y: -20 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {songGenres.map((similarSong, index) => (
+              {songGenres.map((similarSong) => (
                 <Link href={`/songs/${similarSong.id}`} key={similarSong.id}>
                   <Card className="group relative overflow-hidden bg-white/5 hover:bg-white/10 transition-colors">
                     <div className="relative aspect-video">
@@ -378,6 +386,9 @@ const SongContent: React.FC<SongContentProps> = ({ songId }) => {
       />
     </div>
   );
-};
+});
+
+// displayName を設定
+SongContent.displayName = "SongContent";
 
 export default SongContent;

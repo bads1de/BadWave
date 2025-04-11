@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { useState, useRef, useEffect, DragEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  DragEvent,
+  memo,
+  useCallback,
+} from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
@@ -16,7 +23,7 @@ import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
 import Button from "../Button";
 
-const UploadModal: React.FC = () => {
+const UploadModal: React.FC = memo(() => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
@@ -46,43 +53,49 @@ const UploadModal: React.FC = () => {
   const song = watch("song");
   const image = watch("image");
 
-  const handleFileDrop = (e: DragEvent<HTMLDivElement>) => {
+  const handleFileDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
 
     const files = e.dataTransfer.files;
     handleFiles(files);
-  };
+  }, []);
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) handleFiles(files);
-  };
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files) handleFiles(files);
+    },
+    []
+  );
 
-  const handleFiles = (files: FileList) => {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+  const handleFiles = useCallback(
+    (files: FileList) => {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
 
-      if (file.type.startsWith("audio/")) {
-        setValue("song", [file]);
-        setAudioPreview(URL.createObjectURL(file));
-      } else if (file.type.startsWith("image/")) {
-        setValue("image", [file]);
-        setImagePreview(URL.createObjectURL(file));
-      } else {
-        toast.error("サポートされていないファイル形式です");
+        if (file.type.startsWith("audio/")) {
+          setValue("song", [file]);
+          setAudioPreview(URL.createObjectURL(file));
+        } else if (file.type.startsWith("image/")) {
+          setValue("image", [file]);
+          setImagePreview(URL.createObjectURL(file));
+        } else {
+          toast.error("サポートされていないファイル形式です");
+        }
       }
-    }
-  };
+    },
+    [setValue]
+  );
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = () => {
+  const handleDragLeave = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (image && image.length > 0) {
@@ -98,44 +111,50 @@ const UploadModal: React.FC = () => {
     }
   }, [song]);
 
-  const onChange = (open: boolean) => {
-    if (!open) {
-      reset();
-      setImagePreview(null);
-      setAudioPreview(null);
-      uploadModal.onClose();
-    }
-  };
-
-  const onSubmit: SubmitHandler<FieldValues> = async (values) => {
-    try {
-      const imageFile = values.image?.[0];
-      const songFile = values.song?.[0];
-
-      if (!imageFile || !songFile || !user) {
-        toast.error("必須フィールドが未入力です");
-        return;
+  const onChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        reset();
+        setImagePreview(null);
+        setAudioPreview(null);
+        uploadModal.onClose();
       }
+    },
+    [reset, uploadModal]
+  );
 
-      // TanStack Queryのミューテーションを使用
-      await mutateAsync({
-        title: values.title,
-        author: values.author,
-        lyrics: values.lyrics,
-        genre: selectedGenres,
-        songFile,
-        imageFile,
-      });
+  const onSubmit: SubmitHandler<FieldValues> = useCallback(
+    async (values) => {
+      try {
+        const imageFile = values.image?.[0];
+        const songFile = values.song?.[0];
 
-      // 成功時の処理（ミューテーションのonSuccessで処理されるため、ここでは最小限の処理のみ）
-      reset();
-      setImagePreview(null);
-      setAudioPreview(null);
-    } catch (error) {
-      // エラー処理はミューテーション内で行われるため、ここでは何もしない
-      console.error("Upload error:", error);
-    }
-  };
+        if (!imageFile || !songFile || !user) {
+          toast.error("必須フィールドが未入力です");
+          return;
+        }
+
+        // TanStack Queryのミューテーションを使用
+        await mutateAsync({
+          title: values.title,
+          author: values.author,
+          lyrics: values.lyrics,
+          genre: selectedGenres,
+          songFile,
+          imageFile,
+        });
+
+        // 成功時の処理（ミューテーションのonSuccessで処理されるため、ここでは最小限の処理のみ）
+        reset();
+        setImagePreview(null);
+        setAudioPreview(null);
+      } catch (error) {
+        // エラー処理はミューテーション内で行われるため、ここでは何もしない
+        console.error("Upload error:", error);
+      }
+    },
+    [mutateAsync, reset, user, selectedGenres, setImagePreview, setAudioPreview]
+  );
 
   return (
     <Modal
@@ -257,6 +276,9 @@ const UploadModal: React.FC = () => {
       </form>
     </Modal>
   );
-};
+});
+
+// displayName を設定
+UploadModal.displayName = "UploadModal";
 
 export default UploadModal;

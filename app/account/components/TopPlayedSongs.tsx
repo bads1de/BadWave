@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import Image from "next/image";
 import useGetTopPlayedSongs from "@/hooks/data/useGetTopPlayedSongs";
 import useOnPlay from "@/hooks/player/useOnPlay";
@@ -20,11 +20,19 @@ const PERIODS = [
   { value: "all", label: "All Time" },
 ] as const;
 
-const TopPlayedSongs = ({ user }: TopPlayedSongsProps) => {
+const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
   const [period, setPeriod] =
     useState<(typeof PERIODS)[number]["value"]>("day");
   const { topSongs, isLoading } = useGetTopPlayedSongs(user?.id, period);
   const onPlay = useOnPlay(topSongs || []);
+
+  // 再生ハンドラをメモ化
+  const handlePlay = useCallback(
+    (id: string) => {
+      onPlay(id);
+    },
+    [onPlay]
+  );
 
   return (
     <div className="bg-neutral-900/40 backdrop-blur-xl border border-white/[0.02] shadow-inner rounded-xl p-4 md:p-6">
@@ -39,12 +47,12 @@ const TopPlayedSongs = ({ user }: TopPlayedSongsProps) => {
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
                 className={`
-                  inline-flex items-center justify-center whitespace-nowrap rounded-lg 
-                  px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm font-medium 
+                  inline-flex items-center justify-center whitespace-nowrap rounded-lg
+                  px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm font-medium
                   transition-all duration-300
-                  focus-visible:outline-none focus-visible:ring-2 
+                  focus-visible:outline-none focus-visible:ring-2
                   focus-visible:ring-purple-500/50 focus-visible:ring-offset-2
-                  disabled:pointer-events-none disabled:opacity-50 
+                  disabled:pointer-events-none disabled:opacity-50
                   min-w-[60px] md:min-w-[80px]
                   ${
                     period === p.value
@@ -89,7 +97,7 @@ const TopPlayedSongs = ({ user }: TopPlayedSongsProps) => {
           {topSongs?.map((song, index) => (
             <div
               key={song.id}
-              onClick={() => onPlay(song.id)}
+              onClick={() => handlePlay(song.id)}
               className="group flex items-center gap-4 p-3 rounded-xl hover:bg-neutral-800/50 transition-all duration-300 cursor-pointer"
             >
               <div className="flex-shrink-0 relative">
@@ -124,6 +132,9 @@ const TopPlayedSongs = ({ user }: TopPlayedSongsProps) => {
       )}
     </div>
   );
-};
+});
+
+// displayName を設定
+TopPlayedSongs.displayName = "TopPlayedSongs";
 
 export default TopPlayedSongs;

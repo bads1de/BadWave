@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 
 import { useUser } from "@/hooks/auth/useUser";
@@ -11,7 +11,7 @@ import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
 import { Textarea } from "../ui/textarea";
 
-const SpotlightUploadModal = () => {
+const SpotlightUploadModal: React.FC = memo(() => {
   const spotlightUploadModal = useSpotLightUploadModal();
   const { user } = useUser();
 
@@ -29,30 +29,36 @@ const SpotlightUploadModal = () => {
     },
   });
 
-  const onChange = (open: boolean) => {
-    if (!open) {
-      reset();
-      spotlightUploadModal.onClose();
-    }
-  };
+  const onChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        reset();
+        spotlightUploadModal.onClose();
+      }
+    },
+    [reset, spotlightUploadModal]
+  );
 
-  const onSubmit: SubmitHandler<FieldValues> = async (values) => {
-    try {
-      // TanStack Queryのミューテーションを使用
-      await mutateAsync({
-        title: values.title,
-        author: values.author,
-        genre: values.genre,
-        description: values.description,
-        videoFile: values.video?.[0] || null,
-      });
+  const onSubmit: SubmitHandler<FieldValues> = useCallback(
+    async (values) => {
+      try {
+        // TanStack Queryのミューテーションを使用
+        await mutateAsync({
+          title: values.title,
+          author: values.author,
+          genre: values.genre,
+          description: values.description,
+          videoFile: values.video?.[0] || null,
+        });
 
-      // 成功時の処理はミューテーションのonSuccessで行われる
-    } catch (error) {
-      // エラー処理はミューテーション内で行われる
-      console.error("Spotlight upload error:", error);
-    }
-  };
+        // 成功時の処理はミューテーションのonSuccessで行われる
+      } catch (error) {
+        // エラー処理はミューテーション内で行われる
+        console.error("Spotlight upload error:", error);
+      }
+    },
+    [mutateAsync]
+  );
 
   return (
     <Modal
@@ -105,6 +111,9 @@ const SpotlightUploadModal = () => {
       </form>
     </Modal>
   );
-};
+});
+
+// displayName を設定
+SpotlightUploadModal.displayName = "SpotlightUploadModal";
 
 export default SpotlightUploadModal;
