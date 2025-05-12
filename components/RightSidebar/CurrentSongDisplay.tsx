@@ -6,7 +6,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { BiChevronRight } from "react-icons/bi";
 import { Song } from "@/types";
 import { splitTags } from "@/libs/utils";
-import ScrollingText from "../ScrollingText";
+import ScrollingText from "../common/ScrollingText";
 
 interface CurrentSongDisplayProps {
   song: Song;

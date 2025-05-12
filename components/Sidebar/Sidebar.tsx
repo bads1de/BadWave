@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
-import Box from "../Box";
+import Box from "../common/Box";
 import SidebarItem from "./SidebarItem";
 import Library from "./Library";
 import usePlayer from "@/hooks/player/usePlayer";

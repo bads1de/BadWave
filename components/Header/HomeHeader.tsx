@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
 import useAuthModal from "@/hooks/auth/useAuthModal";
-import Button from "../Button";
+import Button from "../common/Button";
 import Image from "next/image";
 import { User, LogOut, Menu, X, Home, Search, Settings } from "lucide-react";
 import Link from "next/link";

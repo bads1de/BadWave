@@ -2,7 +2,7 @@
 
 import { useState, memo } from "react";
 import GenreCard from "./GenreCard";
-import ScrollableContainer from "@/components/ScrollableContainer";
+import ScrollableContainer from "@/components/common/ScrollableContainer";
 
 export interface GenreData {
   id: number;

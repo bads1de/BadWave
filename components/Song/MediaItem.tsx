@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Song } from "@/types";
 import usePlayer from "@/hooks/player/usePlayer";
 import { twMerge } from "tailwind-merge";
-import ScrollingText from "../ScrollingText";
+import ScrollingText from "../common/ScrollingText";
 import { memo, useCallback } from "react";
 
 interface MediaItemProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import { PulseLoader } from "react-spinners";
-import Box from "@/components/Box";
+import Box from "@/components/common/Box";
 import { motion } from "framer-motion";
 
 const Loading = () => {

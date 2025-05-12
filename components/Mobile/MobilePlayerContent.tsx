@@ -11,7 +11,7 @@ import { useDrag } from "@use-gesture/react";
 import SeekBar from "../Player/Seekbar";
 import MobileStyleIcons from "./MobileStyleIcons";
 import LyricsDrawer from "./LyricsDrawer";
-import ScrollingText from "../ScrollingText";
+import ScrollingText from "../common/ScrollingText";
 
 interface MobilePlayerContentProps {
   song: Song;

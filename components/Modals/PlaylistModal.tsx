@@ -5,8 +5,8 @@ import { useUser } from "@/hooks/auth/useUser";
 import React from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
-import Input from "../Input";
-import Button from "../Button";
+import Input from "../common/Input";
+import Button from "../common/Button";
 import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
 
 const PlaylistModal = () => {

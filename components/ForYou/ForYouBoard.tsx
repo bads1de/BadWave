@@ -4,7 +4,7 @@ import { useState, memo, useCallback } from "react";
 import { Song } from "@/types";
 import { motion } from "framer-motion";
 import useOnPlay from "@/hooks/player/useOnPlay";
-import ScrollableContainer from "@/components/ScrollableContainer";
+import ScrollableContainer from "@/components/common/ScrollableContainer";
 import SongItem from "@/components/Song/SongItem";
 
 interface ForYouBoardProps {

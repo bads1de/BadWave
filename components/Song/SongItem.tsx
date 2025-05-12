@@ -4,7 +4,7 @@ import { Song } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { CiHeart, CiPlay1 } from "react-icons/ci";
-import ScrollingText from "../ScrollingText";
+import ScrollingText from "../common/ScrollingText";
 import { memo, useCallback } from "react";
 
 interface SongItemProps {

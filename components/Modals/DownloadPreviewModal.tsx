@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Button from "@/components/Button";
+import Button from "@/components/common/Button";
 
 interface PreviewDownloadModalProps {
   isOpen: boolean;

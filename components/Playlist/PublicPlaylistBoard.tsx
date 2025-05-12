@@ -4,7 +4,7 @@ import { Playlist } from "@/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import ScrollableContainer from "@/components/ScrollableContainer";
+import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { useState } from "react";
 
 interface PublicPlaylistBoardProps {

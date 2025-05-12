@@ -1,7 +1,7 @@
 import React, { useState, useRef, memo } from "react";
 import { Spotlight } from "@/types";
 import useSpotlightModal from "@/hooks/modal/useSpotlightModal";
-import ScrollableContainer from "./ScrollableContainer";
+import ScrollableContainer from "./common/ScrollableContainer";
 
 interface SpotlightBoardProps {
   spotlightData: Spotlight[];

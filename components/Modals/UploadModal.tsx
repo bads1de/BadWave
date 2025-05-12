@@ -18,10 +18,10 @@ import { useUser } from "@/hooks/auth/useUser";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
 
 import Modal from "./Modal";
-import Input from "../Input";
+import Input from "../common/Input";
 import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
-import Button from "../Button";
+import Button from "../common/Button";
 
 const UploadModal: React.FC = memo(() => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);

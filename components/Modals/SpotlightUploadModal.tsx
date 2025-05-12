@@ -4,8 +4,8 @@ import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import { useUser } from "@/hooks/auth/useUser";
 
 import Modal from "./Modal";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
+import Input from "@/components/common/Input";
+import Button from "@/components/common/Button";
 
 import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";

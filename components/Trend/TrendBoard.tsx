@@ -6,7 +6,7 @@ import Link from "next/link";
 import useGetTrendSongs from "@/hooks/data/useGetTrendSongs";
 import { motion } from "framer-motion";
 import useOnPlay from "@/hooks/player/useOnPlay";
-import ScrollableContainer from "@/components/ScrollableContainer";
+import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { Song } from "@/types";
 
 interface TrendBoardProps {

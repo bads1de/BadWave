@@ -3,7 +3,7 @@
 import { IconType } from "react-icons";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
-import Hover from "../Hover";
+import Hover from "../common/Hover";
 import { memo } from "react";
 
 interface SidebarItemProps {

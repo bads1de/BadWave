@@ -8,7 +8,7 @@ import { useUser } from "@/hooks/auth/useUser";
 import useUploadModal from "@/hooks/modal/useUploadModal";
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
 import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
-import Hover from "../Hover";
+import Hover from "../common/Hover";
 
 interface LibraryProps {
   isCollapsed: boolean;

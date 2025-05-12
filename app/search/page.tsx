@@ -1,6 +1,6 @@
 import getSongsByTitle from "@/actions/getSongsByTitle";
 import Header from "@/components/Header/Header";
-import SearchInput from "@/components/SearchInput";
+import SearchInput from "@/components/common/SearchInput";
 import SearchContent from "./components/SearchContent";
 import getPlaylistsByTitle from "@/actions/getPlaylistsByTitle";
 import HeaderNav from "@/components/Header/HeaderNav";

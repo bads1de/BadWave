@@ -5,7 +5,7 @@ import SongItem from "@/components/Song/SongItem";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import { Song } from "@/types";
 import usePlayer from "@/hooks/player/usePlayer";
-import ScrollableContainer from "@/components/ScrollableContainer";
+import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { motion } from "framer-motion";
 
 interface LatestBoardProps {
