@@ -1,7 +1,4 @@
 import React from "react";
-import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
-import { BsRepeat1 } from "react-icons/bs";
-import { FaRandom } from "react-icons/fa";
 import { MdLyrics } from "react-icons/md";
 import { Playlist, Song } from "@/types";
 import LikeButton from "../LikeButton";
@@ -9,6 +6,7 @@ import MediaItem from "../Song/MediaItem";
 import Slider from "./Slider";
 import SeekBar from "./Seekbar";
 import AddPlaylist from "../Playlist/AddPlaylist";
+import CommonControls from "./CommonControls";
 import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface DesktopPlayerProps {
@@ -72,45 +70,18 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
         </div>
 
         <div className="hidden md:flex flex-col w-full md:justify-center items-center max-w-[722px] gap-x-6">
-          <div className="flex items-center gap-x-8">
-            <FaRandom
-              onClick={toggleShuffle}
-              size={20}
-              className={`cursor-pointer transition-all duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] ${
-                isShuffling
-                  ? "text-[#4c1d95] drop-shadow-[0_0_8px_rgba(76,29,149,0.6)] hover:drop-shadow-[0_0_12px_rgba(76,29,149,0.8)]"
-                  : "text-neutral-400 hover:text-white"
-              }`}
-            />
-            <AiFillStepBackward
-              onClick={onPlayPrevious}
-              size={30}
-              className="text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
-            />
-            <div
-              onClick={handlePlay}
-              className="flex items-center justify-center h-7 w-7 rounded-full bg-gradient-to-br from-[#08101f] to-[#0d0d0d] p-1 cursor-pointer group"
-            >
-              <Icon
-                size={30}
-                className="text-[#f0f0f0] group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-              />
-            </div>
-            <AiFillStepForward
-              onClick={onPlayNext}
-              size={30}
-              className="text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
-            />
-            <BsRepeat1
-              onClick={toggleRepeat}
-              size={25}
-              className={`cursor-pointer transition-all duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] ${
-                isRepeating
-                  ? "text-[#4c1d95] drop-shadow-[0_0_8px_rgba(76,29,149,0.6)] hover:drop-shadow-[0_0_12px_rgba(76,29,149,0.8)]"
-                  : "text-neutral-400 hover:text-white"
-              }`}
-            />
-          </div>
+          <CommonControls
+            isPlaying={isPlaying}
+            isShuffling={isShuffling}
+            isRepeating={isRepeating}
+            Icon={Icon}
+            handlePlay={handlePlay}
+            onPlayNext={onPlayNext}
+            onPlayPrevious={onPlayPrevious}
+            toggleShuffle={toggleShuffle}
+            toggleRepeat={toggleRepeat}
+            isMobile={false}
+          />
 
           <div className="flex items-center gap-x-2 mt-4 w-full lg:max-w-[800px] md:max-w-[300px]">
             <span className="w-[50px] text-center inline-block text-[#f0f0f0]">

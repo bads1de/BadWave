@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { FaRandom } from "react-icons/fa";
-import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
-import { BsPauseFill, BsPlayFill, BsRepeat1 } from "react-icons/bs";
+import { BsPauseFill, BsPlayFill } from "react-icons/bs";
+import CommonControls from "../Player/CommonControls";
 
 import { Playlist, Song } from "@/types";
 import Link from "next/link";
@@ -157,38 +156,18 @@ const MobilePlayerContent = React.memo(
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <FaRandom
-                  onClick={toggleShuffle}
-                  size={22}
-                  className={`cursor-pointer transition ${
-                    isShuffling ? "text-[#4c1d95]" : "text-gray-400"
-                  }`}
-                />
-                <AiFillStepBackward
-                  onClick={onPlayPrevious}
-                  size={28}
-                  className="text-gray-400 cursor-pointer hover:text-white transition"
-                />
-                <div
-                  onClick={handlePlay}
-                  className="flex items-center justify-center h-16 w-16 rounded-full bg-[#4c1d95] cursor-pointer shadow-lg hover:bg-[#5d2ca6] transition-colors"
-                >
-                  <Icon size={28} className="text-white" />
-                </div>
-                <AiFillStepForward
-                  onClick={onPlayNext}
-                  size={28}
-                  className="text-gray-400 cursor-pointer hover:text-white transition"
-                />
-                <BsRepeat1
-                  onClick={toggleRepeat}
-                  size={28}
-                  className={`cursor-pointer transition ${
-                    isRepeating ? "text-[#4c1d95]" : "text-gray-400"
-                  }`}
-                />
-              </div>
+              <CommonControls
+                isPlaying={isPlaying}
+                isShuffling={isShuffling}
+                isRepeating={isRepeating}
+                Icon={Icon}
+                handlePlay={handlePlay}
+                onPlayNext={onPlayNext}
+                onPlayPrevious={onPlayPrevious}
+                toggleShuffle={toggleShuffle}
+                toggleRepeat={toggleRepeat}
+                isMobile={true}
+              />
             </div>
           </div>
         </div>
