@@ -4,6 +4,7 @@ import SearchInput from "@/components/common/SearchInput";
 import SearchContent from "./components/SearchContent";
 import getPlaylistsByTitle from "@/actions/getPlaylistsByTitle";
 import HeaderNav from "@/components/Header/HeaderNav";
+import { Suspense } from "react";
 
 interface SearchProps {
   searchParams: Promise<{ title: string; tab?: string }>;
@@ -21,7 +22,13 @@ const Search = async (props: SearchProps) => {
           <div className="flex items-center justify-between">
             <h1 className="text-white text-2xl font-bold">検索</h1>
           </div>
-          <SearchInput />
+          <Suspense
+            fallback={
+              <div className="h-12 w-full animate-pulse bg-neutral-800 rounded-xl" />
+            }
+          >
+            <SearchInput />
+          </Suspense>
           <HeaderNav className="mt-2" />
         </div>
       </Header>

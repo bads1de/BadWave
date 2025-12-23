@@ -20,17 +20,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [value, setValue] = useState<string>("");
+  // 初期値をURLから直接取得することでハイドレーション時のチラつきを防止
+  const [value, setValue] = useState<string>(searchParams.get("title") || "");
   const debouncedValue = useDebounce<string>(value, 500);
-
-  // 初期値をURLから取得
-  useEffect(() => {
-    const title = searchParams.get("title");
-
-    if (title) {
-      setValue(title);
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     // 現在のクエリパラメータを維持
@@ -60,7 +52,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     if (currentTitle !== debouncedValue && (currentTitle || debouncedValue)) {
       router.push(url);
     }
-  }, [debouncedValue, router]);
+  }, [debouncedValue, router, searchParams]);
 
   return (
     <div className="relative w-full group">
