@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { Edit2, Trash2, Globe2, Lock } from "lucide-react";
 import { createClient } from "@/libs/supabase/client";
@@ -30,7 +30,7 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
   const [newTitle, setNewTitle] = useState(currentTitle);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { user } = useUser();
   const queryClient = useQueryClient();
 

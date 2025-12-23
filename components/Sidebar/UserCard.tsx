@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { User, Settings, LogOut } from "lucide-react";
 import Image from "next/image";
@@ -16,7 +16,7 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
   const router = useRouter();
-  const supabaseClient = createClient();
+  const supabaseClient = useMemo(() => createClient(), []);
   const [isLoading, setIsLoading] = useState(false);
   const authModal = useAuthModal();
   const [isHovered, setIsHovered] = useState(false);

@@ -1,5 +1,5 @@
 import { createClient } from "@/libs/supabase/client";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useUser } from "../auth/useUser";
 
 /**
@@ -7,7 +7,7 @@ import { useUser } from "../auth/useUser";
  * @returns {{recordPlay: (songId: string) => Promise<void>}} 再生を記録する関数を含むオブジェクト
  */
 const usePlayHistory = () => {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { userDetails } = useUser();
 
   /**

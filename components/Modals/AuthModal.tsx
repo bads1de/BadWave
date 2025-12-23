@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -10,7 +10,7 @@ import Modal from "./Modal";
 import { createClient } from "@/libs/supabase/client";
 
 const AuthModal = () => {
-  const supabaseClient = createClient();
+  const supabaseClient = useMemo(() => createClient(), []);
   const router = useRouter();
   const { onClose, isOpen } = useAuthModal();
   const [session, setSession] = useState<any>(null);
@@ -37,11 +37,11 @@ const AuthModal = () => {
 
   // セッションが存在する場合、モーダルを閉じる
   useEffect(() => {
-    if (session) {
+    if (session && isOpen) {
       router.refresh();
       onClose();
     }
-  }, [session, router, onClose]);
+  }, [session, router, onClose, isOpen]);
 
   const onChange = (open: boolean) => {
     if (!open) {

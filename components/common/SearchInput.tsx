@@ -46,7 +46,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
     // 空の検索の場合はtitleパラメータを削除
     if (!debouncedValue) {
-      query.title = undefined;
+      delete query.title;
     }
 
     const url = qs.stringifyUrl({
@@ -54,8 +54,13 @@ const SearchInput: React.FC<SearchInputProps> = ({
       query,
     });
 
-    router.push(url);
-  }, [debouncedValue, router, searchParams]);
+    // URLが実際に変更される場合のみpushを実行
+    const currentTitle = searchParams.get("title");
+
+    if (currentTitle !== debouncedValue && (currentTitle || debouncedValue)) {
+      router.push(url);
+    }
+  }, [debouncedValue, router]);
 
   return (
     <div className="relative w-full group">

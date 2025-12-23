@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
@@ -22,7 +22,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
   const router = useRouter();
   const authModal = useAuthModal();
   const { user, userDetails } = useUser();
-  const supabaseClient = createClient();
+  const supabaseClient = useMemo(() => createClient(), []);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

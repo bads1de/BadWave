@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { createClient } from "@/libs/supabase/client";
@@ -12,7 +12,7 @@ import TopPlayedSongs from "./TopPlayedSongs";
 const AccountContent = () => {
   const router = useRouter();
   const { userDetails: user } = useUser();
-  const supabaseClient = createClient();
+  const supabaseClient = useMemo(() => createClient(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 

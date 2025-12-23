@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { Song } from "@/types";
 import usePlayer from "./usePlayer";
 import { createClient } from "@/libs/supabase/client";
@@ -6,14 +6,18 @@ import usePlayHistory from "./usePlayHistory";
 
 const DEFAULT_COOLDOWN = 1000;
 
-// デバウンス関数を定義
+// デバウンス関数を定義（クリーンアップを考慮）
 const createDebounce = (wait: number) => {
+  let timeout: NodeJS.Timeout;
+
   return (func: (...args: any[]) => void) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
+    const debounced = (...args: any[]) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), wait);
     };
+
+    debounced.clear = () => clearTimeout(timeout);
+    return debounced;
   };
 };
 
@@ -26,9 +30,10 @@ const createDebounce = (wait: number) => {
 // プレイヤーの再生イベントを処理するカスタムフック
 const useOnPlay = (songs: Song[]) => {
   const player = usePlayer();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [lastPlayTime, setLastPlayTime] = useState<number>(0);
   const cooldownRef = useRef<boolean>(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingPlayRef = useRef<string | null>(null);
   const playHistory = usePlayHistory();
 
@@ -97,7 +102,7 @@ const useOnPlay = (songs: Song[]) => {
       await processPlay(id);
 
       // クールダウン後の処理
-      setTimeout(async () => {
+      timerRef.current = setTimeout(async () => {
         cooldownRef.current = false;
         if (pendingPlayRef.current) {
           const pendingId = pendingPlayRef.current;
@@ -106,14 +111,24 @@ const useOnPlay = (songs: Song[]) => {
         }
       }, DEFAULT_COOLDOWN);
     },
-    [lastPlayTime, player, songs, supabase]
+    [lastPlayTime, player, processPlay]
   );
 
   // デバウンス関数をメモ化
   const debounce = useMemo(() => createDebounce(DEFAULT_COOLDOWN), []);
 
-  // デバウンスされた再生関数を返す
-  return useMemo(() => debounce(onPlay), [debounce, onPlay]);
+  // デバウンスされた再生関数
+  const debouncedOnPlay = useMemo(() => debounce(onPlay), [debounce, onPlay]);
+
+  // クリーンアップ
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (debouncedOnPlay.clear) debouncedOnPlay.clear();
+    };
+  }, [debouncedOnPlay]);
+
+  return debouncedOnPlay;
 };
 
 export default useOnPlay;

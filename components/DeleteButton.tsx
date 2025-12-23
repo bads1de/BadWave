@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -7,21 +7,15 @@ import { HiTrash } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
+import deleteFileFromR2 from "@/actions/deleteFileFromR2";
 
 interface DeleteButtonProps {
   songId: string;
-  songPath: string;
-  imagePath: string;
   className?: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({
-  songId,
-  songPath,
-  imagePath,
-  className,
-}) => {
-  const supabaseClient = createClient();
+const DeleteButton: React.FC<DeleteButtonProps> = ({ songId, className }) => {
+  const supabaseClient = useMemo(() => createClient(), []);
   const router = useRouter();
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +55,31 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
         throw new Error(
           "No record was deleted from database. Please check the songId."
         );
+      }
+
+      const deletedSong = data[0];
+
+      // R2からファイルを削除
+      if (deletedSong.song_path) {
+        const songKey = deletedSong.song_path.split("/").pop();
+        if (songKey) {
+          await deleteFileFromR2({
+            bucketName: "song",
+            filePath: songKey,
+            showToast: false,
+          });
+        }
+      }
+
+      if (deletedSong.image_path) {
+        const imageKey = deletedSong.image_path.split("/").pop();
+        if (imageKey) {
+          await deleteFileFromR2({
+            bucketName: "image",
+            filePath: imageKey,
+            showToast: false,
+          });
+        }
       }
 
       toast.success("削除しました");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { createClient } from "@/libs/supabase/client";
 import Image from "next/image";
@@ -19,7 +19,7 @@ interface AccountModalProps {
 }
 
 const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
-  const supabaseClient = createClient();
+  const supabaseClient = useMemo(() => createClient(), []);
   const [newFullName, setNewFullName] = useState(user?.full_name || "");
   const [currentAvatar, setCurrentAvatar] = useState(user?.avatar_url);
   const [newPassword, setNewPassword] = useState("");

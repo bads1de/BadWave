@@ -14,6 +14,7 @@ module.exports = {
         useESM: true,
         tsconfig: "tsconfig.json",
         babelConfig: true,
+        jsx: "react-jsx",
       },
     ],
   },
