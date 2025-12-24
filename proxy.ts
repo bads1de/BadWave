@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PROTECTED_ROUTES } from "./constants";
 import { updateSession } from "./libs/supabase/middleware";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // セッションの更新とユーザー情報の取得
   const { response, user } = await updateSession(request);
 

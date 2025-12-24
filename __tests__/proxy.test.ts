@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { middleware } from "@/middleware";
+import { proxy } from "@/proxy";
 import { updateSession } from "@/libs/supabase/middleware";
 
 // モックの設定
@@ -14,7 +14,7 @@ jest.mock("next/server", () => ({
   },
 }));
 
-describe("Middleware", () => {
+describe("Proxy", () => {
   let mockRequest: any;
 
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe("Middleware", () => {
       user: { id: "user-123" },
     });
 
-    const result = await middleware(mockRequest as NextRequest);
+    const result = await proxy(mockRequest as NextRequest);
 
     expect(result).toBe(mockResponse);
     expect(NextResponse.redirect).not.toHaveBeenCalled();
@@ -49,7 +49,7 @@ describe("Middleware", () => {
       user: null,
     });
 
-    await middleware(mockRequest as NextRequest);
+    await proxy(mockRequest as NextRequest);
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: "/" })
@@ -64,7 +64,7 @@ describe("Middleware", () => {
       user: null,
     });
 
-    const result = await middleware(mockRequest as NextRequest);
+    const result = await proxy(mockRequest as NextRequest);
 
     expect(result).toBe(mockResponse);
     expect(NextResponse.redirect).not.toHaveBeenCalled();
