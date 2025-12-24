@@ -8,7 +8,6 @@ import useAudioWaveStore from "@/hooks/audio/useAudioWave";
  */
 interface AudioWaveformProps {
   audioUrl: string; // 再生するオーディオファイルのURL
-  isPlaying: boolean; // 再生中かどうかの状態
   onPlayPause: () => void; // 再生/一時停止ボタンが押されたときのコールバック
   onEnded: () => void; // 再生が終了したときのコールバック
   primaryColor: string; // 波形のメインカラー
@@ -30,7 +29,6 @@ const AudioWaveform = ({
   songId,
   onPlayPause,
   onEnded,
-  isPlaying: externalIsPlaying,
 }: AudioWaveformProps) => {
   // キャンバスとアニメーションの参照
   const canvasRef = useRef<HTMLCanvasElement>(null); // 波形描画用キャンバスの参照
@@ -54,18 +52,7 @@ const AudioWaveform = ({
     setIsEnded,
   } = useAudioWaveStore();
 
-  /**
-   * 外部の再生状態と内部の再生状態を同期させる
-   */
-  useEffect(() => {
-    if (externalIsPlaying !== isPlaying) {
-      if (externalIsPlaying) {
-        play();
-      } else {
-        pause();
-      }
-    }
-  }, [externalIsPlaying, isPlaying, play, pause]);
+  // 再生状態はZustandストアで一元管理（useAudioWaveStore.isPlaying）
 
   /**
    * 再生状態が変化したときの処理
@@ -73,7 +60,6 @@ const AudioWaveform = ({
    */
   useEffect(() => {
     if (isPlaying) {
-      console.log("Playback started, setting flags");
       setHasPlaybackStarted(true);
       setIsEnded(false); // 再生が開始されたら終了フラグをリセット
     }
@@ -325,9 +311,9 @@ const AudioWaveform = ({
 // パフォーマンスが重要なコンポーネントなのでメモ化する
 export default memo(AudioWaveform, (prevProps, nextProps) => {
   // カスタム比較関数 - 必要な変更がある場合のみ再レンダリング
+  // isPlayingはZustandストアで管理されるため、props比較から除外
   return (
     prevProps.audioUrl === nextProps.audioUrl &&
-    prevProps.isPlaying === nextProps.isPlaying &&
     prevProps.songId === nextProps.songId &&
     prevProps.primaryColor === nextProps.primaryColor &&
     prevProps.secondaryColor === nextProps.secondaryColor

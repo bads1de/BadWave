@@ -25,8 +25,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import AudioWaveform from "@/components/AudioWaveform";
-import { getRandomColor } from "@/libs/utils";
 import useAudioWaveStore from "@/hooks/audio/useAudioWave";
+import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 
 interface SongContentProps {
   songId: string;
@@ -39,8 +39,6 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"lyrics" | "similar">("lyrics");
   const [duration, setDuration] = useState<string>("");
-  const [primaryColor, setPrimaryColor] = useState(getRandomColor());
-  const [secondaryColor, setSecondaryColor] = useState(getRandomColor());
   const [audioWaveformKey, setAudioWaveformKey] = useState(0);
 
   const genres = useMemo(
@@ -53,10 +51,11 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const { isPlaying, play, pause, currentSongId, initializeAudio } =
     useAudioWaveStore();
 
-  useEffect(() => {
-    setPrimaryColor(getRandomColor());
-    setSecondaryColor(getRandomColor());
-  }, [songId]);
+  // カラースキームから波形の色を取得
+  const { getColorScheme } = useColorSchemeStore();
+  const colorScheme = getColorScheme();
+  const primaryColor = colorScheme.colors.accentFrom;
+  const secondaryColor = colorScheme.colors.accentTo;
 
   const handlePlayClick = useCallback(async () => {
     if (!song?.song_path) {
@@ -147,7 +146,6 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
         <AudioWaveform
           key={audioWaveformKey}
           audioUrl={song.song_path!}
-          isPlaying={isPlaying}
           onPlayPause={handlePlayClick}
           onEnded={handlePlaybackEnded}
           primaryColor={primaryColor}

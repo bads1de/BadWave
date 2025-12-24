@@ -1,14 +1,6 @@
 import React, { useEffect } from "react";
-import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
-import { BsRepeat1 } from "react-icons/bs";
-import { FaRandom } from "react-icons/fa";
-import { MdLyrics } from "react-icons/md";
 import { Playlist, Song } from "@/types";
-import LikeButton from "../LikeButton";
-import MediaItem from "../Song/MediaItem";
-import Slider from "./Slider";
-import SeekBar from "./Seekbar";
-import AddPlaylist from "../Playlist/AddPlaylist";
+
 import DesktopPlayer from "./DesktopPlayer";
 import MobilePlayer from "./MobilePlayer";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
@@ -60,7 +52,7 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
 
     return (
       <>
-        <audio ref={audioRef} src={song.song_path} loop={isRepeating} />
+        <audio ref={audioRef} src={song.song_path} />
 
         {isMobilePlayer ? (
           <MobilePlayer

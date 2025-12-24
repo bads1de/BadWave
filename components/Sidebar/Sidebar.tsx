@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { HiHome } from "react-icons/hi";
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiPulse } from "react-icons/bi";
 import Box from "../common/Box";
 import SidebarItem from "./SidebarItem";
 import Library from "./Studio";
@@ -44,6 +44,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         label: "検索",
         active: pathname === "/search",
         href: "/search",
+      },
+      {
+        icon: BiPulse,
+        label: "Pulse",
+        active: pathname === "/pulse",
+        href: "/pulse",
       },
     ],
     [pathname]
