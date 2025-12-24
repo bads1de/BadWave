@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Song } from "@/types";
 
 interface NextSongPreviewProps {
-  nextSong: Song;
+  nextSong: Song | undefined;
   nextImagePath?: string;
 }
 

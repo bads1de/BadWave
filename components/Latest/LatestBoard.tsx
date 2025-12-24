@@ -31,9 +31,8 @@ const LatestBoard: React.FC<LatestBoardProps> = ({ songs }) => {
   const handlePlay = useCallback(
     (id: string) => {
       onPlay(id);
-      player.setId(id);
     },
-    [onPlay, player]
+    [onPlay]
   );
 
   if (songs.length === 0) {

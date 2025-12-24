@@ -13,9 +13,6 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  experimental: {
-    forceSwcTransforms: true,
-  },
 };
 
 module.exports = nextConfig;

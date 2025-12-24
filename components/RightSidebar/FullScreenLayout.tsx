@@ -8,7 +8,7 @@ interface FullScreenLayoutProps {
   song: Song;
   videoPath?: string;
   imagePath?: string;
-  nextSong: Song;
+  nextSong: Song | undefined;
   nextImagePath?: string;
 }
 

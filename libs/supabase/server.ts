@@ -17,14 +17,10 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch (error) {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-            console.log("Cookie setting error in server component:", error);
-            // エラーを無視して処理を続行します
-            // ミドルウェアがセッションをリフレッシュする場合、
-            // このエラーは問題ありません
+          } catch {
+            // Server Component から呼び出された場合はここに到達します。
+            // middleware.ts でセッションリフレッシュを行っているため、
+            // このエラーは安全に無視できます。
           }
         },
       },

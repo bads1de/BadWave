@@ -41,9 +41,9 @@ const useOnPlay = (songs: Song[]) => {
   const processPlay = useCallback(
     async (id: string) => {
       try {
-        // プレイヤーの状態を設定
-        player.setId(id);
+        // プレイヤーの状態を設定（setIdsを先に呼び出してからsetId）
         player.setIds(songs.map((song) => song.id));
+        player.setId(id);
 
         // songデータを取得
         const { data: songData, error: selectError } = await supabase

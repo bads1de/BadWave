@@ -18,7 +18,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ children }) => {
   const currentSong = song;
   const nextTrack = nextSong;
 
-  const showRightSidebar = currentSong && nextTrack;
+  const showRightSidebar = !!currentSong;
 
   return (
     <div className={twMerge(`flex h-full`, player.activeId && "h-full")}>
