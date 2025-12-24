@@ -10,11 +10,11 @@ import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
 import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
 import Hover from "../common/Hover";
 
-interface LibraryProps {
+interface StudioProps {
   isCollapsed: boolean;
 }
 
-const Library: React.FC<LibraryProps> = ({ isCollapsed }) => {
+const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
   const { user } = useUser();
   const authModal = useAuthModal();
   const uploadModal = useUploadModal();
@@ -161,4 +161,4 @@ const Library: React.FC<LibraryProps> = ({ isCollapsed }) => {
   );
 };
 
-export default Library;
+export default Studio;
