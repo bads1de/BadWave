@@ -12,18 +12,6 @@ describe("getRecommendations", () => {
   const mockUser = { id: "test-user-id" };
   const mockRecommendations = [
     {
-      id: "song1",
-      title: "Song 1",
-      author: "Author 1",
-      song_path: "path/to/song1",
-      image_path: "path/to/image1",
-      genre: "Rock",
-      count: "10",
-      like_count: "5",
-      created_at: "2023-01-01",
-      recommendation_score: "0.8",
-    },
-    {
       id: "song2",
       title: "Song 2",
       author: "Author 2",
@@ -34,6 +22,18 @@ describe("getRecommendations", () => {
       like_count: "15",
       created_at: "2023-01-02",
       recommendation_score: "0.9",
+    },
+    {
+      id: "song1",
+      title: "Song 1",
+      author: "Author 1",
+      song_path: "path/to/song1",
+      image_path: "path/to/image1",
+      genre: "Rock",
+      count: "10",
+      like_count: "5",
+      created_at: "2023-01-01",
+      recommendation_score: "0.8",
     },
     {
       id: "song3",

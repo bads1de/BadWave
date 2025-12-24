@@ -89,6 +89,12 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
   const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // パスワードのバリデーション
+    if (newPassword.length < 8) {
+      toast.error("パスワードは8文字以上で入力してください");
+      return;
+    }
+
     // パスワードの一致確認
     if (newPassword !== confirmPassword) {
       toast.error("パスワードが一致しません");
@@ -147,7 +153,11 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
         </div>
 
         {/* プロフィール編集フォーム */}
-        <form onSubmit={handleUpdateProfile} className="space-y-6">
+        <form
+          onSubmit={handleUpdateProfile}
+          className="space-y-6"
+          aria-label="profile-form"
+        >
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-neutral-400">
               <User className="w-4 h-4" />

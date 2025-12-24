@@ -1,14 +1,14 @@
 import * as React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
 
 // モックの設定
-jest.mock("@supabase/auth-helpers-nextjs", () => ({
-  createClientComponentClient: jest.fn(),
+jest.mock("@/libs/supabase/client", () => ({
+  createClient: jest.fn(),
 }));
 
 jest.mock("next/navigation", () => ({
@@ -19,8 +19,11 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("react-hot-toast", () => ({
-  success: jest.fn(),
-  error: jest.fn(),
+  __esModule: true,
+  default: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
 jest.mock("@/hooks/auth/useUser", () => ({
@@ -41,6 +44,7 @@ describe("PlaylistOptionsPopover", () => {
   const mockProps = {
     playlistId: "test-playlist-id",
     currentTitle: "テストプレイリスト",
+    isPublic: false,
   };
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -52,17 +56,21 @@ describe("PlaylistOptionsPopover", () => {
     jest.clearAllMocks();
 
     // Supabaseクライアントのモック
+    // Supabaseクライアントのモック
+    const mockPostgrestBuilder = {
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn().mockReturnThis(),
+      then: jest.fn((resolve) => resolve({ error: null })),
+    };
+
     const mockSupabase = {
       from: jest.fn().mockReturnValue({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ error: null }),
-        }),
-        delete: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ error: null }),
-        }),
+        update: jest.fn().mockReturnValue(mockPostgrestBuilder),
+        delete: jest.fn().mockReturnValue(mockPostgrestBuilder),
+        select: jest.fn().mockReturnValue(mockPostgrestBuilder),
       }),
     };
-    (createClientComponentClient as jest.Mock).mockReturnValue(mockSupabase);
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
   });
 
   it("ポップオーバーが正しく表示されること", () => {
@@ -95,7 +103,9 @@ describe("PlaylistOptionsPopover", () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith("プレイリスト名を更新しました");
+      expect(toast.success).toHaveBeenCalledWith(
+        "プレイリスト名を更新しました"
+      );
     });
   });
 
@@ -127,20 +137,25 @@ describe("PlaylistOptionsPopover", () => {
     fireEvent.click(cancelButton);
 
     // 編集モードが終了していることを確認
-    expect(screen.queryByPlaceholderText("プレイリスト名")).not.toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText("プレイリスト名")
+    ).not.toBeInTheDocument();
   });
 
   it("エラー時に適切なメッセージを表示すること", async () => {
     // Supabaseエラーをモック
     const mockError = new Error("Database error");
+    const mockPostgrestBuilder = {
+      eq: jest.fn().mockReturnThis(),
+      then: jest.fn((resolve) => resolve({ error: mockError })),
+    };
+
     const mockSupabase = {
       from: jest.fn().mockReturnValue({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ error: mockError }),
-        }),
+        update: jest.fn().mockReturnValue(mockPostgrestBuilder),
       }),
     };
-    (createClientComponentClient as jest.Mock).mockReturnValue(mockSupabase);
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
 
     render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
 
@@ -153,7 +168,9 @@ describe("PlaylistOptionsPopover", () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith("プレイリスト名の更新に失敗しました");
+      expect(toast.error).toHaveBeenCalledWith(
+        "プレイリスト名の更新に失敗しました"
+      );
     });
   });
 });

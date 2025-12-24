@@ -9,14 +9,59 @@ import { createClient } from "@/libs/supabase/client";
 import usePlaylistSongStatus from "@/hooks/data/usePlaylistSongStatus";
 
 // モックの設定
+jest.mock("@/components/ui/dropdown-menu", () => {
+  const React = require("react");
+  return {
+    DropdownMenu: ({ children }: { children: React.ReactNode }) =>
+      React.createElement("div", null, children),
+    DropdownMenuTrigger: ({
+      children,
+      onClick,
+    }: {
+      children: React.ReactNode;
+      onClick?: () => void;
+    }) =>
+      React.createElement(
+        "button",
+        { onClick: onClick, "data-testid": "dropdown-trigger" },
+        children
+      ),
+    DropdownMenuContent: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(
+        "div",
+        { "data-testid": "dropdown-content" },
+        children
+      ),
+    DropdownMenuItem: ({
+      children,
+      onClick,
+    }: {
+      children: React.ReactNode;
+      onClick?: () => void;
+    }) =>
+      React.createElement(
+        "button",
+        { onClick: onClick, "data-testid": "dropdown-item" },
+        children
+      ),
+  };
+});
+
 jest.mock("@/libs/supabase/client", () => ({
   createClient: jest.fn(),
 }));
 
-jest.mock("react-hot-toast", () => ({
-  success: jest.fn(),
-  error: jest.fn(),
-}));
+jest.mock("react-hot-toast", () => {
+  const toastMock = {
+    success: jest.fn(),
+    error: jest.fn(),
+  };
+  return {
+    __esModule: true,
+    default: toastMock,
+    toast: toastMock,
+  };
+});
 
 jest.mock("@tanstack/react-query", () => ({
   useQueryClient: jest.fn(),
@@ -36,13 +81,15 @@ jest.mock("@/hooks/auth/useUser", () => ({
   useUser: jest.fn(),
 }));
 
+const mockAuthModal = {
+  isOpen: false,
+  onOpen: jest.fn(),
+  onClose: jest.fn(),
+};
+
 jest.mock("@/hooks/auth/useAuthModal", () => ({
   __esModule: true,
-  default: jest.fn(() => ({
-    isOpen: false,
-    onOpen: jest.fn(),
-    onClose: jest.fn(),
-  })),
+  default: jest.fn(() => mockAuthModal),
 }));
 
 jest.mock("@/hooks/data/useGetSongById", () => ({
@@ -99,7 +146,7 @@ describe("AddPlaylist", () => {
     render(<AddPlaylist {...mockProps} />);
 
     // トリガーボタンをクリック
-    const triggerButton = screen.getByRole("button");
+    const triggerButton = screen.getByTestId("dropdown-trigger");
     fireEvent.click(triggerButton);
 
     // プレイリスト項目が表示されることを確認
@@ -113,7 +160,7 @@ describe("AddPlaylist", () => {
     render(<AddPlaylist {...mockProps} />);
 
     // トリガーボタンをクリック
-    const triggerButton = screen.getByRole("button");
+    const triggerButton = screen.getByTestId("dropdown-trigger");
     fireEvent.click(triggerButton);
 
     // プレイリスト項目をクリック
@@ -125,6 +172,8 @@ describe("AddPlaylist", () => {
     expect(mockAddMutation.mutate).toHaveBeenCalledWith({
       songId: mockProps.songId,
       playlistId: "1",
+      songType: "regular",
+      updateImagePath: undefined,
     });
   });
 
@@ -136,7 +185,7 @@ describe("AddPlaylist", () => {
     render(<AddPlaylist {...mockProps} />);
 
     // トリガーボタンをクリック
-    const triggerButton = screen.getByRole("button");
+    const triggerButton = screen.getByTestId("dropdown-trigger");
     fireEvent.click(triggerButton);
 
     // プレイリスト項目をクリック
@@ -145,7 +194,7 @@ describe("AddPlaylist", () => {
       fireEvent.click(playlistItem);
     });
 
-    expect(useAuthModal().onOpen).toHaveBeenCalled();
+    expect(mockAuthModal.onOpen).toHaveBeenCalled();
     expect(mockAddMutation.mutate).not.toHaveBeenCalled();
   });
 
@@ -158,7 +207,7 @@ describe("AddPlaylist", () => {
     render(<AddPlaylist {...mockProps} />);
 
     // トリガーボタンをクリック
-    const triggerButton = screen.getByRole("button");
+    const triggerButton = screen.getByTestId("dropdown-trigger");
     fireEvent.click(triggerButton);
 
     // プレイリスト項目をクリック
@@ -177,7 +226,7 @@ describe("AddPlaylist", () => {
     render(<AddPlaylist {...mockProps} playlists={[]} />);
 
     // トリガーボタンをクリック
-    const triggerButton = screen.getByRole("button");
+    const triggerButton = screen.getByTestId("dropdown-trigger");
     fireEvent.click(triggerButton);
 
     await waitFor(() => {

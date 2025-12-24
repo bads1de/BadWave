@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
 import { createClient } from "@/libs/supabase/client";
+import { createWrapper } from "../../test-utils";
 
 // モックの設定
 jest.mock("react-hot-toast", () => ({
@@ -66,8 +67,11 @@ describe("useCreatePlaylistMutation", () => {
   });
 
   it("プレイリストの作成が成功した場合、正しく処理されること", async () => {
-    const { result } = renderHook(() =>
-      useCreatePlaylistMutation(mockPlaylistModalHook)
+    const { result } = renderHook(
+      () => useCreatePlaylistMutation(mockPlaylistModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -96,8 +100,11 @@ describe("useCreatePlaylistMutation", () => {
   });
 
   it("タイトルが空の場合、エラーが発生すること", async () => {
-    const { result } = renderHook(() =>
-      useCreatePlaylistMutation(mockPlaylistModalHook)
+    const { result } = renderHook(
+      () => useCreatePlaylistMutation(mockPlaylistModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -121,8 +128,11 @@ describe("useCreatePlaylistMutation", () => {
     // ユーザーが存在しない状態をモック
     (useUser as jest.Mock).mockReturnValue({ userDetails: null });
 
-    const { result } = renderHook(() =>
-      useCreatePlaylistMutation(mockPlaylistModalHook)
+    const { result } = renderHook(
+      () => useCreatePlaylistMutation(mockPlaylistModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -150,8 +160,11 @@ describe("useCreatePlaylistMutation", () => {
       }),
     });
 
-    const { result } = renderHook(() =>
-      useCreatePlaylistMutation(mockPlaylistModalHook)
+    const { result } = renderHook(
+      () => useCreatePlaylistMutation(mockPlaylistModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {

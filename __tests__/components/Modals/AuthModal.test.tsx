@@ -14,7 +14,11 @@ jest.mock("@/libs/supabase/client");
 
 // Auth UIコンポーネントのモック
 jest.mock("@supabase/auth-ui-react", () => ({
-  Auth: () => <div data-testid="auth-ui">Auth UI</div>,
+  __esModule: true,
+  Auth: () => {
+    const React = require("react");
+    return React.createElement("div", { "data-testid": "auth-ui" }, "Auth UI");
+  },
 }));
 
 describe("AuthModal", () => {

@@ -1,14 +1,14 @@
 import { renderHook } from "@testing-library/react";
 import usePlayHistory from "@/hooks/player/usePlayHistory";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 
-jest.mock("@supabase/auth-helpers-nextjs", () => {
+jest.mock("@/libs/supabase/client", () => {
   const mockFrom = jest.fn().mockReturnValue({
     insert: jest.fn(() => Promise.resolve({ error: null })),
   });
 
   return {
-    createClientComponentClient: jest.fn(() => ({
+    createClient: jest.fn(() => ({
       from: mockFrom,
     })),
   };
@@ -27,7 +27,7 @@ describe("usePlayHistory", () => {
 
   it("songIdが空文字列の場合、再生履歴を記録しないこと", async () => {
     const mockFrom = jest.fn();
-    (createClientComponentClient as jest.Mock).mockReturnValue({
+    (createClient as jest.Mock).mockReturnValue({
       from: mockFrom,
     });
 
@@ -43,7 +43,7 @@ describe("usePlayHistory", () => {
       insert: jest.fn(() => Promise.resolve({ error: null })),
     });
 
-    (createClientComponentClient as jest.Mock).mockReturnValue({
+    (createClient as jest.Mock).mockReturnValue({
       from: mockFrom,
     });
 
@@ -63,7 +63,7 @@ describe("usePlayHistory", () => {
     }));
 
     const mockFrom = jest.fn();
-    (createClientComponentClient as jest.Mock).mockReturnValue({
+    (createClient as jest.Mock).mockReturnValue({
       from: mockFrom,
     });
 
@@ -82,7 +82,7 @@ describe("usePlayHistory", () => {
       insert: mockInsert,
     });
 
-    (createClientComponentClient as jest.Mock).mockReturnValue({
+    (createClient as jest.Mock).mockReturnValue({
       from: mockFrom,
     });
 

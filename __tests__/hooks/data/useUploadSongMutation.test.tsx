@@ -6,6 +6,7 @@ import { useUser } from "@/hooks/auth/useUser";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
 import uploadFileToR2 from "@/actions/uploadFileToR2";
 import { createClient } from "@/libs/supabase/client";
+import { createWrapper } from "../../test-utils";
 
 // モックの設定
 jest.mock("react-hot-toast", () => ({
@@ -82,8 +83,11 @@ describe("useUploadSongMutation", () => {
   });
 
   it("曲のアップロードが成功した場合、正しく処理されること", async () => {
-    const { result } = renderHook(() =>
-      useUploadSongMutation(mockUploadModalHook)
+    const { result } = renderHook(
+      () => useUploadSongMutation(mockUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     const songFile = new File(["song content"], "song.mp3", {
@@ -131,8 +135,11 @@ describe("useUploadSongMutation", () => {
   });
 
   it("必須フィールドが不足している場合、エラーが発生すること", async () => {
-    const { result } = renderHook(() =>
-      useUploadSongMutation(mockUploadModalHook)
+    const { result } = renderHook(
+      () => useUploadSongMutation(mockUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -163,8 +170,11 @@ describe("useUploadSongMutation", () => {
     // ファイルアップロードの失敗をモック
     (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
 
-    const { result } = renderHook(() =>
-      useUploadSongMutation(mockUploadModalHook)
+    const { result } = renderHook(
+      () => useUploadSongMutation(mockUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -203,8 +213,11 @@ describe("useUploadSongMutation", () => {
       }),
     });
 
-    const { result } = renderHook(() =>
-      useUploadSongMutation(mockUploadModalHook)
+    const { result } = renderHook(
+      () => useUploadSongMutation(mockUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {

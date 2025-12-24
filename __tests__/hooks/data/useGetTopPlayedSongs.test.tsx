@@ -1,12 +1,11 @@
 import { renderHook, waitFor } from "@testing-library/react";
-
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as React from "react";
 import useGetTopPlayedSongs from "@/hooks/data/useGetTopPlayedSongs";
 
-jest.mock("@supabase/auth-helpers-nextjs", () => ({
-  createClientComponentClient: jest.fn(),
+jest.mock("@/libs/supabase/client", () => ({
+  createClient: jest.fn(),
 }));
 
 const mockTopSongs = [
@@ -70,17 +69,16 @@ describe("useGetTopPlayedSongs", () => {
       })),
     };
 
-    (createClientComponentClient as jest.Mock).mockReturnValue(mockSupabase);
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
 
     const { result } = renderHook(() => useGetTopPlayedSongs("test-user-id"), {
       wrapper,
     });
 
     await waitFor(() => {
-      expect(mockSupabase.rpc).toHaveBeenCalledWith("get_top_played_songs", {
-        user_id_param: "test-user-id",
-        period_param: "day",
-        limit_param: 3,
+      expect(mockSupabase.rpc).toHaveBeenCalledWith("get_top_songs", {
+        p_user_id: "test-user-id",
+        p_period: "day",
       });
       expect(result.current.topSongs).toEqual(mockTopSongs);
       expect(result.current.isLoading).toBe(false);
@@ -96,7 +94,7 @@ describe("useGetTopPlayedSongs", () => {
       })),
     };
 
-    (createClientComponentClient as jest.Mock).mockReturnValue(mockSupabase);
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
 
     const { result } = renderHook(
       () => useGetTopPlayedSongs("test-user-id", "week"),
@@ -106,10 +104,9 @@ describe("useGetTopPlayedSongs", () => {
     );
 
     await waitFor(() => {
-      expect(mockSupabase.rpc).toHaveBeenCalledWith("get_top_played_songs", {
-        user_id_param: "test-user-id",
-        period_param: "week",
-        limit_param: 3,
+      expect(mockSupabase.rpc).toHaveBeenCalledWith("get_top_songs", {
+        p_user_id: "test-user-id",
+        p_period: "week",
       });
       expect(result.current.topSongs).toEqual(mockTopSongs);
     });
@@ -124,7 +121,7 @@ describe("useGetTopPlayedSongs", () => {
       })),
     };
 
-    (createClientComponentClient as jest.Mock).mockReturnValue(mockSupabase);
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
 
     const { result } = renderHook(() => useGetTopPlayedSongs("test-user-id"), {
       wrapper,

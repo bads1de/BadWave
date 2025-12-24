@@ -100,7 +100,11 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
       isOpen={isOpen}
       onChange={() => onClose()}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-y-4"
+        aria-label="曲の編集"
+      >
         <Input
           disabled={isLoading}
           {...register("title", { required: true })}
@@ -122,8 +126,11 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
         />
 
         <div>
-          <div className="pb-1">曲を選択（50MB以下）</div>
+          <label htmlFor="song" className="pb-1 block">
+            曲を選択（50MB以下）
+          </label>
           <Input
+            id="song"
             disabled={isLoading}
             type="file"
             accept="audio/*"
@@ -139,8 +146,11 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
         </div>
 
         <div>
-          <div className="pb-1">画像を選択（5MB以下）</div>
+          <label htmlFor="image" className="pb-1 block">
+            画像を選択（5MB以下）
+          </label>
           <Input
+            id="image"
             disabled={isLoading}
             type="file"
             accept="image/*"
@@ -160,8 +170,11 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
         </div>
 
         <div>
-          <div className="pb-1">ビデオを選択（5MB以下）</div>
+          <label htmlFor="video" className="pb-1 block">
+            ビデオを選択（5MB以下）
+          </label>
           <Input
+            id="video"
             disabled={isLoading}
             type="file"
             accept="video/*"

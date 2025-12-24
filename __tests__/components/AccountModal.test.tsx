@@ -1,14 +1,14 @@
 import * as React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/libs/supabase/client";
 import { toast } from "react-hot-toast";
 import AccountModal from "@/app/account/components/AccountModal";
 import useUpdateUserProfileMutation from "@/hooks/data/useUpdateUserProfileMutation";
 
 // モックの設定
-jest.mock("@supabase/auth-helpers-nextjs", () => ({
-  createClientComponentClient: jest.fn(),
+jest.mock("@/libs/supabase/client", () => ({
+  createClient: jest.fn(),
 }));
 
 jest.mock("next/navigation", () => ({
@@ -18,9 +18,17 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("react-hot-toast", () => ({
-  success: jest.fn(),
-  error: jest.fn(),
-  dismiss: jest.fn(),
+  __esModule: true,
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    dismiss: jest.fn(),
+  },
+  default: {
+    success: jest.fn(),
+    error: jest.fn(),
+    dismiss: jest.fn(),
+  },
 }));
 
 jest.mock("@/hooks/data/useUpdateUserProfileMutation", () => ({
@@ -76,7 +84,7 @@ describe("AccountModal", () => {
         }),
       },
     };
-    (createClientComponentClient as jest.Mock).mockReturnValue(mockSupabase);
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
 
     // useUpdateUserProfileMutationのモック
     (useUpdateUserProfileMutation as jest.Mock).mockReturnValue({
@@ -98,13 +106,15 @@ describe("AccountModal", () => {
     renderComponent();
 
     expect(screen.getByText("プロフィール編集")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("ユーザー名")).toHaveValue("Test User");
+    expect(screen.getByPlaceholderText("ユーザー名を入力")).toHaveValue(
+      "Test User"
+    );
   });
 
   it("プロフィール名の更新が正しく動作すること", async () => {
     renderComponent();
 
-    const input = screen.getByPlaceholderText("ユーザー名");
+    const input = screen.getByPlaceholderText("ユーザー名を入力");
     fireEvent.change(input, { target: { value: "New Name" } });
 
     const form = screen.getByRole("form");

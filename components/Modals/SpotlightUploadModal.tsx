@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 
 import { useUser } from "@/hooks/auth/useUser";
@@ -11,7 +11,7 @@ import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
 import { Textarea } from "../ui/textarea";
 
-const SpotlightUploadModal: React.FC = memo(() => {
+const SpotlightUploadModal: React.FC = () => {
   const spotlightUploadModal = useSpotLightUploadModal();
   const { user } = useUser();
 
@@ -19,7 +19,7 @@ const SpotlightUploadModal: React.FC = memo(() => {
   const { mutateAsync, isPending: isLoading } =
     useSpotlightUploadMutation(spotlightUploadModal);
 
-  const { register, handleSubmit, reset } = useForm<FieldValues>({
+  const { register, handleSubmit, reset, setValue } = useForm<FieldValues>({
     defaultValues: {
       video: null,
       title: "",
@@ -28,6 +28,22 @@ const SpotlightUploadModal: React.FC = memo(() => {
       description: "",
     },
   });
+
+  useEffect(() => {
+    if (!spotlightUploadModal.isOpen) {
+      reset();
+    }
+  }, [spotlightUploadModal.isOpen, reset]);
+
+  const onFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setValue("video", [file]);
+      }
+    },
+    [setValue]
+  );
 
   const onChange = useCallback(
     (open: boolean) => {
@@ -67,7 +83,11 @@ const SpotlightUploadModal: React.FC = memo(() => {
       isOpen={spotlightUploadModal.isOpen}
       onChange={onChange}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-y-4"
+        aria-label="Spotlight投稿"
+      >
         <Input
           id="title"
           disabled={isLoading}
@@ -96,13 +116,15 @@ const SpotlightUploadModal: React.FC = memo(() => {
           className="resize-none" // リサイズ不可にする
         />
         <div>
-          <div className="pb-1">動画ファイル</div>
+          <label htmlFor="video" className="pb-1 block">
+            動画ファイル
+          </label>
           <Input
             type="file"
             accept="video/*"
             id="video"
             disabled={isLoading}
-            {...register("video", { required: true })}
+            onChange={onFileChange}
           />
         </div>
         <Button disabled={isLoading} type="submit">
@@ -111,7 +133,7 @@ const SpotlightUploadModal: React.FC = memo(() => {
       </form>
     </Modal>
   );
-});
+};
 
 // displayName を設定
 SpotlightUploadModal.displayName = "SpotlightUploadModal";

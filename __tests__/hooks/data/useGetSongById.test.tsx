@@ -1,12 +1,12 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import useGetSongById from "@/hooks/data/useGetSongById";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import * as React from "react";
 import toast from "react-hot-toast";
 
-jest.mock("@supabase/auth-helpers-react", () => ({
-  useSessionContext: jest.fn(),
+jest.mock("@/libs/supabase/client", () => ({
+  createClient: jest.fn(),
 }));
 
 jest.mock("react-hot-toast", () => ({
@@ -36,19 +36,17 @@ describe("useGetSongById", () => {
     queryClient.clear();
     jest.clearAllMocks();
 
-    (useSessionContext as jest.Mock).mockImplementation(() => ({
-      supabaseClient: {
-        from: () => ({
-          select: () => ({
-            eq: () => ({
-              maybeSingle: () => ({
-                data: mockSong,
-                error: null,
-              }),
+    (createClient as jest.Mock).mockImplementation(() => ({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => ({
+              data: mockSong,
+              error: null,
             }),
           }),
         }),
-      },
+      }),
     }));
   });
 
@@ -72,19 +70,17 @@ describe("useGetSongById", () => {
 
   it("APIからのエラーを処理するべき", async () => {
     const mockError = { message: "APIエラー" };
-    (useSessionContext as jest.Mock).mockImplementation(() => ({
-      supabaseClient: {
-        from: () => ({
-          select: () => ({
-            eq: () => ({
-              maybeSingle: () => ({
-                data: null,
-                error: mockError,
-              }),
+    (createClient as jest.Mock).mockImplementation(() => ({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => ({
+              data: null,
+              error: mockError,
             }),
           }),
         }),
-      },
+      }),
     }));
 
     const { result } = renderHook(() => useGetSongById("test-id"), { wrapper });

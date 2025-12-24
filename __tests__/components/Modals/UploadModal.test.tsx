@@ -30,6 +30,10 @@ jest.mock("@/hooks/data/useUploadSongMutation", () => ({
 
 jest.mock("react-hot-toast", () => ({
   __esModule: true,
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
   default: {
     success: jest.fn(),
     error: jest.fn(),

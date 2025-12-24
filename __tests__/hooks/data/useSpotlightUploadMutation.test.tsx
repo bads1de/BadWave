@@ -6,6 +6,7 @@ import { useUser } from "@/hooks/auth/useUser";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
 import uploadFileToR2 from "@/actions/uploadFileToR2";
 import { createClient } from "@/libs/supabase/client";
+import { createWrapper } from "../../test-utils";
 
 // モックの設定
 jest.mock("react-hot-toast", () => ({
@@ -74,8 +75,11 @@ describe("useSpotlightUploadMutation", () => {
   });
 
   it("動画のアップロードが成功した場合、正しく処理されること", async () => {
-    const { result } = renderHook(() =>
-      useSpotlightUploadMutation(mockSpotlightUploadModalHook)
+    const { result } = renderHook(
+      () => useSpotlightUploadMutation(mockSpotlightUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     const videoFile = new File(["video content"], "video.mp4", {
@@ -122,8 +126,11 @@ describe("useSpotlightUploadMutation", () => {
   });
 
   it("必須フィールドが不足している場合、エラーが発生すること", async () => {
-    const { result } = renderHook(() =>
-      useSpotlightUploadMutation(mockSpotlightUploadModalHook)
+    const { result } = renderHook(
+      () => useSpotlightUploadMutation(mockSpotlightUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -151,8 +158,11 @@ describe("useSpotlightUploadMutation", () => {
     // ファイルアップロードの失敗をモック
     (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
 
-    const { result } = renderHook(() =>
-      useSpotlightUploadMutation(mockSpotlightUploadModalHook)
+    const { result } = renderHook(
+      () => useSpotlightUploadMutation(mockSpotlightUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {
@@ -188,8 +198,11 @@ describe("useSpotlightUploadMutation", () => {
       }),
     });
 
-    const { result } = renderHook(() =>
-      useSpotlightUploadMutation(mockSpotlightUploadModalHook)
+    const { result } = renderHook(
+      () => useSpotlightUploadMutation(mockSpotlightUploadModalHook),
+      {
+        wrapper: createWrapper(),
+      }
     );
 
     await act(async () => {

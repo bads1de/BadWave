@@ -111,6 +111,14 @@ const UploadModal: React.FC = memo(() => {
     }
   }, [song]);
 
+  useEffect(() => {
+    if (!uploadModal.isOpen) {
+      reset();
+      setImagePreview(null);
+      setAudioPreview(null);
+    }
+  }, [uploadModal.isOpen, reset]);
+
   const onChange = useCallback(
     (open: boolean) => {
       if (!open) {
@@ -166,6 +174,7 @@ const UploadModal: React.FC = memo(() => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        aria-label="曲をアップロード"
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -218,7 +227,9 @@ const UploadModal: React.FC = memo(() => {
 
         <div className="space-y-4">
           <div className="space-y-1">
-            <label className="text-sm text-zinc-400">ファイルを選択</label>
+            <label htmlFor="file" className="text-sm text-zinc-400">
+              ファイルを選択
+            </label>
             <div
               ref={dropRef}
               onDragOver={handleDragOver}

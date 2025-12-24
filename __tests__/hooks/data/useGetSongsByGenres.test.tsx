@@ -1,11 +1,11 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { createClient } from "@/libs/supabase/client";
 import * as React from "react";
 import useGetSongsByGenres from "@/hooks/data/useGetSongGenres";
 
-jest.mock("@supabase/auth-helpers-react", () => ({
-  useSessionContext: jest.fn(),
+jest.mock("@/libs/supabase/client", () => ({
+  createClient: jest.fn(),
 }));
 
 const mockSongs = [
@@ -32,19 +32,17 @@ describe("useGetSongsByGenres", () => {
     jest.clearAllMocks();
 
     // モック実装を修正
-    (useSessionContext as jest.Mock).mockImplementation(() => ({
-      supabaseClient: {
-        from: () => ({
-          select: () => ({
-            or: () => ({
-              neq: () => ({
-                limit: () => Promise.resolve({ data: mockSongs, error: null }),
-              }),
+    (createClient as jest.Mock).mockImplementation(() => ({
+      from: () => ({
+        select: () => ({
+          or: () => ({
+            neq: () => ({
               limit: () => Promise.resolve({ data: mockSongs, error: null }),
             }),
+            limit: () => Promise.resolve({ data: mockSongs, error: null }),
           }),
         }),
-      },
+      }),
     }));
   });
 
@@ -87,19 +85,17 @@ describe("useGetSongsByGenres", () => {
     const mockError = new Error("APIエラー");
     const consoleSpy = jest.spyOn(console, "error").mockImplementation();
 
-    (useSessionContext as jest.Mock).mockImplementation(() => ({
-      supabaseClient: {
-        from: () => ({
-          select: () => ({
-            or: () => ({
-              neq: () => ({
-                limit: () => Promise.resolve({ data: null, error: mockError }),
-              }),
+    (createClient as jest.Mock).mockImplementation(() => ({
+      from: () => ({
+        select: () => ({
+          or: () => ({
+            neq: () => ({
               limit: () => Promise.resolve({ data: null, error: mockError }),
             }),
+            limit: () => Promise.resolve({ data: null, error: mockError }),
           }),
         }),
-      },
+      }),
     }));
 
     const { result } = renderHook(() => useGetSongsByGenres(["rock"]), {

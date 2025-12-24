@@ -26,7 +26,8 @@ const useGetTrendSongs = (
   } = useQuery({
     queryKey: [CACHED_QUERIES.trendSongs, period],
     queryFn: () => getTrendSongs(period),
-    initialData: period === "all" ? initialData : undefined,
+    initialData:
+      period === "all" && initialData.length > 0 ? initialData : undefined,
     // キャッシュ設定を直接宣言
     staleTime: 1000 * 60 * 60 * 24, // 1日間
     gcTime: 1000 * 60 * 60 * 24, // 1日間

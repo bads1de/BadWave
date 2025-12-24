@@ -1,5 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
-import { QueryClient } from "@tanstack/react-query";
+import * as React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useEditSongMutation from "@/hooks/data/useEditSongMutation";
@@ -44,6 +45,10 @@ describe("useEditSongMutation", () => {
     },
   });
 
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+
   // テストのためにモックを使用する
   const mockRouter = {
     refresh: jest.fn(),
@@ -75,7 +80,7 @@ describe("useEditSongMutation", () => {
     video_path: "https://example.com/original-video.mp4",
     genre: "Rock",
     created_at: new Date().toISOString(),
-    count: 0,
+    count: "0",
   };
 
   beforeEach(() => {
@@ -91,7 +96,10 @@ describe("useEditSongMutation", () => {
   });
 
   it("曲の編集が成功した場合、正しく処理されること", async () => {
-    const { result } = renderHook(() => useEditSongMutation(mockEditModalHook));
+    const { result } = renderHook(
+      () => useEditSongMutation(mockEditModalHook),
+      { wrapper }
+    );
 
     await act(async () => {
       await result.current.mutateAsync({
@@ -131,7 +139,10 @@ describe("useEditSongMutation", () => {
   });
 
   it("ファイルアップロードを含む編集が成功した場合、正しく処理されること", async () => {
-    const { result } = renderHook(() => useEditSongMutation(mockEditModalHook));
+    const { result } = renderHook(
+      () => useEditSongMutation(mockEditModalHook),
+      { wrapper }
+    );
 
     const songFile = new File(["song content"], "song.mp3", {
       type: "audio/mpeg",
@@ -176,7 +187,10 @@ describe("useEditSongMutation", () => {
   });
 
   it("IDが不足している場合、エラーが発生すること", async () => {
-    const { result } = renderHook(() => useEditSongMutation(mockEditModalHook));
+    const { result } = renderHook(
+      () => useEditSongMutation(mockEditModalHook),
+      { wrapper }
+    );
 
     await act(async () => {
       try {
@@ -204,7 +218,10 @@ describe("useEditSongMutation", () => {
     // ファイルアップロードの失敗をモック
     (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
 
-    const { result } = renderHook(() => useEditSongMutation(mockEditModalHook));
+    const { result } = renderHook(
+      () => useEditSongMutation(mockEditModalHook),
+      { wrapper }
+    );
 
     const songFile = new File(["song content"], "song.mp3", {
       type: "audio/mpeg",
@@ -247,7 +264,10 @@ describe("useEditSongMutation", () => {
       }),
     });
 
-    const { result } = renderHook(() => useEditSongMutation(mockEditModalHook));
+    const { result } = renderHook(
+      () => useEditSongMutation(mockEditModalHook),
+      { wrapper }
+    );
 
     await act(async () => {
       try {

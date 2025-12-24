@@ -2,7 +2,7 @@
 
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
 import { useUser } from "@/hooks/auth/useUser";
-import React from "react";
+import React, { useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
 import Input from "../common/Input";
@@ -21,6 +21,12 @@ const PlaylistModal = () => {
       title: "",
     },
   });
+
+  useEffect(() => {
+    if (!playlistModal.isOpen) {
+      reset();
+    }
+  }, [playlistModal.isOpen, reset]);
 
   const onChange = (open: boolean) => {
     if (!open) {
@@ -50,7 +56,11 @@ const PlaylistModal = () => {
       isOpen={playlistModal.isOpen}
       onChange={onChange}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-y-4"
+        aria-label="プレイリスト作成"
+      >
         <Input
           id="title"
           disabled={isLoading}
