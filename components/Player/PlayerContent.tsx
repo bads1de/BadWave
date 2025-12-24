@@ -49,12 +49,6 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
     const { toggleLyrics } = useLyricsStore();
 
     useEffect(() => {
-      if (audioRef.current && song?.song_path) {
-        audioRef.current.src = song.song_path;
-      }
-    }, [song?.song_path, audioRef]);
-
-    useEffect(() => {
       if (!showVolumeSlider) return;
 
       const timeout = setTimeout(() => {

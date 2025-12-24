@@ -146,8 +146,17 @@ const useAudioPlayer = (songUrl: string) => {
     const audio = audioRef.current;
     if (!audio || !songUrl) return;
 
-    audio.currentTime = 0;
+    // 前の曲を停止してリセット
+    audio.pause();
+    setCurrentTime(0);
+    setDuration(0);
+
+    // 新しいソースを設定
     audio.src = songUrl;
+    audio.currentTime = 0;
+
+    // 明示的にロードして再生を開始
+    audio.load();
   }, [songUrl]);
 
   const formatTime = useMemo(() => {
