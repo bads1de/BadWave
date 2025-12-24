@@ -44,8 +44,8 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
           side="right"
           description="プレイリストを作成"
         >
-          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-purple-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-purple-500/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10">
+            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <AiOutlineBars
               className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
               size={20}
@@ -59,8 +59,8 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
           side="right"
           description="曲を追加"
         >
-          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-purple-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-purple-500/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10">
+            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <AiOutlinePlus
               className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
               size={20}
@@ -74,8 +74,8 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
           side="right"
           description="スポットライトを作成"
         >
-          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-purple-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-purple-500/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10">
+            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <GiMicrophone
               className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
               size={20}
@@ -92,13 +92,13 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
       <div className="grid grid-cols-1 gap-3">
         <button
           onClick={() => openModal("playlist")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-purple-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-purple-500/10"
+          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
           <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-purple-500/10 group-hover:bg-purple-500/20 transition-all duration-500 shadow-inner">
+            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
               <RiPlayListFill
-                className="text-purple-400 group-hover:text-purple-300 transition-all duration-300 transform group-hover:scale-110"
+                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
                 size={24}
               />
             </div>
@@ -115,13 +115,13 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
 
         <button
           onClick={() => openModal("music")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-purple-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-purple-500/10"
+          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
           <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-purple-500/10 group-hover:bg-purple-500/20 transition-all duration-500 shadow-inner">
+            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
               <AiOutlinePlus
-                className="text-purple-400 group-hover:text-purple-300 transition-all duration-300 transform group-hover:scale-110"
+                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
                 size={24}
               />
             </div>
@@ -138,13 +138,13 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
 
         <button
           onClick={() => openModal("spotlight")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-purple-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-purple-500/10"
+          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
           <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-purple-500/10 group-hover:bg-purple-500/20 transition-all duration-500 shadow-inner">
+            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
               <GiMicrophone
-                className="text-purple-400 group-hover:text-purple-300 transition-all duration-300 transform group-hover:scale-110"
+                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
                 size={24}
               />
             </div>

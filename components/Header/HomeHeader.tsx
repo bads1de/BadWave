@@ -57,14 +57,14 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
         w-full
         h-fit
         bg-gradient-to-b
-        from-purple-900/10
+        from-theme-900/10
         via-neutral-900/95
         to-neutral-900/90
         backdrop-blur-xl
         transition-all
         duration-300
         `,
-        scrolled ? "shadow-lg shadow-purple-900/10" : "",
+        scrolled ? "shadow-lg shadow-theme-900/10" : "",
         className
       )}
     >
@@ -73,7 +73,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
           {/* Logo and app name */}
           <div className="flex items-center gap-x-2 md:gap-x-4">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-purple-900/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-theme-500/20 to-theme-900/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
               <Image
                 src="/logo.svg"
                 alt="Logo"
@@ -106,7 +106,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
 
                 {/* User profile */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-900/10 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 to-theme-900/10 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500" />
                   <Link href="/account">
                     <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 flex-shrink-0 shadow-inner group transition-transform duration-300 hover:scale-105">
                       {userDetails?.avatar_url ? (
@@ -152,7 +152,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                 <div>
                   <Button
                     onClick={authModal.onOpen}
-                    className="px-4 md:px-6 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 transition-all duration-300"
+                    className="px-4 md:px-6 bg-gradient-to-r from-theme-600 to-theme-900 hover:from-theme-500 hover:to-theme-600 transition-all duration-300"
                     size="sm"
                   >
                     新規登録

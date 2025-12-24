@@ -35,19 +35,27 @@ const CommonControls: React.FC<CommonControlsProps> = ({
 
   const shuffleClass = isMobile
     ? `cursor-pointer transition ${
-        isShuffling ? "text-[#4c1d95]" : "text-gray-400"
+        isShuffling ? "text-gray-400" : "text-gray-400"
       }`
     : `cursor-pointer transition-all duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] ${
-        isShuffling ? "text-[#4c1d95] drop-shadow-[0_0_8px_rgba(76,29,149,0.6)] hover:drop-shadow-[0_0_12px_rgba(76,29,149,0.8)]" : "text-neutral-400 hover:text-white"
+        isShuffling
+          ? "text-neutral-400 hover:text-white"
+          : "text-neutral-400 hover:text-white"
       }`;
+
+  const shuffleStyle = isShuffling ? { color: "var(--primary-color)" } : {};
 
   const stepBackClass = isMobile
     ? "text-gray-400 cursor-pointer hover:text-white transition"
     : "text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300";
 
   const playButtonClass = isMobile
-    ? "flex items-center justify-center h-16 w-16 rounded-full bg-[#4c1d95] cursor-pointer shadow-lg hover:bg-[#5d2ca6] transition-colors"
+    ? "flex items-center justify-center h-16 w-16 rounded-full cursor-pointer shadow-lg transition-colors"
     : "flex items-center justify-center h-7 w-7 rounded-full bg-gradient-to-br from-[#08101f] to-[#0d0d0d] p-1 cursor-pointer group";
+
+  const playButtonStyle = isMobile
+    ? { backgroundColor: "var(--primary-color)" }
+    : {};
 
   const playIconClass = isMobile
     ? "text-white"
@@ -57,18 +65,27 @@ const CommonControls: React.FC<CommonControlsProps> = ({
 
   const repeatClass = isMobile
     ? `cursor-pointer transition ${
-        isRepeating ? "text-[#4c1d95]" : "text-gray-400"
+        isRepeating ? "text-gray-400" : "text-gray-400"
       }`
     : `cursor-pointer transition-all duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] ${
-        isRepeating ? "text-[#4c1d95] drop-shadow-[0_0_8px_rgba(76,29,149,0.6)] hover:drop-shadow-[0_0_12px_rgba(76,29,149,0.8)]" : "text-neutral-400 hover:text-white"
+        isRepeating
+          ? "text-neutral-400 hover:text-white"
+          : "text-neutral-400 hover:text-white"
       }`;
 
+  const repeatStyle = isRepeating ? { color: "var(--primary-color)" } : {};
+
   return (
-    <div className={`flex items-center ${isMobile ? 'justify-between' : 'gap-x-8'}`}>
+    <div
+      className={`flex items-center ${
+        isMobile ? "justify-between" : "gap-x-8"
+      }`}
+    >
       <FaRandom
         onClick={toggleShuffle}
         size={shuffleSize}
         className={shuffleClass}
+        style={shuffleStyle}
       />
       <AiFillStepBackward
         onClick={onPlayPrevious}
@@ -78,11 +95,9 @@ const CommonControls: React.FC<CommonControlsProps> = ({
       <div
         onClick={handlePlay}
         className={playButtonClass}
+        style={playButtonStyle}
       >
-        <Icon
-          size={playSize}
-          className={playIconClass}
-        />
+        <Icon size={playSize} className={playIconClass} />
       </div>
       <AiFillStepForward
         onClick={onPlayNext}
@@ -93,6 +108,7 @@ const CommonControls: React.FC<CommonControlsProps> = ({
         onClick={toggleRepeat}
         size={repeatSize}
         className={repeatClass}
+        style={repeatStyle}
       />
     </div>
   );

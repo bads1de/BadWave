@@ -8,6 +8,7 @@ import RightSidebar from "@/components/RightSidebar/RightSidebar";
 import Sidebar from "@/components/Sidebar/Sidebar";
 
 import ModalProvider from "@/providers/ModalProvider";
+import ThemeProvider from "@/providers/ThemeProvider";
 
 import ToasterProvider from "@/providers/ToasterProvider";
 import UserProvider from "@/providers/UserProvider";
@@ -34,11 +35,13 @@ export default async function RootLayout({
         <ToasterProvider />
         <TanStackProvider>
           <UserProvider>
-            <ModalProvider />
-            <Sidebar>
-              <RightSidebar>{children}</RightSidebar>
-            </Sidebar>
-            <Player playlists={playlists} />
+            <ThemeProvider>
+              <ModalProvider />
+              <Sidebar>
+                <RightSidebar>{children}</RightSidebar>
+              </Sidebar>
+              <Player playlists={playlists} />
+            </ThemeProvider>
           </UserProvider>
         </TanStackProvider>
       </body>

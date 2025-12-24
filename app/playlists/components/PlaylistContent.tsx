@@ -42,11 +42,22 @@ const PlaylistContent: React.FC<PlaylistContentProps> = memo(
             onClick={() => handlePlaylistClick(playlist.id)}
           >
             {/* 背景の重なった効果 */}
-            <div className="absolute -top-2 -left-2 w-full h-full bg-purple-900/50 transform rotate-3 rounded-xl" />
-            <div className="absolute -top-1 -left-1 w-full h-full bg-purple-800/50 transform rotate-2 rounded-xl" />
+            <div
+              className="absolute -top-2 -left-2 w-full h-full transform rotate-3 rounded-xl"
+              style={{ backgroundColor: "rgba(var(--theme-900), 0.5)" }}
+            />
+            <div
+              className="absolute -top-1 -left-1 w-full h-full transform rotate-2 rounded-xl"
+              style={{ backgroundColor: "rgba(var(--theme-600), 0.5)" }}
+            />
 
             {/* メインカード */}
-            <div className="relative bg-neutral-900 rounded-xl p-4 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:shadow-purple-900/20">
+            <div
+              className="relative bg-neutral-900 rounded-xl p-4 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl"
+              style={{
+                ["--tw-shadow-color" as string]: "rgba(var(--theme-900), 0.2)",
+              }}
+            >
               {/* アートワーク */}
               <div className="relative aspect-square w-full overflow-hidden rounded-lg mb-4">
                 <Image

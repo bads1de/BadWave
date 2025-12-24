@@ -127,16 +127,26 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
         {/* アバターセクション */}
         <div className="flex justify-center">
           <div className="relative w-28 h-28 group">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-900/20 animate-pulse" />
+            <div
+              className="absolute inset-0 rounded-full animate-pulse"
+              style={{
+                background:
+                  "linear-gradient(to bottom right, rgba(var(--theme-500), 0.2), rgba(var(--theme-900), 0.2))",
+              }}
+            />
             <Image
               src={currentAvatar || "/images/default-avatar.png"}
               alt="Profile"
               fill
-              className="rounded-full object-cover border-4 border-neutral-800/50 group-hover:border-purple-500/50 transition-all duration-300"
+              className="rounded-full object-cover border-4 border-neutral-800/50 transition-all duration-300"
+              style={{ borderColor: "rgba(var(--theme-500), 0.5)" }}
             />
             <label className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-all duration-300 backdrop-blur-sm">
               <div className="flex flex-col items-center gap-2">
-                <Camera className="w-6 h-6 text-purple-400" />
+                <Camera
+                  className="w-6 h-6"
+                  style={{ color: "rgba(var(--theme-400), 1)" }}
+                />
                 <span className="text-white text-sm font-medium">
                   画像を変更
                 </span>
@@ -167,14 +177,22 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
               type="text"
               value={newFullName}
               onChange={(e) => setNewFullName(e.target.value)}
-              className="w-full px-4 py-3 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/30 transition-all duration-300"
+              className="w-full px-4 py-3 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white placeholder:text-neutral-500 focus:outline-none transition-all duration-300"
               placeholder="ユーザー名を入力"
+              style={{
+                ["--tw-ring-color" as string]: "rgba(var(--theme-500), 0.2)",
+              }}
             />
           </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gradient-to-br from-purple-500/20 to-purple-900/20 hover:from-purple-500/30 hover:to-purple-900/30 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-white font-medium transition-all duration-300 disabled:opacity-50"
+            className="w-full py-3 px-4 rounded-xl text-white font-medium transition-all duration-300 disabled:opacity-50"
+            style={{
+              background:
+                "linear-gradient(to bottom right, rgba(var(--theme-500), 0.2), rgba(var(--theme-900), 0.2))",
+              border: "1px solid rgba(var(--theme-500), 0.3)",
+            }}
           >
             プロフィールを更新
           </button>
@@ -196,21 +214,22 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/30 transition-all duration-300"
+                className="w-full px-4 py-3 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white placeholder:text-neutral-500 focus:outline-none transition-all duration-300"
                 placeholder="新しいパスワード"
               />
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/30 transition-all duration-300"
+                className="w-full px-4 py-3 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white placeholder:text-neutral-500 focus:outline-none transition-all duration-300"
                 placeholder="パスワードの確認"
               />
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-neutral-900/60 border border-white/[0.02] hover:border-purple-500/30 rounded-xl text-white font-medium transition-all duration-300 disabled:opacity-50"
+              className="w-full py-3 px-4 bg-neutral-900/60 border border-white/[0.02] rounded-xl text-white font-medium transition-all duration-300 disabled:opacity-50"
+              style={{ borderColor: "rgba(var(--theme-500), 0.3)" }}
             >
               パスワードを更新
             </button>

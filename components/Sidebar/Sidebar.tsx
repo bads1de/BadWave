@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         <div className="flex items-center justify-between px-2.5 py-2">
           <div className="flex items-center gap-3">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-purple-900/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-theme-500/20 to-theme-900/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
               <Image
                 src="/logo.svg"
                 alt="Logo"
@@ -116,8 +116,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                         : "flex h-auto w-full items-center gap-x-4 py-3.5 px-4 rounded-xl",
                       isLibraryActive
                         ? isCollapsed
-                          ? "border-purple-500/30"
-                          : "bg-purple-500/20 text-white border border-purple-500/30"
+                          ? "border-theme-500/30"
+                          : "bg-theme-500/20 text-white border border-theme-500/30"
                         : `border-transparent ${
                             isCollapsed
                               ? "border-white/5"
@@ -136,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                             size={20}
                             className={twMerge(
                               isLibraryActive
-                                ? "text-purple-400"
+                                ? "text-theme-400"
                                 : "text-neutral-400"
                             )}
                           />
@@ -163,7 +163,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       className={twMerge(
                         "flex items-center gap-x-3 px-3 py-2.5 rounded-lg transition-all duration-300",
                         pathname === "/playlists"
-                          ? "bg-purple-500/20 text-white"
+                          ? "bg-theme-500/20 text-white"
                           : "text-neutral-400 hover:text-white hover:bg-white/5"
                       )}
                     >
@@ -175,7 +175,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       className={twMerge(
                         "flex items-center gap-x-3 px-3 py-2.5 rounded-lg transition-all duration-300",
                         pathname === "/liked"
-                          ? "bg-purple-500/20 text-white"
+                          ? "bg-theme-500/20 text-white"
                           : "text-neutral-400 hover:text-white hover:bg-white/5"
                       )}
                     >

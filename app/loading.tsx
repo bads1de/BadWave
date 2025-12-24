@@ -1,16 +1,27 @@
 "use client";
 
 import { PulseLoader } from "react-spinners";
-import Box from "@/components/common/Box";
 import { motion } from "framer-motion";
 
 const Loading = () => {
   return (
-    <Box className="h-full flex items-center justify-center bg-gradient-to-br from-neutral-900/80 via-purple-900/20 to-neutral-900/80">
+    <div
+      className="h-full flex items-center justify-center rounded-xl"
+      style={{
+        background:
+          "linear-gradient(to bottom right, rgba(24, 24, 27, 0.8), rgba(var(--theme-900), 0.2), rgba(24, 24, 27, 0.8))",
+      }}
+    >
       <div className="relative">
         {/* バックグラウンドのblur */}
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+        <div
+          className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(var(--theme-500), 0.1)" }}
+        />
+        <div
+          className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full blur-3xl"
+          style={{ backgroundColor: "rgba(var(--theme-600), 0.1)" }}
+        />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -19,7 +30,7 @@ const Loading = () => {
         >
           {/* ローディングアニメーション */}
           <PulseLoader
-            color="rgba(139, 92, 246, 0.8)"
+            color="var(--primary-color)"
             size={15}
             speedMultiplier={0.8}
           />
@@ -34,7 +45,7 @@ const Loading = () => {
           </motion.p>
         </motion.div>
       </div>
-    </Box>
+    </div>
   );
 };
 
