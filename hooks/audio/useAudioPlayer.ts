@@ -3,6 +3,9 @@ import usePlayer from "@/hooks/player/usePlayer";
 import { isMobile } from "react-device-detect";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
+import useAudioWaveStore, {
+  globalAudioPlayerRef,
+} from "@/hooks/audio/useAudioWave";
 
 /**
  * オーディオプレイヤーの状態と操作を管理するカスタムフック
@@ -40,12 +43,31 @@ const useAudioPlayer = (songUrl: string) => {
   const isRepeating = usePlayer((state) => state.isRepeating);
   const isShuffling = usePlayer((state) => state.isShuffling);
 
+  // 波形プレイヤーの停止関数を取得
+  const pauseWavePlayer = useAudioWaveStore((state) => state.pause);
+
   const Icon = isPlaying ? BsPauseFill : BsPlayFill;
   const VolumeIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
 
-  const handlePlay = useCallback(() => {
-    setIsPlaying((prev) => !prev);
+  // グローバル参照にメインプレイヤーの情報を登録
+  useEffect(() => {
+    globalAudioPlayerRef.mainPlayerAudioRef = audioRef.current;
+    globalAudioPlayerRef.pauseMainPlayer = () => setIsPlaying(false);
+
+    return () => {
+      globalAudioPlayerRef.mainPlayerAudioRef = null;
+      globalAudioPlayerRef.pauseMainPlayer = null;
+    };
   }, []);
+
+  const handlePlay = useCallback(() => {
+    // 再生を開始する場合、波形プレイヤーを停止する
+    if (!isPlaying) {
+      pauseWavePlayer();
+      globalAudioPlayerRef.activePlayer = "main";
+    }
+    setIsPlaying((prev) => !prev);
+  }, [isPlaying, pauseWavePlayer]);
 
   const handleSeek = useCallback((time: number) => {
     if (audioRef.current) {

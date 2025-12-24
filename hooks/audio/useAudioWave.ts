@@ -1,5 +1,18 @@
 import { create } from "zustand";
 
+/**
+ * グローバルなオーディオプレイヤー参照
+ * 複数のオーディオプレイヤーが同時に再生されないように管理するための共有参照
+ */
+export const globalAudioPlayerRef = {
+  // 現在アクティブなプレイヤータイプ（"main" = 既存プレイヤー, "wave" = 波形プレイヤー）
+  activePlayer: null as "main" | "wave" | null,
+  // メインプレイヤーのオーディオ要素への参照
+  mainPlayerAudioRef: null as HTMLAudioElement | null,
+  // メインプレイヤーを一時停止するコールバック
+  pauseMainPlayer: null as (() => void) | null,
+};
+
 interface AudioWaveState {
   audioContext: AudioContext | null;
   analyser: AnalyserNode | null;
@@ -116,17 +129,55 @@ const useAudioWaveStore = create<AudioWaveState>((set, get) => ({
   /**
    * オーディオを再生する関数
    * 一時停止されていた場合はコンテキストを再開し、再生を開始します
+   * オーディオ要素が準備完了するまで待機してから再生します
+   * 他のプレイヤー（メインプレイヤー）が再生中の場合は停止します
    */
   play: async () => {
     const { audioElement, audioContext } = get();
 
     if (audioElement && audioContext) {
-      if (audioContext.state === "suspended") {
-        await audioContext.resume();
-      }
+      try {
+        // メインプレイヤーが再生中の場合は停止する
+        if (globalAudioPlayerRef.pauseMainPlayer) {
+          globalAudioPlayerRef.pauseMainPlayer();
+        }
+        if (globalAudioPlayerRef.mainPlayerAudioRef) {
+          globalAudioPlayerRef.mainPlayerAudioRef.pause();
+        }
+        // アクティブプレイヤーを波形プレイヤーに設定
+        globalAudioPlayerRef.activePlayer = "wave";
 
-      await audioElement.play();
-      set({ isPlaying: true, isEnded: false });
+        if (audioContext.state === "suspended") {
+          await audioContext.resume();
+        }
+
+        // オーディオ要素が再生可能な状態かチェック
+        // readyState: 0=HAVE_NOTHING, 1=HAVE_METADATA, 2=HAVE_CURRENT_DATA, 3=HAVE_FUTURE_DATA, 4=HAVE_ENOUGH_DATA
+        if (audioElement.readyState < 2) {
+          // オーディオがまだ読み込まれていない場合、canplayイベントを待つ
+          await new Promise<void>((resolve, reject) => {
+            const handleCanPlay = () => {
+              audioElement.removeEventListener("canplay", handleCanPlay);
+              audioElement.removeEventListener("error", handleError);
+              resolve();
+            };
+            const handleError = () => {
+              audioElement.removeEventListener("canplay", handleCanPlay);
+              audioElement.removeEventListener("error", handleError);
+              reject(new Error("オーディオの読み込みに失敗しました"));
+            };
+            audioElement.addEventListener("canplay", handleCanPlay);
+            audioElement.addEventListener("error", handleError);
+          });
+        }
+
+        await audioElement.play();
+        set({ isPlaying: true, isEnded: false });
+      } catch (error) {
+        console.error("オーディオ再生エラー:", error);
+        // エラー時は再生状態をfalseに設定
+        set({ isPlaying: false });
+      }
     }
   },
 
