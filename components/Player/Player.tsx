@@ -2,11 +2,13 @@
 
 import useGetSongById from "@/hooks/data/useGetSongById";
 import usePlayer from "@/hooks/player/usePlayer";
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import PlayerContent from "./PlayerContent";
 import MobileTabs from "../Mobile/MobileTabs";
 import { Playlist } from "@/types";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
+import { usePathname } from "next/navigation";
+import { globalAudioPlayerRef } from "@/hooks/audio/useAudioWave";
 
 interface PlayerProps {
   playlists: Playlist[];
@@ -16,6 +18,26 @@ const Player = ({ playlists }: PlayerProps) => {
   const player = usePlayer();
   const { isMobilePlayer, toggleMobilePlayer } = useMobilePlayer();
   const { song } = useGetSongById(player.activeId);
+  const pathname = usePathname();
+  const isPulsePage = pathname === "/pulse";
+
+  // pulseページに遷移したら曲を停止する
+  useEffect(() => {
+    if (isPulsePage) {
+      // メインプレイヤーを停止
+      if (globalAudioPlayerRef.pauseMainPlayer) {
+        globalAudioPlayerRef.pauseMainPlayer();
+      }
+      if (globalAudioPlayerRef.mainPlayerAudioRef) {
+        globalAudioPlayerRef.mainPlayerAudioRef.pause();
+      }
+    }
+  }, [isPulsePage]);
+
+  // pulseページではプレイヤーを非表示
+  if (isPulsePage) {
+    return null;
+  }
 
   if (!song || (!song.song_path && !isMobilePlayer)) {
     return (

@@ -5,6 +5,7 @@ import usePlayer from "@/hooks/player/usePlayer";
 import useGetSongById from "@/hooks/data/useGetSongById";
 import FullScreenLayout from "./FullScreenLayout";
 import { twMerge } from "tailwind-merge";
+import { usePathname } from "next/navigation";
 
 interface RightSidebarProps {
   children: React.ReactNode;
@@ -14,11 +15,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ children }) => {
   const player = usePlayer();
   const { song } = useGetSongById(player.activeId);
   const { song: nextSong } = useGetSongById(player.getNextSongId());
+  const pathname = usePathname();
+  const isPulsePage = pathname === "/pulse";
 
   const currentSong = song;
   const nextTrack = nextSong;
 
-  const showRightSidebar = !!currentSong;
+  // pulseページではRightSidebarを非表示
+  const showRightSidebar = !!currentSong && !isPulsePage;
 
   return (
     <div className={twMerge(`flex h-full`, player.activeId && "h-full")}>

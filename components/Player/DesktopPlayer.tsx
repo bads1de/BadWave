@@ -69,6 +69,18 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
           </div>
         </div>
 
+        <div className="flex md:hidden col-auto w-full justify-end items-center pr-6">
+          <div
+            onClick={handlePlay}
+            className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#08101f] to-[#0d0d0d] p-1 cursor-pointer group"
+          >
+            <Icon
+              size={30}
+              className="text-[#f0f0f0] group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+            />
+          </div>
+        </div>
+
         <div className="hidden md:flex flex-col w-full md:justify-center items-center max-w-[722px] gap-x-6">
           <CommonControls
             isPlaying={isPlaying}

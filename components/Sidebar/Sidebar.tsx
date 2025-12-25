@@ -59,11 +59,14 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
     return pathname === "/playlists" || pathname === "/liked";
   }, [pathname]);
 
+  const isPulsePage = pathname === "/pulse";
+
   return (
     <div
       className={twMerge(
         `flex h-full`,
-        player.activeId && "h-[calc(100%-80px)]"
+        // pulseページではプレイヤーが非表示なのでheight調整不要
+        player.activeId && !isPulsePage && "h-[calc(100%-80px)]"
       )}
     >
       <div
