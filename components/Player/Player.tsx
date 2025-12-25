@@ -2,7 +2,7 @@
 
 import useGetSongById from "@/hooks/data/useGetSongById";
 import usePlayer from "@/hooks/player/usePlayer";
-import React, { memo, useEffect } from "react";
+import { memo, useEffect } from "react";
 import PlayerContent from "./PlayerContent";
 import MobileTabs from "../Mobile/MobileTabs";
 import { Playlist } from "@/types";
@@ -28,6 +28,8 @@ const Player = ({ playlists }: PlayerProps) => {
       if (globalAudioPlayerRef.pauseMainPlayer) {
         globalAudioPlayerRef.pauseMainPlayer();
       }
+
+      // メインプレイヤーの音を停止
       if (globalAudioPlayerRef.mainPlayerAudioRef) {
         globalAudioPlayerRef.mainPlayerAudioRef.pause();
       }

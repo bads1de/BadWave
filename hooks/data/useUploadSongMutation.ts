@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 import { uploadFileToR2 } from "@/actions/r2";
+import { checkIsAdmin } from "@/actions/checkAdmin";
 import { sanitizeTitle } from "@/libs/helpers";
 import uniqid from "uniqid";
 import { CACHED_QUERIES } from "@/constants";
@@ -65,6 +66,14 @@ const useUploadSongMutation = (uploadModal: UploadModalHook) => {
       songFile,
       imageFile,
     }: UploadSongParams) => {
+      // 管理者権限チェック
+      const { isAdmin } = await checkIsAdmin();
+
+      if (!isAdmin) {
+        toast.error("管理者権限が必要です");
+        throw new Error("管理者権限が必要です");
+      }
+
       if (!songFile || !imageFile || !user) {
         toast.error("必須フィールドが未入力です");
         throw new Error("必須フィールドが未入力です");

@@ -57,3 +57,10 @@ export interface Spotlight {
   genre?: string;
   description?: string;
 }
+
+export interface Pulse {
+  id: string;
+  title: string;
+  genre: string;
+  music_path: string;
+}

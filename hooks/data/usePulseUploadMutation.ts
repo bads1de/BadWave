@@ -9,24 +9,22 @@ import { uploadFileToR2 } from "@/actions/r2";
 import { checkIsAdmin } from "@/actions/checkAdmin";
 import { CACHED_QUERIES } from "@/constants";
 
-interface SpotlightUploadParams {
+interface PulseUploadParams {
   title: string;
-  author: string;
   genre: string;
-  description: string;
-  videoFile: File | null;
+  musicFile: File | null;
 }
 
-interface SpotlightUploadModalHook {
+interface PulseUploadModalHook {
   onClose: () => void;
 }
 
 /**
- * ファイルをFormDataに変換してアップロードする
+ * ファイルをFormDataに変換してR2にアップロードする
  */
 async function uploadFile(
   file: File,
-  bucketName: "spotlight" | "song" | "image" | "video",
+  bucketName: "pulse",
   fileNamePrefix: string
 ): Promise<string | null> {
   const formData = new FormData();
@@ -44,62 +42,60 @@ async function uploadFile(
 }
 
 /**
- * Spotlightへの動画アップロード処理を行うカスタムフック
+ * Pulseへの音声アップロード処理を行うカスタムフック
  *
- * @param spotlightUploadModal アップロードモーダルのフック
+ * @param pulseUploadModal アップロードモーダルのフック
  * @returns アップロードミューテーション
  */
-const useSpotlightUploadMutation = (
-  spotlightUploadModal: SpotlightUploadModalHook
-) => {
+const usePulseUploadMutation = (pulseUploadModal: PulseUploadModalHook) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { user } = useUser();
 
   return useMutation({
-    mutationFn: async ({
-      title,
-      author,
-      genre,
-      description,
-      videoFile,
-    }: SpotlightUploadParams) => {
+    mutationFn: async ({ title, genre, musicFile }: PulseUploadParams) => {
       // 管理者権限チェック
       const { isAdmin } = await checkIsAdmin();
-
       if (!isAdmin) {
         toast.error("管理者権限が必要です");
         throw new Error("管理者権限が必要です");
       }
 
-      if (!videoFile || !user) {
-        toast.error("動画ファイルを選択してください");
-        throw new Error("動画ファイルを選択してください");
+      if (!musicFile || !user) {
+        toast.error("音声ファイルを選択してください");
+        throw new Error("音声ファイルを選択してください");
       }
 
-      // 動画をR2にアップロード
-      let videoUrl: string | null;
+      if (!title.trim()) {
+        toast.error("タイトルを入力してください");
+        throw new Error("タイトルを入力してください");
+      }
+
+      if (!genre.trim()) {
+        toast.error("ジャンルを入力してください");
+        throw new Error("ジャンルを入力してください");
+      }
+
+      // 音声をR2にアップロード
+      let musicUrl: string | null;
       try {
-        videoUrl = await uploadFile(videoFile, "spotlight", "spotlight");
+        musicUrl = await uploadFile(musicFile, "pulse", "pulse");
       } catch (error) {
-        toast.error("動画のアップロードに失敗しました");
-        throw new Error("動画のアップロードに失敗しました");
+        toast.error("音声のアップロードに失敗しました");
+        throw new Error("音声のアップロードに失敗しました");
       }
 
-      if (!videoUrl) {
-        toast.error("動画のアップロードに失敗しました");
-        throw new Error("動画のアップロードに失敗しました");
+      if (!musicUrl) {
+        toast.error("音声のアップロードに失敗しました");
+        throw new Error("音声のアップロードに失敗しました");
       }
 
       // データベースにレコードを作成
-      const { error } = await supabaseClient.from("spotlights").insert({
-        video_path: videoUrl,
+      const { error } = await supabaseClient.from("pulses").insert({
+        music_path: musicUrl,
         title,
-        author,
         genre,
-        description,
-        user_id: user.id,
       });
 
       if (error) {
@@ -107,24 +103,24 @@ const useSpotlightUploadMutation = (
         throw new Error(error.message);
       }
 
-      return { title, author };
+      return { title, genre };
     },
     onSuccess: () => {
       // キャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.spotlight] });
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.pulse] });
 
       // UIを更新
       router.refresh();
-      toast.success("Spotlightに投稿しました!");
+      toast.success("Pulseを投稿しました!");
 
       // モーダルを閉じる
-      spotlightUploadModal.onClose();
+      pulseUploadModal.onClose();
     },
     onError: (error: Error) => {
-      console.error("Spotlight upload error:", error);
+      console.error("Pulse upload error:", error);
       // エラーメッセージはmutationFn内で表示しているため、ここでは何もしない
     },
   });
 };
 
-export default useSpotlightUploadMutation;
+export default usePulseUploadMutation;

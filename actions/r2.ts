@@ -11,7 +11,7 @@ import s3Client from "@/libs/s3";
 /**
  * R2のバケット名
  */
-export type BucketName = "spotlight" | "song" | "image" | "video";
+export type BucketName = "spotlight" | "song" | "image" | "video" | "pulse";
 
 /**
  * アップロード結果
@@ -96,6 +96,9 @@ export async function uploadFileToR2(
         break;
       case "video":
         url = `${process.env.R2_VIDEO_URL}/${fileName}`;
+        break;
+      case "pulse":
+        url = `${process.env.R2_PULSE_URL}/${fileName}`;
         break;
       default:
         return {
