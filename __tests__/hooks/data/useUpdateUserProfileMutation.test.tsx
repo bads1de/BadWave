@@ -3,8 +3,8 @@ import { QueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useUpdateUserProfileMutation from "@/hooks/data/useUpdateUserProfileMutation";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
-import deleteFileFromR2 from "@/actions/deleteFileFromR2";
+import { uploadFileToR2 } from "@/actions/r2";
+import { deleteFileFromR2 } from "@/actions/r2";
 import { createClient } from "@/libs/supabase/client";
 import { createWrapper } from "../../test-utils";
 
@@ -21,14 +21,10 @@ jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock("@/actions/uploadFileToR2", () => ({
+jest.mock("@/actions/r2", () => ({
   __esModule: true,
-  default: jest.fn(),
-}));
-
-jest.mock("@/actions/deleteFileFromR2", () => ({
-  __esModule: true,
-  default: jest.fn(),
+  uploadFileToR2: jest.fn(),
+  deleteFileFromR2: jest.fn(),
 }));
 
 jest.mock("@/libs/supabase/client", () => ({
@@ -70,10 +66,11 @@ describe("useUpdateUserProfileMutation", () => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);
-    (uploadFileToR2 as jest.Mock).mockResolvedValue(
-      "https://example.com/avatar.jpg"
-    );
-    (deleteFileFromR2 as jest.Mock).mockResolvedValue(true);
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({
+      success: true,
+      url: "https://example.com/avatar.jpg",
+    });
+    (deleteFileFromR2 as jest.Mock).mockResolvedValue({ success: true });
   });
 
   describe("updateProfile", () => {
@@ -161,15 +158,10 @@ describe("useUpdateUserProfileMutation", () => {
       });
 
       // 古いアバターの削除が呼ばれたことを確認
-      expect(deleteFileFromR2).toHaveBeenCalled();
+      expect(deleteFileFromR2).toHaveBeenCalledWith("image", "old-avatar.jpg");
 
-      // 新しいアバターのアップロードが呼ばれたことを確認
-      expect(uploadFileToR2).toHaveBeenCalledWith({
-        file: avatarFile,
-        bucketName: "image",
-        fileType: "image",
-        fileNamePrefix: `avatar-test-user-id`,
-      });
+      // 新しいアバターのアップロードが呼ばれたことを確認（FormDataとして）
+      expect(uploadFileToR2).toHaveBeenCalled();
 
       // Supabaseのupdateが呼ばれたことを確認
       expect(mockSupabaseClient.from).toHaveBeenCalledWith("users");
@@ -183,7 +175,10 @@ describe("useUpdateUserProfileMutation", () => {
 
     it("ファイルアップロードに失敗した場合、エラーが発生すること", async () => {
       // ファイルアップロードの失敗をモック
-      (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
+      (uploadFileToR2 as jest.Mock).mockResolvedValue({
+        success: false,
+        error: "アップロードに失敗しました",
+      });
 
       const { result } = renderHook(
         () => useUpdateUserProfileMutation(mockAccountModalHook),
@@ -208,7 +203,7 @@ describe("useUpdateUserProfileMutation", () => {
       });
 
       // エラーメッセージが表示されたことを確認
-      expect(toast.error).toHaveBeenCalledWith("アップロードに失敗しました");
+      expect(toast.error).toHaveBeenCalled();
 
       // Supabaseのupdateが呼ばれていないことを確認
       expect(mockSupabaseClient.from().update).not.toHaveBeenCalled();

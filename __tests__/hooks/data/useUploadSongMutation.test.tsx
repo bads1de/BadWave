@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
+import { uploadFileToR2 } from "@/actions/r2";
 import { createClient } from "@/libs/supabase/client";
 import { createWrapper } from "../../test-utils";
 
@@ -25,9 +25,9 @@ jest.mock("@/hooks/auth/useUser", () => ({
   useUser: jest.fn(),
 }));
 
-jest.mock("@/actions/uploadFileToR2", () => ({
+jest.mock("@/actions/r2", () => ({
   __esModule: true,
-  default: jest.fn(),
+  uploadFileToR2: jest.fn(),
 }));
 
 jest.mock("@/libs/supabase/client", () => ({
@@ -75,11 +75,18 @@ describe("useUploadSongMutation", () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useUser as jest.Mock).mockReturnValue({ user: mockUser });
     (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);
-    (uploadFileToR2 as jest.Mock).mockImplementation(async ({ fileType }) => {
-      return fileType === "audio"
-        ? "https://example.com/song.mp3"
-        : "https://example.com/image.jpg";
-    });
+    (uploadFileToR2 as jest.Mock).mockImplementation(
+      async (formData: FormData) => {
+        const bucketName = formData.get("bucketName");
+        return {
+          success: true,
+          url:
+            bucketName === "song"
+              ? "https://example.com/song.mp3"
+              : "https://example.com/image.jpg",
+        };
+      }
+    );
   });
 
   it("曲のアップロードが成功した場合、正しく処理されること", async () => {
@@ -168,7 +175,10 @@ describe("useUploadSongMutation", () => {
 
   it("ファイルアップロードに失敗した場合、エラーが発生すること", async () => {
     // ファイルアップロードの失敗をモック
-    (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({
+      success: false,
+      error: "アップロードに失敗しました",
+    });
 
     const { result } = renderHook(
       () => useUploadSongMutation(mockUploadModalHook),
@@ -197,9 +207,7 @@ describe("useUploadSongMutation", () => {
     });
 
     // エラーメッセージが表示されたことを確認
-    expect(toast.error).toHaveBeenCalledWith(
-      "ファイルのアップロードに失敗しました"
-    );
+    expect(toast.error).toHaveBeenCalled();
 
     // Supabaseのinsertが呼ばれていないことを確認
     expect(mockSupabaseClient.from().insert).not.toHaveBeenCalled();

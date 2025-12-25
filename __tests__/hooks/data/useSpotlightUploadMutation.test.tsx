@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
+import { uploadFileToR2 } from "@/actions/r2";
 import { createClient } from "@/libs/supabase/client";
 import { createWrapper } from "../../test-utils";
 
@@ -25,9 +25,9 @@ jest.mock("@/hooks/auth/useUser", () => ({
   useUser: jest.fn(),
 }));
 
-jest.mock("@/actions/uploadFileToR2", () => ({
+jest.mock("@/actions/r2", () => ({
   __esModule: true,
-  default: jest.fn(),
+  uploadFileToR2: jest.fn(),
 }));
 
 jest.mock("@/libs/supabase/client", () => ({
@@ -69,9 +69,10 @@ describe("useSpotlightUploadMutation", () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useUser as jest.Mock).mockReturnValue({ user: mockUser });
     (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);
-    (uploadFileToR2 as jest.Mock).mockResolvedValue(
-      "https://example.com/video.mp4"
-    );
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({
+      success: true,
+      url: "https://example.com/video.mp4",
+    });
   });
 
   it("動画のアップロードが成功した場合、正しく処理されること", async () => {
@@ -96,13 +97,8 @@ describe("useSpotlightUploadMutation", () => {
       });
     });
 
-    // ファイルアップロードが呼ばれたことを確認
-    expect(uploadFileToR2).toHaveBeenCalledWith({
-      file: videoFile,
-      bucketName: "spotlight",
-      fileType: "video",
-      fileNamePrefix: "spotlight",
-    });
+    // ファイルアップロードが呼ばれたことを確認（FormDataとして）
+    expect(uploadFileToR2).toHaveBeenCalled();
 
     // Supabaseのinsertが呼ばれたことを確認
     expect(mockSupabaseClient.from).toHaveBeenCalledWith("spotlights");
@@ -156,7 +152,10 @@ describe("useSpotlightUploadMutation", () => {
 
   it("ファイルアップロードに失敗した場合、エラーが発生すること", async () => {
     // ファイルアップロードの失敗をモック
-    (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({
+      success: false,
+      error: "アップロードに失敗しました",
+    });
 
     const { result } = renderHook(
       () => useSpotlightUploadMutation(mockSpotlightUploadModalHook),

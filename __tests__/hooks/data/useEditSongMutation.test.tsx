@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useEditSongMutation from "@/hooks/data/useEditSongMutation";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
-import deleteFileFromR2 from "@/actions/deleteFileFromR2";
+import { uploadFileToR2 } from "@/actions/r2";
+import { deleteFileFromR2 } from "@/actions/r2";
 import { createClient } from "@/libs/supabase/client";
 import { Song } from "@/types";
 
@@ -22,14 +22,10 @@ jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock("@/actions/uploadFileToR2", () => ({
+jest.mock("@/actions/r2", () => ({
   __esModule: true,
-  default: jest.fn(),
-}));
-
-jest.mock("@/actions/deleteFileFromR2", () => ({
-  __esModule: true,
-  default: jest.fn(),
+  uploadFileToR2: jest.fn(),
+  deleteFileFromR2: jest.fn(),
 }));
 
 jest.mock("@/libs/supabase/client", () => ({
@@ -87,12 +83,25 @@ describe("useEditSongMutation", () => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);
-    (uploadFileToR2 as jest.Mock).mockImplementation(async ({ fileType }) => {
-      if (fileType === "audio") return "https://example.com/updated-song.mp3";
-      if (fileType === "image") return "https://example.com/updated-image.jpg";
-      if (fileType === "video") return "https://example.com/updated-video.mp4";
-      return null;
-    });
+    (uploadFileToR2 as jest.Mock).mockImplementation(
+      async (formData: FormData) => {
+        const bucketName = formData.get("bucketName");
+        if (bucketName === "song")
+          return { success: true, url: "https://example.com/updated-song.mp3" };
+        if (bucketName === "image")
+          return {
+            success: true,
+            url: "https://example.com/updated-image.jpg",
+          };
+        if (bucketName === "video")
+          return {
+            success: true,
+            url: "https://example.com/updated-video.mp4",
+          };
+        return { success: false, error: "Unknown bucket" };
+      }
+    );
+    (deleteFileFromR2 as jest.Mock).mockResolvedValue({ success: true });
   });
 
   it("曲の編集が成功した場合、正しく処理されること", async () => {
@@ -216,7 +225,10 @@ describe("useEditSongMutation", () => {
 
   it("ファイルアップロードに失敗した場合でも、他のフィールドは更新されること", async () => {
     // ファイルアップロードの失敗をモック
-    (uploadFileToR2 as jest.Mock).mockResolvedValue(null);
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({
+      success: false,
+      error: "アップロードに失敗しました",
+    });
 
     const { result } = renderHook(
       () => useEditSongMutation(mockEditModalHook),

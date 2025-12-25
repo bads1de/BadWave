@@ -4,8 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
-import deleteFileFromR2 from "@/actions/deleteFileFromR2";
+import { uploadFileToR2, deleteFileFromR2 } from "@/actions/r2";
 import { sanitizeTitle } from "@/libs/helpers";
 import { CACHED_QUERIES } from "@/constants";
 import { Song } from "@/types";
@@ -24,6 +23,28 @@ interface EditSongParams {
 
 interface EditModalHook {
   onClose: () => void;
+}
+
+/**
+ * ファイルをFormDataに変換してアップロードする
+ */
+async function uploadFile(
+  file: File,
+  bucketName: "spotlight" | "song" | "image" | "video",
+  fileNamePrefix: string
+): Promise<string | null> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("bucketName", bucketName);
+  formData.append("fileNamePrefix", fileNamePrefix);
+
+  const result = await uploadFileToR2(formData);
+
+  if (!result.success) {
+    throw new Error(result.error || "アップロードに失敗しました");
+  }
+
+  return result.url || null;
 }
 
 /**
@@ -46,45 +67,42 @@ const useEditSongMutation = (editModal: EditModalHook) => {
   const handleFileUpload = async ({
     file,
     bucketName,
-    fileType,
     fileNamePrefix,
     currentPath,
   }: {
     file: File;
     bucketName: "video" | "song" | "image";
-    fileType: "video" | "audio" | "image";
     fileNamePrefix: string;
     currentPath?: string;
   }) => {
     try {
-      const uploadedUrl = await uploadFileToR2({
-        file,
-        bucketName,
-        fileType,
-        fileNamePrefix,
-      });
+      const uploadedUrl = await uploadFile(file, bucketName, fileNamePrefix);
 
       if (!uploadedUrl) {
-        toast.error(
-          `${
-            fileType === "video" ? "動画" : fileType === "audio" ? "曲" : "画像"
-          }のアップロードに失敗しました`
-        );
+        const fileTypeLabel =
+          bucketName === "video"
+            ? "動画"
+            : bucketName === "song"
+            ? "曲"
+            : "画像";
+        toast.error(`${fileTypeLabel}のアップロードに失敗しました`);
         return null;
       }
 
       // 古いファイルを削除
       if (currentPath) {
-        await deleteFileFromR2({
-          bucketName,
-          filePath: currentPath.split("/").pop()!,
-          showToast: false,
-        });
+        const oldFileName = currentPath.split("/").pop();
+        if (oldFileName) {
+          await deleteFileFromR2(bucketName, oldFileName);
+        }
       }
 
       return uploadedUrl;
     } catch (error) {
-      console.error(`${fileType} upload error:`, error);
+      console.error(`${bucketName} upload error:`, error);
+      const fileTypeLabel =
+        bucketName === "video" ? "動画" : bucketName === "song" ? "曲" : "画像";
+      toast.error(`${fileTypeLabel}のアップロードに失敗しました`);
       return null;
     }
   };
@@ -115,7 +133,6 @@ const useEditSongMutation = (editModal: EditModalHook) => {
         const videoPath = await handleFileUpload({
           file: videoFile,
           bucketName: "video",
-          fileType: "video",
           fileNamePrefix: `video-${sanitizeTitle(title)}`,
           currentPath: currentSong.video_path,
         });
@@ -127,7 +144,6 @@ const useEditSongMutation = (editModal: EditModalHook) => {
         const songPath = await handleFileUpload({
           file: songFile,
           bucketName: "song",
-          fileType: "audio",
           fileNamePrefix: `song-${sanitizeTitle(title)}`,
           currentPath: currentSong.song_path,
         });
@@ -139,7 +155,6 @@ const useEditSongMutation = (editModal: EditModalHook) => {
         const imagePath = await handleFileUpload({
           file: imageFile,
           bucketName: "image",
-          fileType: "image",
           fileNamePrefix: `image-${sanitizeTitle(title)}`,
           currentPath: currentSong.image_path,
         });

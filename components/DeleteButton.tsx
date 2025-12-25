@@ -7,7 +7,7 @@ import { HiTrash } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import deleteFileFromR2 from "@/actions/deleteFileFromR2";
+import { deleteFileFromR2 } from "@/actions/r2";
 
 interface DeleteButtonProps {
   songId: string;
@@ -63,22 +63,20 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ songId, className }) => {
       if (deletedSong.song_path) {
         const songKey = deletedSong.song_path.split("/").pop();
         if (songKey) {
-          await deleteFileFromR2({
-            bucketName: "song",
-            filePath: songKey,
-            showToast: false,
-          });
+          const result = await deleteFileFromR2("song", songKey);
+          if (!result.success) {
+            console.error("Failed to delete song file:", result.error);
+          }
         }
       }
 
       if (deletedSong.image_path) {
         const imageKey = deletedSong.image_path.split("/").pop();
         if (imageKey) {
-          await deleteFileFromR2({
-            bucketName: "image",
-            filePath: imageKey,
-            showToast: false,
-          });
+          const result = await deleteFileFromR2("image", imageKey);
+          if (!result.success) {
+            console.error("Failed to delete image file:", result.error);
+          }
         }
       }
 

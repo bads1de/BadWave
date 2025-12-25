@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
+import { uploadFileToR2 } from "@/actions/r2";
 import { sanitizeTitle } from "@/libs/helpers";
 import uniqid from "uniqid";
 import { CACHED_QUERIES } from "@/constants";
@@ -21,6 +21,28 @@ interface UploadSongParams {
 
 interface UploadModalHook {
   onClose: () => void;
+}
+
+/**
+ * ファイルをFormDataに変換してアップロードする
+ */
+async function uploadFile(
+  file: File,
+  bucketName: "spotlight" | "song" | "image" | "video",
+  fileNamePrefix: string
+): Promise<string | null> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("bucketName", bucketName);
+  formData.append("fileNamePrefix", fileNamePrefix);
+
+  const result = await uploadFileToR2(formData);
+
+  if (!result.success) {
+    throw new Error(result.error || "アップロードに失敗しました");
+  }
+
+  return result.url || null;
 }
 
 /**
@@ -52,21 +74,17 @@ const useUploadSongMutation = (uploadModal: UploadModalHook) => {
       const songFileNamePrefix = `song-${sanitizeTitle(title)}-${uniqueID}`;
       const imageFileNamePrefix = `image-${sanitizeTitle(title)}-${uniqueID}`;
 
-      // Upload song to R2
-      const songUrl = await uploadFileToR2({
-        file: songFile,
-        bucketName: "song",
-        fileType: "audio",
-        fileNamePrefix: songFileNamePrefix,
-      });
+      // Upload files to R2
+      let songUrl: string | null;
+      let imageUrl: string | null;
 
-      // Upload image to R2
-      const imageUrl = await uploadFileToR2({
-        file: imageFile,
-        bucketName: "image",
-        fileType: "image",
-        fileNamePrefix: imageFileNamePrefix,
-      });
+      try {
+        songUrl = await uploadFile(songFile, "song", songFileNamePrefix);
+        imageUrl = await uploadFile(imageFile, "image", imageFileNamePrefix);
+      } catch (error) {
+        toast.error("ファイルのアップロードに失敗しました");
+        throw new Error("ファイルのアップロードに失敗しました");
+      }
 
       if (!songUrl || !imageUrl) {
         toast.error("ファイルのアップロードに失敗しました");
@@ -108,7 +126,7 @@ const useUploadSongMutation = (uploadModal: UploadModalHook) => {
     },
     onError: (error: Error) => {
       console.error("Upload song error:", error);
-      // エラーメッセージはmutationFn内で表示しているため、ここでは何もしない
+      toast.error(error.message || "アップロードに失敗しました");
     },
   });
 };

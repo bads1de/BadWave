@@ -4,8 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
-import deleteFileFromR2 from "@/actions/deleteFileFromR2";
+import { uploadFileToR2, deleteFileFromR2 } from "@/actions/r2";
 import { CACHED_QUERIES } from "@/constants";
 
 interface UpdateProfileParams {
@@ -25,6 +24,28 @@ interface UpdatePasswordParams {
 
 interface AccountModalHook {
   onClose: () => void;
+}
+
+/**
+ * ファイルをFormDataに変換してアップロードする
+ */
+async function uploadFile(
+  file: File,
+  bucketName: "spotlight" | "song" | "image" | "video",
+  fileNamePrefix: string
+): Promise<string | null> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("bucketName", bucketName);
+  formData.append("fileNamePrefix", fileNamePrefix);
+
+  const result = await uploadFileToR2(formData);
+
+  if (!result.success) {
+    throw new Error(result.error || "アップロードに失敗しました");
+  }
+
+  return result.url || null;
 }
 
 /**
@@ -99,11 +120,9 @@ const useUpdateUserProfileMutation = (accountModal: AccountModalHook) => {
           const filePath = currentAvatarUrl.split("/").pop();
 
           // R2ストレージから既存画像を削除
-          await deleteFileFromR2({
-            bucketName: "image",
-            filePath: filePath!,
-            showToast: false,
-          });
+          if (filePath) {
+            await deleteFileFromR2("image", filePath);
+          }
         } catch (error) {
           console.error("画像の削除に失敗しました", error);
           // 削除に失敗しても続行
@@ -111,12 +130,13 @@ const useUpdateUserProfileMutation = (accountModal: AccountModalHook) => {
       }
 
       // 新しいアバター画像をアップロードする
-      const avatarUrl = await uploadFileToR2({
-        file: avatarFile,
-        bucketName: "image",
-        fileType: "image",
-        fileNamePrefix: `avatar-${userId}`,
-      });
+      let avatarUrl: string | null;
+      try {
+        avatarUrl = await uploadFile(avatarFile, "image", `avatar-${userId}`);
+      } catch (error) {
+        toast.error("アップロードに失敗しました");
+        throw new Error("アップロードに失敗しました");
+      }
 
       if (!avatarUrl) {
         toast.error("アップロードに失敗しました");

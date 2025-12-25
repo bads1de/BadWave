@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import uploadFileToR2 from "@/actions/uploadFileToR2";
+import { uploadFileToR2 } from "@/actions/r2";
 import { CACHED_QUERIES } from "@/constants";
 
 interface SpotlightUploadParams {
@@ -18,6 +18,28 @@ interface SpotlightUploadParams {
 
 interface SpotlightUploadModalHook {
   onClose: () => void;
+}
+
+/**
+ * ファイルをFormDataに変換してアップロードする
+ */
+async function uploadFile(
+  file: File,
+  bucketName: "spotlight" | "song" | "image" | "video",
+  fileNamePrefix: string
+): Promise<string | null> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("bucketName", bucketName);
+  formData.append("fileNamePrefix", fileNamePrefix);
+
+  const result = await uploadFileToR2(formData);
+
+  if (!result.success) {
+    throw new Error(result.error || "アップロードに失敗しました");
+  }
+
+  return result.url || null;
 }
 
 /**
@@ -48,12 +70,13 @@ const useSpotlightUploadMutation = (
       }
 
       // 動画をR2にアップロード
-      const videoUrl = await uploadFileToR2({
-        file: videoFile,
-        bucketName: "spotlight",
-        fileType: "video",
-        fileNamePrefix: "spotlight",
-      });
+      let videoUrl: string | null;
+      try {
+        videoUrl = await uploadFile(videoFile, "spotlight", "spotlight");
+      } catch (error) {
+        toast.error("動画のアップロードに失敗しました");
+        throw new Error("動画のアップロードに失敗しました");
+      }
 
       if (!videoUrl) {
         toast.error("動画のアップロードに失敗しました");
