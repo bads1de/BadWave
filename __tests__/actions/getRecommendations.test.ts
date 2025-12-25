@@ -88,13 +88,14 @@ describe("getRecommendations", () => {
     expect(result[2].id).toBe("song3"); // 最も低いスコア (0.7)
   });
 
-  it("RPCがエラーを返した場合は空の配列を返す", async () => {
+  it("RPCがエラーを返した場合はエラーをスローする", async () => {
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     (mockSupabase.rpc as jest.Mock).mockResolvedValueOnce({
       data: null,
       error: new Error("Test error"),
     });
-    const result = await getRecommendations();
-    expect(result).toEqual([]);
+    await expect(getRecommendations()).rejects.toThrow("Test error");
+    consoleSpy.mockRestore();
   });
 
   it("データが空の場合は空の配列を返す", async () => {
@@ -106,20 +107,23 @@ describe("getRecommendations", () => {
     expect(result).toEqual([]);
   });
 
-  it("データが配列でない場合は空の配列を返す", async () => {
+  it("データが配列でない場合はエラーをスローする", async () => {
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     (mockSupabase.rpc as jest.Mock).mockResolvedValueOnce({
       data: {},
       error: null,
     });
-    const result = await getRecommendations();
-    expect(result).toEqual([]);
+    // mapでエラーになるため、catchブロックで再スローされる
+    await expect(getRecommendations()).rejects.toThrow();
+    consoleSpy.mockRestore();
   });
 
-  it("例外が発生した場合は空の配列を返す", async () => {
+  it("例外が発生した場合はエラーをスローする", async () => {
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     (mockSupabase.rpc as jest.Mock).mockRejectedValueOnce(
       new Error("Test exception")
     );
-    const result = await getRecommendations();
-    expect(result).toEqual([]);
+    await expect(getRecommendations()).rejects.toThrow("Test exception");
+    consoleSpy.mockRestore();
   });
 });

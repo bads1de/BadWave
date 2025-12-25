@@ -32,7 +32,7 @@ const getLikedSongs = async (
 
   if (error) {
     console.error("Error fetching liked songs:", error);
-    return [];
+    throw new Error(error.message);
   }
 
   // データがなければ空の配列を返す

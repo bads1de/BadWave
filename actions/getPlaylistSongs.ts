@@ -22,7 +22,7 @@ const getPlaylistSongs = async (
 
   if (playlistError) {
     console.error("Error fetching playlist:", playlistError);
-    return [];
+    throw new Error(playlistError.message);
   }
 
   // 現在のユーザー情報を取得
@@ -44,7 +44,7 @@ const getPlaylistSongs = async (
 
   if (error) {
     console.error("Error fetching playlist songs:", error);
-    return [];
+    throw new Error(error.message);
   }
 
   return (data || []).map((item) => ({

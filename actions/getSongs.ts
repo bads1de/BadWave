@@ -15,8 +15,8 @@ const getSongs = async (): Promise<Song[]> => {
     .limit(12);
 
   if (error) {
-    console.log("Error fetching songs:", error.message);
-    return [];
+    console.error("Error fetching songs:", error.message);
+    throw new Error(error.message);
   }
 
   return (data as Song[]) || [];

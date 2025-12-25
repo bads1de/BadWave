@@ -25,7 +25,7 @@ const getPlaylistsByTitle = async (title: string) => {
 
   if (error) {
     console.error("Error fetching playlists:", error);
-    return { playlists: [] };
+    throw new Error(error.message);
   }
 
   return {

@@ -30,7 +30,7 @@ const getRecommendations = async (
 
     if (error) {
       console.error("Error fetching recommendations:", error);
-      return [];
+      throw new Error(error.message);
     }
 
     // データがない場合は空配列を返す
@@ -54,7 +54,7 @@ const getRecommendations = async (
     }));
   } catch (e) {
     console.error("Exception in getRecommendations:", e);
-    return [];
+    throw e;
   }
 };
 

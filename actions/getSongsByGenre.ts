@@ -21,8 +21,8 @@ const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.log("Error fetching songs by genre:", error.message);
-    return [];
+    console.error("Error fetching songs by genre:", error.message);
+    throw new Error(error.message);
   }
 
   return (data as Song[]) || [];

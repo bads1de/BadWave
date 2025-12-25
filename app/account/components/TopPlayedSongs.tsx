@@ -26,7 +26,7 @@ const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
     useState<(typeof PERIODS)[number]["value"]>("day");
   const { topSongs, isLoading } = useGetTopPlayedSongs(user?.id, period);
   const onPlay = useOnPlay(topSongs || []);
-  const { getColorScheme } = useColorSchemeStore();
+  const { getColorScheme, hasHydrated } = useColorSchemeStore();
   const colorScheme = getColorScheme();
 
   // 再生ハンドラをメモ化
@@ -64,7 +64,7 @@ const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
                   }
                 `}
                 style={
-                  period === p.value
+                  period === p.value && hasHydrated
                     ? {
                         background: `linear-gradient(to bottom right, ${colorScheme.colors.accentFrom}33, ${colorScheme.colors.primary}33)`,
                         border: `1px solid ${colorScheme.colors.accentFrom}4D`,
@@ -124,7 +124,9 @@ const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
                 <div
                   className="absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold"
                   style={{
-                    backgroundColor: `${colorScheme.colors.accentFrom}CC`,
+                    backgroundColor: hasHydrated
+                      ? `${colorScheme.colors.accentFrom}CC`
+                      : "#7c3aedCC",
                   }}
                 >
                   {index + 1}
@@ -142,8 +144,12 @@ const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
                 <span
                   className="px-3 py-1 rounded-full text-sm whitespace-nowrap"
                   style={{
-                    backgroundColor: `${colorScheme.colors.accentFrom}33`,
-                    color: `rgb(${colorScheme.colors.theme300})`,
+                    backgroundColor: hasHydrated
+                      ? `${colorScheme.colors.accentFrom}33`
+                      : "#7c3aed33",
+                    color: hasHydrated
+                      ? `rgb(${colorScheme.colors.theme300})`
+                      : "rgb(196, 181, 253)",
                   }}
                 >
                   {song.play_count}回再生

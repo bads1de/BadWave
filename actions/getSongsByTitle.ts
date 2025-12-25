@@ -23,7 +23,7 @@ const getSongsByTitle = async (title: string) => {
 
   if (error) {
     console.error("Error fetching songs:", error);
-    return { songs: [] };
+    throw new Error(error.message);
   }
 
   return {

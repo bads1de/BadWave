@@ -50,7 +50,7 @@ const getTrendSongs = async (
 
   if (error) {
     console.error("Error fetching trend songs:", error.message);
-    return [];
+    throw new Error(error.message);
   }
 
   return (data as Song[]) || [];

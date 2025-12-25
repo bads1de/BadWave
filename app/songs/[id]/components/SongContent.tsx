@@ -52,10 +52,11 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
     useAudioWaveStore();
 
   // カラースキームから波形の色を取得
-  const { getColorScheme } = useColorSchemeStore();
+  const { getColorScheme, hasHydrated } = useColorSchemeStore();
   const colorScheme = getColorScheme();
-  const primaryColor = colorScheme.colors.accentFrom;
-  const secondaryColor = colorScheme.colors.accentTo;
+  // SSRハイドレーション対策: ハイドレーション前はデフォルト色を使用
+  const primaryColor = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
+  const secondaryColor = hasHydrated ? colorScheme.colors.accentTo : "#ec4899";
 
   const handlePlayClick = useCallback(async () => {
     if (!song?.song_path) {

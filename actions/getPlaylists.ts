@@ -24,7 +24,7 @@ const getPlaylists = async (): Promise<Playlist[]> => {
 
   if (error) {
     console.error(`Failed to fetch playlists: ${error.message}`);
-    return [];
+    throw new Error(error.message);
   }
 
   return (data as Playlist[]) || [];
