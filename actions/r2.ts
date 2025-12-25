@@ -64,9 +64,16 @@ export async function uploadFileToR2(
     };
   }
 
+  // ファイル名から拡張子を抽出
+  const originalName = file.name;
+  const lastDotIndex = originalName.lastIndexOf(".");
+  const extension = lastDotIndex !== -1 ? originalName.slice(lastDotIndex) : "";
+  const baseName =
+    lastDotIndex !== -1 ? originalName.slice(0, lastDotIndex) : originalName;
+
   const fileName = `${fileNamePrefix || "file"}-${sanitizeTitle(
-    file.name
-  )}-${Date.now()}`;
+    baseName
+  )}-${Date.now()}${extension}`;
 
   try {
     // FileをBuffer/Uint8Arrayに変換

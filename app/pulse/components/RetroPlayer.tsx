@@ -1,6 +1,8 @@
 "use client";
 
 import { FaPlay, FaPause, FaStepBackward, FaStepForward } from "react-icons/fa";
+import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
+
 interface RetroPlayerProps {
   audioRef: React.RefObject<HTMLAudioElement>;
   isPlaying: boolean;
@@ -10,6 +12,12 @@ interface RetroPlayerProps {
   currentTime: number;
   duration: number;
   onSeek: (seconds: number) => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+  trackTitle?: string;
+  trackGenre?: string;
+  nextTrackTitle?: string;
+  nextTrackGenre?: string;
 }
 
 const RetroPlayer: React.FC<RetroPlayerProps> = ({
@@ -21,6 +29,12 @@ const RetroPlayer: React.FC<RetroPlayerProps> = ({
   currentTime,
   duration,
   onSeek,
+  onNext,
+  onPrev,
+  trackTitle = "Unknown Track",
+  trackGenre = "Unknown Genre",
+  nextTrackTitle = "Coming Soon",
+  nextTrackGenre = "...",
 }) => {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -33,17 +47,32 @@ const RetroPlayer: React.FC<RetroPlayerProps> = ({
   return (
     <div className="flex flex-col items-center w-full max-w-4xl mx-auto z-10 relative">
       {/* Glassmorphism Controls */}
-      <div className="flex items-center gap-8 mb-16 z-20 mt-20">
+      <div className="flex items-center gap-4 md:gap-8 mb-16 z-20 mt-20">
+        {/* Previous Track */}
         <button
-          className="group relative w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-          onClick={() => onSeek(-15)}
+          className="group relative w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-purple-400/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+          onClick={onPrev}
+          title="Previous Track"
         >
-          <FaStepBackward
-            className="text-cyan-300 group-hover:text-cyan-100 drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]"
-            size={24}
+          <MdSkipPrevious
+            className="text-purple-300 group-hover:text-purple-100 drop-shadow-[0_0_5px_rgba(128,0,255,0.8)]"
+            size={28}
           />
         </button>
 
+        {/* Seek Backward */}
+        <button
+          className="group relative w-14 h-14 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+          onClick={() => onSeek(-15)}
+          title="-15 seconds"
+        >
+          <FaStepBackward
+            className="text-cyan-300 group-hover:text-cyan-100 drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]"
+            size={20}
+          />
+        </button>
+
+        {/* Play/Pause */}
         <button
           onClick={togglePlay}
           className="group relative w-24 h-24 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-pink-500/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_30px_rgba(255,0,255,0.3)]"
@@ -68,13 +97,27 @@ const RetroPlayer: React.FC<RetroPlayerProps> = ({
           )}
         </button>
 
+        {/* Seek Forward */}
         <button
-          className="group relative w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+          className="group relative w-14 h-14 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.5)]"
           onClick={() => onSeek(15)}
+          title="+15 seconds"
         >
           <FaStepForward
             className="text-cyan-300 group-hover:text-cyan-100 drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]"
-            size={24}
+            size={20}
+          />
+        </button>
+
+        {/* Next Track */}
+        <button
+          className="group relative w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-purple-400/50 transition-all active:scale-95 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+          onClick={onNext}
+          title="Next Track"
+        >
+          <MdSkipNext
+            className="text-purple-300 group-hover:text-purple-100 drop-shadow-[0_0_5px_rgba(128,0,255,0.8)]"
+            size={28}
           />
         </button>
       </div>
@@ -92,10 +135,10 @@ const RetroPlayer: React.FC<RetroPlayerProps> = ({
             </div>
             <div>
               <div className="text-white text-2xl font-bold font-sans tracking-wide uppercase drop-shadow-md">
-                Driftive Dreams
+                {trackTitle}
               </div>
               <div className="text-pink-400 text-sm font-mono mt-1 uppercase opacity-80">
-                Synthwave // Chill
+                {trackGenre}
               </div>
             </div>
 
@@ -128,10 +171,10 @@ const RetroPlayer: React.FC<RetroPlayerProps> = ({
                 COMING UP
               </div>
               <div className="text-white/90 text-lg font-bold font-sans uppercase">
-                Neon Tokyo
+                {nextTrackTitle}
               </div>
               <div className="text-gray-500 text-xs font-mono mt-1">
-                Future Funk
+                {nextTrackGenre}
               </div>
             </div>
           </div>
