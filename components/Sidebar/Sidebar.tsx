@@ -35,13 +35,13 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
     () => [
       {
         icon: HiHome,
-        label: "ホーム",
+        label: "Home",
         active: pathname === "/",
         href: "/",
       },
       {
         icon: BiSearch,
-        label: "検索",
+        label: "Search",
         active: pathname === "/search",
         href: "/search",
       },
@@ -133,7 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   >
                     {isCollapsed ? (
                       <Hover
-                        description="ライブラリ"
+                        description="Library"
                         contentSize="w-auto px-3 py-2"
                         side="right"
                       >
@@ -151,9 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                     ) : (
                       <>
                         <BiLibrary size={24} />
-                        <p className="truncate text-sm font-medium">
-                          ライブラリ
-                        </p>
+                        <p className="truncate text-sm font-medium">Library</p>
                       </>
                     )}
                   </div>
@@ -174,7 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       )}
                     >
                       <RiPlayListFill size={20} />
-                      <p className="text-sm font-medium">プレイリスト</p>
+                      <p className="text-sm font-medium">Playlists</p>
                     </Link>
                     <Link
                       href="/liked"
@@ -186,7 +184,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       )}
                     >
                       <FaHeart size={20} />
-                      <p className="text-sm font-medium">お気に入り</p>
+                      <p className="text-sm font-medium">Liked</p>
                     </Link>
                   </div>
                 </PopoverContent>
