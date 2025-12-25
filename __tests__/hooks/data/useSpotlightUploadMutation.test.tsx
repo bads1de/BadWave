@@ -34,6 +34,10 @@ jest.mock("@/libs/supabase/client", () => ({
   createClient: jest.fn(),
 }));
 
+jest.mock("@/actions/checkAdmin", () => ({
+  checkIsAdmin: jest.fn().mockResolvedValue({ isAdmin: true }),
+}));
+
 describe("useSpotlightUploadMutation", () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -66,6 +70,7 @@ describe("useSpotlightUploadMutation", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useUser as jest.Mock).mockReturnValue({ user: mockUser });
     (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);

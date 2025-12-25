@@ -3,6 +3,7 @@
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { sanitizeTitle } from "@/libs/helpers";
 import s3Client from "@/libs/s3";
+import { requireAdmin } from "@/libs/admin";
 
 // ============================================================================
 // Types
@@ -44,38 +45,41 @@ export interface DeleteResult {
 export async function uploadFileToR2(
   formData: FormData
 ): Promise<UploadResult> {
-  const file = formData.get("file") as File | null;
-  const bucketName = formData.get("bucketName") as BucketName | null;
-  const fileNamePrefix = formData.get("fileNamePrefix") as string | null;
-
-  if (!file || !bucketName) {
-    return {
-      success: false,
-      error: "ファイルとバケット名は必須です",
-    };
-  }
-
-  const maxSize = 50 * 1024 * 1024; // 50MB
-
-  if (file.size > maxSize) {
-    return {
-      success: false,
-      error: "ファイルのサイズが50MBを超えています",
-    };
-  }
-
-  // ファイル名から拡張子を抽出
-  const originalName = file.name;
-  const lastDotIndex = originalName.lastIndexOf(".");
-  const extension = lastDotIndex !== -1 ? originalName.slice(lastDotIndex) : "";
-  const baseName =
-    lastDotIndex !== -1 ? originalName.slice(0, lastDotIndex) : originalName;
-
-  const fileName = `${fileNamePrefix || "file"}-${sanitizeTitle(
-    baseName
-  )}-${Date.now()}${extension}`;
-
   try {
+    // 管理者権限チェック
+    await requireAdmin();
+
+    const file = formData.get("file") as File | null;
+    const bucketName = formData.get("bucketName") as BucketName | null;
+    const fileNamePrefix = formData.get("fileNamePrefix") as string | null;
+
+    if (!file || !bucketName) {
+      return {
+        success: false,
+        error: "ファイルとバケット名は必須です",
+      };
+    }
+
+    const maxSize = 50 * 1024 * 1024; // 50MB
+
+    if (file.size > maxSize) {
+      return {
+        success: false,
+        error: "ファイルのサイズが50MBを超えています",
+      };
+    }
+
+    // ファイル名から拡張子を抽出
+    const originalName = file.name;
+    const lastDotIndex = originalName.lastIndexOf(".");
+    const extension = lastDotIndex !== -1 ? originalName.slice(lastDotIndex) : "";
+    const baseName =
+      lastDotIndex !== -1 ? originalName.slice(0, lastDotIndex) : originalName;
+
+    const fileName = `${fileNamePrefix || "file"}-${sanitizeTitle(
+      baseName
+    )}-${Date.now()}${extension}`;
+
     // FileをBuffer/Uint8Arrayに変換
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -118,11 +122,11 @@ export async function uploadFileToR2(
       success: true,
       url,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("R2 upload error:", error);
     return {
       success: false,
-      error: "ファイルのアップロードに失敗しました",
+      error: error.message || "ファイルのアップロードに失敗しました",
     };
   }
 }
@@ -143,14 +147,17 @@ export async function deleteFileFromR2(
   bucketName: BucketName,
   filePath: string
 ): Promise<DeleteResult> {
-  if (!bucketName || !filePath) {
-    return {
-      success: false,
-      error: "バケット名とファイルパスは必須です",
-    };
-  }
-
   try {
+    // 管理者権限チェック
+    await requireAdmin();
+
+    if (!bucketName || !filePath) {
+      return {
+        success: false,
+        error: "バケット名とファイルパスは必須です",
+      };
+    }
+
     const command = new DeleteObjectCommand({
       Bucket: bucketName,
       Key: filePath,
@@ -161,11 +168,11 @@ export async function deleteFileFromR2(
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("R2 delete error:", error);
     return {
       success: false,
-      error: "ファイルの削除に失敗しました",
+      error: error.message || "ファイルの削除に失敗しました",
     };
   }
 }

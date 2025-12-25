@@ -78,14 +78,24 @@ jest.mock("@/components/Player/Slider", () => {
 });
 
 // react-icons のモック
-jest.mock("react-icons/bs", () => ({
-  BsPlayFill: () => <div data-testid="play-icon-internal" />,
-  BsPauseFill: () => <div data-testid="pause-icon-internal" />,
-}));
+// react-icons のモック
+jest.mock("react-icons/bs", () => {
+  const React = require("react");
+  return {
+    BsPlayFill: () =>
+      React.createElement("div", { "data-testid": "play-icon-internal" }),
+    BsPauseFill: () =>
+      React.createElement("div", { "data-testid": "pause-icon-internal" }),
+  };
+});
 
-jest.mock("react-icons/md", () => ({
-  MdLyrics: () => <div data-testid="lyrics-icon" />,
-}));
+jest.mock("react-icons/md", () => {
+  const React = require("react");
+  return {
+    MdLyrics: () =>
+      React.createElement("div", { "data-testid": "lyrics-icon" }),
+  };
+});
 
 describe("DesktopPlayer", () => {
   const mockSong: Song = {

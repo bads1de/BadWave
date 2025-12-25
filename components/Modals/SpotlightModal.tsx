@@ -7,8 +7,10 @@ const SpotlightModal = () => {
   const { isOpen, onClose } = useSpotlightModal();
   const selectedItem = useSpotlightModal((state) => state.selectedItem);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const playVideo = async () => {
       if (videoRef.current && isOpen) {
         try {
@@ -47,16 +49,26 @@ const SpotlightModal = () => {
               </button>
 
               {/* Video Section */}
-              <div className="w-full md:w-1/2 bg-black relative overflow-hidden h-2/3 md:h-full">
+              <div className="w-full md:w-1/2 bg-black relative overflow-hidden h-2/3 md:h-full flex items-center justify-center">
                 {selectedItem.video_path && (
-                  <video
-                    ref={videoRef}
-                    key={selectedItem.video_path}
-                    src={selectedItem.video_path}
-                    loop
-                    playsInline
-                    className="absolute h-full w-full object-cover"
-                  />
+                  <>
+                    <video
+                      ref={videoRef}
+                      key={selectedItem.video_path}
+                      src={selectedItem.video_path}
+                      loop
+                      playsInline
+                      onLoadedData={() => setIsLoading(false)}
+                      className={`absolute h-full w-full object-cover transition-opacity duration-700 ${
+                        isLoading ? "opacity-0" : "opacity-100"
+                      }`}
+                    />
+                    {isLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
+                        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-purple-500" />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 

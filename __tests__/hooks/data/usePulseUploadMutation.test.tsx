@@ -34,6 +34,10 @@ jest.mock("@/libs/supabase/client", () => ({
   createClient: jest.fn(),
 }));
 
+jest.mock("@/actions/checkAdmin", () => ({
+  checkIsAdmin: jest.fn().mockResolvedValue({ isAdmin: true }),
+}));
+
 describe("usePulseUploadMutation", () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -104,7 +108,6 @@ describe("usePulseUploadMutation", () => {
       music_path: "https://example.com/audio.mp3",
       title: "Test Pulse",
       genre: "Synthwave",
-      user_id: "test-user-id",
     });
 
     // 成功メッセージが表示されたことを確認

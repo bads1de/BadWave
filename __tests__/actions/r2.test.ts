@@ -24,6 +24,10 @@ jest.mock("@aws-sdk/client-s3", () => ({
   DeleteObjectCommand: jest.fn(),
 }));
 
+jest.mock("@/libs/admin", () => ({
+  requireAdmin: jest.fn().mockResolvedValue(undefined),
+}));
+
 // ============================================================================
 // uploadFileToR2 Tests
 // ============================================================================
@@ -82,6 +86,7 @@ describe("uploadFileToR2", () => {
       const mockFile = new File(["test content"], "test-song.mp3", {
         type: "audio/mpeg",
       });
+      mockFile.arrayBuffer = jest.fn().mockResolvedValue(new ArrayBuffer(8));
 
       const formData = new FormData();
       formData.append("file", mockFile);
@@ -141,7 +146,7 @@ describe("deleteFileFromR2", () => {
     const result = await deleteFileFromR2("song", "test-file.mp3");
 
     expect(result.success).toBe(false);
-    expect(result.error).toBe("ファイルの削除に失敗しました");
+    expect(result.error).toBe("Delete failed");
   });
 
   it("imageバケットからファイルを削除できること", async () => {

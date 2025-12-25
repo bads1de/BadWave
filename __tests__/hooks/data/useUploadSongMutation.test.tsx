@@ -39,6 +39,10 @@ jest.mock("uniqid", () => ({
   default: jest.fn().mockReturnValue("mock-unique-id"),
 }));
 
+jest.mock("@/actions/checkAdmin", () => ({
+  checkIsAdmin: jest.fn().mockResolvedValue({ isAdmin: true }),
+}));
+
 describe("useUploadSongMutation", () => {
   const queryClient = new QueryClient({
     defaultOptions: {
