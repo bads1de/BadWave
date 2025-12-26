@@ -5,6 +5,16 @@ import useSpotlightModal from "@/hooks/modal/useSpotlightModal";
 import { Spotlight } from "@/types";
 import "@testing-library/jest-dom";
 
+// Mock useGetSpotlight hook
+jest.mock("@/hooks/data/useGetSpotlight", () => ({
+  __esModule: true,
+  default: jest.fn((initialData) => ({
+    spotlights: initialData,
+    isLoading: false,
+    error: null,
+  })),
+}));
+
 // Mock child components and hooks
 jest.mock("@/hooks/modal/useSpotlightModal", () => ({
   __esModule: true,

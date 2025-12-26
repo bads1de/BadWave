@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import VaporwaveTheme from "./VaporwaveTheme";
 import CityPopTheme from "./CityPopTheme";
 import { Pulse } from "@/types";
+import useGetPulses from "@/hooks/data/useGetPulses";
 
 interface PulseClientProps {
   pulses: Pulse[];
@@ -13,7 +14,13 @@ interface PulseClientProps {
  * PulseClient: Pulse機能のメインクライアントコンポーネント
  * 音声再生管理、状態保持、テーマの切り替えを担当します。
  */
-export default function PulseClient({ pulses }: PulseClientProps) {
+export default function PulseClient({
+  pulses: initialPulses,
+}: PulseClientProps) {
+  // TanStack Queryを使用してPulseデータを取得
+  // propsで渡されたデータをinitialDataとして使用し、キャッシュの無効化が機能するようにする
+  const { pulses, isLoading, error } = useGetPulses(initialPulses);
+
   // 再生状態の管理
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
@@ -180,6 +187,26 @@ export default function PulseClient({ pulses }: PulseClientProps) {
     handleNextPulse: handleNextPulse,
     handlePrevPulse: handlePrevPulse,
   };
+
+  // ローディング状態の処理
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+        <p className="text-center text-cyan-400 animate-pulse text-xl">
+          LOADING...
+        </p>
+      </div>
+    );
+  }
+
+  // エラー状態の処理
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+        <p className="text-red-500 text-center text-xl">{error.message}</p>
+      </div>
+    );
+  }
 
   return (
     <>

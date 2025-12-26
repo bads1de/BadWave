@@ -3,6 +3,16 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import PulseClient from "@/app/pulse/components/PulseClient";
 import "@testing-library/jest-dom";
 
+// Mock useGetPulses hook
+jest.mock("@/hooks/data/useGetPulses", () => ({
+  __esModule: true,
+  default: jest.fn((initialData) => ({
+    pulses: initialData,
+    isLoading: false,
+    error: null,
+  })),
+}));
+
 // Mock child components
 jest.mock("@/app/pulse/components/VaporwaveTheme", () => {
   const React = require("react");
