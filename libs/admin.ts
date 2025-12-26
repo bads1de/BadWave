@@ -8,9 +8,11 @@ import { createClient } from "@/libs/supabase/server";
  */
 export const getAdminUserIds = (): string[] => {
   const adminIds = process.env.ADMIN_USER_IDS;
+
   if (!adminIds) {
     return [];
   }
+
   return adminIds.split(",").map((id) => id.trim());
 };
 

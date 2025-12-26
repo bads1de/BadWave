@@ -50,4 +50,4 @@ export const CACHE_CONFIG = {
 /**
  * 認証が必要なルートのリスト
  */
-export const PROTECTED_ROUTES = ["/account", "/liked"] as const;
+export const PROTECTED_ROUTES = ["/account", "/liked", "/playlist"] as const;

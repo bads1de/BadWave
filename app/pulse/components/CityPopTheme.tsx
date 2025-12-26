@@ -109,7 +109,23 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
 
       ctx.lineCap = "round";
       ctx.lineWidth = 4;
-      ctx.strokeStyle = "rgba(255, 105, 180, 0.6)"; // シティポップらしいピンク
+
+      // グラデーションの作成
+      const gradient = ctx.createRadialGradient(
+        0,
+        0,
+        startRadius,
+        0,
+        0,
+        startRadius + 60
+      );
+      gradient.addColorStop(0, "rgba(255, 105, 180, 0.8)"); // Pink
+      gradient.addColorStop(0.5, "rgba(0, 255, 255, 0.8)"); // Cyan
+      gradient.addColorStop(1, "rgba(255, 255, 0, 0)"); // Transparent yellow
+
+      ctx.strokeStyle = gradient;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = "rgba(255, 105, 180, 0.5)";
       ctx.stroke();
 
       // 内側のリング（低音に反応して光る）
@@ -149,6 +165,78 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
     <div className="relative w-full h-full bg-[#FFFBEB] overflow-hidden flex flex-col font-sans text-gray-800">
       {/* 動的な背景パターン */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* 星空 / キラキラ */}
+        <div className="absolute inset-0 z-0">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                opacity: Math.random() * 0.5 + 0.2,
+              }}
+            />
+          ))}
+        </div>
+        {/* サンセット（大きな朝日/夕日） */}
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-t from-pink-400 via-orange-300 to-transparent rounded-full opacity-40 blur-3xl animate-pulse" />
+
+        {/* グリッドの床（パース付き） */}
+        <div
+          className="absolute bottom-0 left-0 w-full h-[40%] opacity-20"
+          style={{
+            perspective: "500px",
+            background:
+              "linear-gradient(transparent, rgba(255, 105, 180, 0.2))",
+          }}
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, #ff69b4 1px, transparent 1px),
+                linear-gradient(to bottom, #ff69b4 1px, transparent 1px)
+              `,
+              backgroundSize: "40px 40px",
+              transform: "rotateX(60deg) translateY(-20%)",
+              transformOrigin: "top",
+            }}
+          />
+        </div>
+
+        {/* 都市のシルエット */}
+        <div className="absolute bottom-[25%] left-0 w-full h-[15%] flex items-end justify-between px-4 opacity-30 select-none pointer-events-none">
+          <div className="w-[15%] h-[100%] bg-blue-900 clip-path-building-1" />
+          <div className="w-[10%] h-[120%] bg-indigo-900 clip-path-building-2" />
+          <div className="w-[20%] h-[150%] bg-blue-950 clip-path-building-3" />
+          <div className="w-[12%] h-[110%] bg-indigo-950 clip-path-building-1" />
+          <div className="w-[15%] h-[130%] bg-blue-900 clip-path-building-2" />
+        </div>
+
+        {/* ヤシの木（左右） */}
+        <div className="absolute bottom-0 left-[-50px] w-64 h-96 opacity-40 animate-wiggle select-none pointer-events-none">
+          <svg
+            viewBox="0 0 100 150"
+            fill="currentColor"
+            className="text-gray-900"
+          >
+            <path d="M50,150 Q45,100 50,50 Q40,40 20,45 Q40,35 50,45 Q60,35 80,45 Q60,40 50,50" />
+            <path d="M50,50 Q45,30 30,35 Q45,25 50,35 Q55,25 70,35 Q55,30 50,50" />
+          </svg>
+        </div>
+        <div className="absolute bottom-0 right-[-50px] w-64 h-96 opacity-40 animate-wiggle-reverse select-none pointer-events-none transform scale-x-[-1]">
+          <svg
+            viewBox="0 0 100 150"
+            fill="currentColor"
+            className="text-gray-900"
+          >
+            <path d="M50,150 Q45,100 50,50 Q40,40 20,45 Q40,35 50,45 Q60,35 80,45 Q60,40 50,50" />
+            <path d="M50,50 Q45,30 30,35 Q45,25 50,35 Q55,25 70,35 Q55,30 50,50" />
+          </svg>
+        </div>
+
         {/* パステルグラデーション */}
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-200 via-pink-100 to-cyan-200 opacity-90" />
 
@@ -159,6 +247,16 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
             backgroundImage:
               "radial-gradient(circle, #ff69b4 2px, transparent 2.5px)",
             backgroundSize: "30px 30px",
+          }}
+        />
+
+        {/* スキャンライン（TV情緒） */}
+        <div
+          className="absolute inset-0 pointer-events-none z-40 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))",
+            backgroundSize: "100% 4px, 3px 100%",
           }}
         />
 
@@ -210,17 +308,21 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
             />
           </svg>
         </div>
-        <div className="absolute top-[30%] left-[20%] text-yellow-500 opacity-60 animate-spin-slow">
-          <svg width="60" height="60" viewBox="0 0 60 60">
-            <rect
-              x="0"
-              y="0"
-              width="60"
-              height="60"
-              transform="rotate(45 30 30)"
-              fill="currentColor"
-            />
-          </svg>
+
+        {/* ノイズオーバーレイ */}
+        <div
+          className="absolute inset-0 pointer-events-none z-50 opacity-[0.015] contrast-150 grayscale"
+          style={{
+            backgroundImage:
+              "url('https://grainy-gradients.vercel.app/noise.svg')",
+          }}
+        />
+
+        {/* 追加の幾何学模様 */}
+        <div className="absolute top-[20%] left-[15%] w-12 h-12 border-4 border-yellow-400 rounded-full opacity-40 animate-spin-slow" />
+        <div className="absolute bottom-[20%] right-[15%] w-16 h-4 border-t-4 border-b-4 border-cyan-400 opacity-40 -rotate-45 animate-bounce-custom" />
+        <div className="absolute top-[60%] left-[5%] text-pink-500 opacity-30 text-6xl font-black italic select-none">
+          1984
         </div>
       </div>
 
@@ -260,6 +362,12 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
           </div>
           <div className="p-4 text-center border-t border-gray-700">
             <span className="text-2xl font-black">¥2,800</span>
+          </div>
+          {/* ネオンサイン風のラベル */}
+          <div className="absolute -right-4 top-1/4 transform rotate-90 origin-right">
+            <div className="px-4 py-1 bg-black text-pink-500 border-2 border-pink-500 rounded text-xs font-bold animate-pulse shadow-[0_0_10px_#ff69b4]">
+              ON AIR
+            </div>
           </div>
         </div>
 
@@ -332,7 +440,7 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
           </div>
 
           {/* コントロールパネル - ポップなメンフィススタイル */}
-          <div className="mt-12 flex items-center gap-6 md:gap-8 bg-white/90 backdrop-blur px-10 py-5 rounded-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-2 border-black z-20 relative">
+          <div className="mt-16 flex items-center gap-6 md:gap-8 bg-white/90 backdrop-blur px-10 py-5 rounded-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-2 border-black z-20 relative">
             <button
               onClick={handlePrevPulse}
               className="text-gray-900 hover:text-pink-500 transition-transform active:scale-95"
@@ -455,6 +563,49 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
           to {
             transform: translateX(50%);
           }
+        }
+
+        .clip-path-building-1 {
+          clip-path: polygon(
+            0% 100%,
+            0% 20%,
+            30% 20%,
+            30% 0%,
+            70% 0%,
+            70% 20%,
+            100% 20%,
+            100% 100%
+          );
+        }
+        .clip-path-building-2 {
+          clip-path: polygon(
+            0% 100%,
+            10% 100%,
+            10% 40%,
+            30% 40%,
+            30% 10%,
+            70% 10%,
+            70% 40%,
+            90% 40%,
+            90% 100%,
+            100% 100%
+          );
+        }
+        .clip-path-building-3 {
+          clip-path: polygon(
+            0% 100%,
+            0% 30%,
+            20% 30%,
+            20% 10%,
+            40% 10%,
+            40% 0%,
+            60% 0%,
+            60% 10%,
+            80% 10%,
+            80% 30%,
+            100% 30%,
+            100% 100%
+          );
         }
       `}</style>
     </div>

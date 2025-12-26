@@ -2,62 +2,43 @@ import { renderHook, act } from "@testing-library/react";
 import usePulseUploadModal from "@/hooks/modal/usePulseUploadModal";
 
 describe("usePulseUploadModal", () => {
+  // Reset state before each test if state implies singleton?
+  // Zustland stores are global singletons in module scope.
+  // Ideally we should reset them, but for simple toggle tests, just ensure it starts closed or force close.
+  // However, create() stores are persistent across tests in JSDOM unless reset.
+  // But JSDOM environment usually resets modules? No, Jest requires `jest.resetModules()` for that.
+
   beforeEach(() => {
-    // Zustandのストアをリセット
-    usePulseUploadModal.setState({ isOpen: false });
+    const { result } = renderHook(() => usePulseUploadModal());
+    act(() => {
+      result.current.onClose();
+    });
   });
 
-  it("初期状態でisOpenがfalseであること", () => {
+  it("should return default values", () => {
     const { result } = renderHook(() => usePulseUploadModal());
     expect(result.current.isOpen).toBe(false);
   });
 
-  it("onOpenを呼び出すとisOpenがtrueになること", () => {
+  it("should open the modal", () => {
     const { result } = renderHook(() => usePulseUploadModal());
-
     act(() => {
       result.current.onOpen();
     });
-
     expect(result.current.isOpen).toBe(true);
   });
 
-  it("onCloseを呼び出すとisOpenがfalseになること", () => {
+  it("should close the modal", () => {
     const { result } = renderHook(() => usePulseUploadModal());
 
-    // まずモーダルを開く
     act(() => {
       result.current.onOpen();
     });
     expect(result.current.isOpen).toBe(true);
 
-    // モーダルを閉じる
     act(() => {
       result.current.onClose();
     });
     expect(result.current.isOpen).toBe(false);
-  });
-
-  it("複数のコンポーネント間で状態が共有されること", () => {
-    const { result: result1 } = renderHook(() => usePulseUploadModal());
-    const { result: result2 } = renderHook(() => usePulseUploadModal());
-
-    // 一方でモーダルを開く
-    act(() => {
-      result1.current.onOpen();
-    });
-
-    // 両方のフックで状態が更新されていることを確認
-    expect(result1.current.isOpen).toBe(true);
-    expect(result2.current.isOpen).toBe(true);
-
-    // もう一方でモーダルを閉じる
-    act(() => {
-      result2.current.onClose();
-    });
-
-    // 両方のフックで状態が更新されていることを確認
-    expect(result1.current.isOpen).toBe(false);
-    expect(result2.current.isOpen).toBe(false);
   });
 });

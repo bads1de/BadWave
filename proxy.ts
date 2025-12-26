@@ -21,5 +21,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // PROTECTED_ROUTESの各ルートに対してマッチャーを生成
-  matcher: ["/account/:path*", "/liked/:path*"],
+  // Note: Next.js middlewareのmatcherはビルド時に静的解析されるため、
+  // 配列リテラルで明示的に定義する必要があります（.map()などの動的生成は不可）
+  matcher: ["/account/:path*", "/liked/:path*", "/playlist/:path*"],
 };
