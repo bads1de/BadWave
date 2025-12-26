@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { BsPauseFill, BsPlayFill } from "react-icons/bs";
+import { BsPauseFill, BsPlayFill, BsChevronDown } from "react-icons/bs";
+import { LiaMicrophoneAltSolid } from "react-icons/lia";
+import { RiPlayListAddFill } from "react-icons/ri";
 import CommonControls from "../Player/CommonControls";
 
 import { Playlist, Song } from "@/types";
@@ -8,9 +10,10 @@ import Link from "next/link";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import SeekBar from "../Player/Seekbar";
-import MobileStyleIcons from "./MobileStyleIcons";
 import LyricsDrawer from "./LyricsDrawer";
 import ScrollingText from "../common/ScrollingText";
+import LikeButton from "../LikeButton";
+import AddPlaylist from "../Playlist/AddPlaylist";
 
 interface MobilePlayerContentProps {
   song: Song;
@@ -68,12 +71,12 @@ const MobilePlayerContent = React.memo(
       ({ down, movement: [mx, my], velocity }) => {
         if (!showLyrics) {
           api.start({ y: down ? my : 0, immediate: down });
-          if (!down && my > 50) {
+          if (!down && my > 100) {
             toggleMobilePlayer();
           }
         }
       },
-      { axis: "y", bounds: { top: 0 } }
+      { axis: "y", bounds: { top: 0 }, rubberband: true }
     );
 
     return (
@@ -83,16 +86,18 @@ const MobilePlayerContent = React.memo(
           y,
           touchAction: showLyrics ? "auto" : "none",
         }}
-        className="md:hidden fixed inset-0 bg-black text-white z-100"
+        className="md:hidden fixed inset-0 bg-black text-white z-50 flex flex-col"
       >
-        <div className="relative w-full h-full ">
+        {/* Background Media Layer */}
+        <div className="absolute inset-0 z-0">
           {videoUrl ? (
             <video
-              className=" w-full h-full object-cover"
+              className="w-full h-full object-cover"
               src={videoUrl}
               muted
               autoPlay
               loop
+              playsInline
             />
           ) : (
             <Image
@@ -100,77 +105,111 @@ const MobilePlayerContent = React.memo(
               alt="song image"
               fill={true}
               className="w-full h-full object-cover"
+              priority
             />
           )}
+          {/* Main Overlay Gradient - Stronger at bottom for controls visibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90" />
+          <div className="absolute bottom-0 h-2/3 w-full bg-gradient-to-t from-black via-black/60 to-transparent" />
+        </div>
 
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/90" />
-          <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-black to-transparent" />
-          <div className="absolute inset-0 flex flex-col justify-between p-4">
-            <div className="flex-1" />
+        {/* Top Bar */}
+        <div className="relative z-10 flex items-center justify-between px-6 pt-12 pb-4">
+          <button
+            onClick={toggleMobilePlayer}
+            className="p-2 -ml-2 text-white/80 hover:text-white transition-colors"
+          >
+            <BsChevronDown size={28} />
+          </button>
+          <div className="flex flex-col items-center">
+            <span className="text-xs font-medium text-white/70 uppercase tracking-widest">
+              Now Playing
+            </span>
+          </div>
+          <div className="w-8" /> {/* Spacer for balance */}
+        </div>
 
-            <div className="space-y-6">
-              <div className="flex justify-between items-end">
-                <div className="max-w-[70%]">
-                  <Link href={`/songs/${song.id}`}>
-                    <h1 className="text-4xl font-bold text-white drop-shadow-lg hover:underline truncate">
-                      <ScrollingText text={song.title} limitCharacters={7} />
-                    </h1>
-                  </Link>
-                  <p className="text-lg text-gray-200 drop-shadow-lg mt-1 truncate">
-                    {song.author}
-                  </p>
-                  <div className="flex flex-wrap mb-2 mt-2">
-                    {song?.genre
-                      ?.split(", ")
-                      .slice(0, 2)
-                      .map((g) => (
-                        <Link
-                          key={g}
-                          className="mr-2 text-sm bg-white/20 text-white px-2 py-1 rounded-full hover:bg-white/30 transition-colors"
-                          href={`/genre/${g}`}
-                        >
-                          {g}
-                        </Link>
-                      ))}
-                  </div>
-                </div>
-                <MobileStyleIcons
-                  toggleLyrics={toggleLyrics}
-                  playlists={playlists}
-                  songId={song.id}
-                  songType="regular"
-                />
-              </div>
+        {/* Middle Spacer */}
+        <div className="flex-1" />
 
-              <div className="space-y-2">
-                <SeekBar
-                  currentTime={currentTime}
-                  duration={duration}
-                  onSeek={handleSeek}
-                  className="w-full h-1"
-                />
+        {/* Bottom Controls Area */}
+        <div className="relative z-10 px-6 pb-12 w-full flex flex-col gap-6">
+          {/* Title, Artist, Like Row */}
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0 pr-4">
+              <Link href={`/songs/${song.id}`}>
+                <h1 className="text-2xl font-bold text-white drop-shadow-md hover:underline truncate">
+                  {" "}
+                  {/* ScrollingText handles its own truncation often, but parent needs overflow hidden */}
+                  <ScrollingText text={song.title} limitCharacters={20} />
+                </h1>
+              </Link>
+              <p className="text-lg text-gray-300 truncate font-medium">
+                {song.author}
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <LikeButton songId={song.id} size={28} songType="regular" />
+            </div>
+          </div>
 
-                <div className="flex justify-between items-center text-xs text-gray-300">
-                  <span>{formattedCurrentTime}</span>
-                  <span>{formattedDuration}</span>
-                </div>
-              </div>
+          {/* Seekbar Section */}
+          <div className="space-y-2">
+            <SeekBar
+              currentTime={currentTime}
+              duration={duration}
+              onSeek={handleSeek}
+              className="w-full h-1"
+            />
+            <div className="flex justify-between text-xs font-medium text-gray-400">
+              <span>{formattedCurrentTime}</span>
+              <span>{formattedDuration}</span>
+            </div>
+          </div>
 
-              <CommonControls
-                isPlaying={isPlaying}
-                isShuffling={isShuffling}
-                isRepeating={isRepeating}
-                Icon={Icon}
-                handlePlay={handlePlay}
-                onPlayNext={onPlayNext}
-                onPlayPrevious={onPlayPrevious}
-                toggleShuffle={toggleShuffle}
-                toggleRepeat={toggleRepeat}
-                isMobile={true}
-              />
+          {/* Main Transport Controls */}
+          <div className="px-2">
+            <CommonControls
+              isPlaying={isPlaying}
+              isShuffling={isShuffling}
+              isRepeating={isRepeating}
+              Icon={Icon}
+              handlePlay={handlePlay}
+              onPlayNext={onPlayNext}
+              onPlayPrevious={onPlayPrevious}
+              toggleShuffle={toggleShuffle}
+              toggleRepeat={toggleRepeat}
+              isMobile={true}
+            />
+          </div>
+
+          {/* Secondary Actions Row */}
+          <div className="flex justify-between items-center px-4 mt-2">
+            <button
+              onClick={toggleLyrics}
+              className={`p-2 rounded-full transition-colors ${
+                showLyrics ? "text-primary" : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <LiaMicrophoneAltSolid size={26} />
+            </button>
+
+            {/* Genre Pills could go here or above, but let's keep it clean. Maybe share button? 
+                For now just separating Lyrics and Playlist aligns with 'standard' apps nicely. 
+            */}
+
+            <div className="text-gray-400 hover:text-white transition-colors">
+              <AddPlaylist
+                playlists={playlists}
+                songId={song.id}
+                songType="regular"
+              >
+                <RiPlayListAddFill size={26} />
+              </AddPlaylist>
             </div>
           </div>
         </div>
+
         <LyricsDrawer
           showLyrics={showLyrics}
           toggleLyrics={toggleLyrics}

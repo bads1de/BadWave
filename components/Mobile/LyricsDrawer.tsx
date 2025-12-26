@@ -50,7 +50,7 @@ const LyricsDrawer: React.FC<LyricsDrawerProps> = ({
   return (
     <animated.div
       {...bind()}
-      className="fixed bottom-0 left-0 right-0"
+      className="fixed bottom-0 left-0 right-0 z-50"
       style={{
         height: `${drawerHeight}px`,
         transform: y.to((value) => `translateY(${value}px)`),
