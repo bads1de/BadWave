@@ -31,6 +31,7 @@ describe("usePlaybackStateStore", () => {
       position: 0,
       playlist: [],
       timestamp: 0,
+      isRestoring: false,
     });
   });
 
@@ -39,6 +40,7 @@ describe("usePlaybackStateStore", () => {
     expect(result.current.songId).toBeNull();
     expect(result.current.position).toBe(0);
     expect(result.current.playlist).toEqual([]);
+    expect(result.current.isRestoring).toBe(false);
   });
 
   it("savePlaybackStateで再生状態を保存できること", () => {
@@ -119,5 +121,23 @@ describe("usePlaybackStateStore", () => {
 
   it("POSITION_SAVE_INTERVAL_MSが5000msであること", () => {
     expect(POSITION_SAVE_INTERVAL_MS).toBe(5000);
+  });
+
+  it("setIsRestoringで復元中フラグを設定できること", () => {
+    const { result } = renderHook(() => usePlaybackStateStore());
+
+    expect(result.current.isRestoring).toBe(false);
+
+    act(() => {
+      result.current.setIsRestoring(true);
+    });
+
+    expect(result.current.isRestoring).toBe(true);
+
+    act(() => {
+      result.current.setIsRestoring(false);
+    });
+
+    expect(result.current.isRestoring).toBe(false);
   });
 });

@@ -23,6 +23,8 @@ interface PlaybackState {
   timestamp: number;
   /** ストアがハイドレート完了したかどうか */
   hasHydrated: boolean;
+  /** 再生状態を復元中かどうか（自動再生防止用） */
+  isRestoring: boolean;
 }
 
 interface PlaybackStateActions {
@@ -38,6 +40,8 @@ interface PlaybackStateActions {
   clearPlaybackState: () => void;
   /** ハイドレート状態を設定 */
   setHasHydrated: (state: boolean) => void;
+  /** 復元中フラグを設定 */
+  setIsRestoring: (isRestoring: boolean) => void;
 }
 
 type PlaybackStateStore = PlaybackState & PlaybackStateActions;
@@ -53,6 +57,7 @@ const usePlaybackStateStore = create<PlaybackStateStore>()(
       playlist: [],
       timestamp: 0,
       hasHydrated: false,
+      isRestoring: false,
 
       savePlaybackState: (
         songId: string,
@@ -87,6 +92,8 @@ const usePlaybackStateStore = create<PlaybackStateStore>()(
       },
 
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
+
+      setIsRestoring: (isRestoring: boolean) => set({ isRestoring }),
     }),
     {
       name: "badwave-playback-state",

@@ -9,6 +9,7 @@ jest.mock("@/hooks/stores/usePlaybackStateStore");
 
 const mockSetId = jest.fn();
 const mockSetIds = jest.fn();
+const mockSetIsRestoring = jest.fn();
 
 describe("PlaybackStateProvider", () => {
   beforeEach(() => {
@@ -24,6 +25,7 @@ describe("PlaybackStateProvider", () => {
       songId: null,
       playlist: [],
       hasHydrated: true,
+      setIsRestoring: mockSetIsRestoring,
     });
 
     render(
@@ -34,6 +36,7 @@ describe("PlaybackStateProvider", () => {
 
     expect(mockSetId).not.toHaveBeenCalled();
     expect(mockSetIds).not.toHaveBeenCalled();
+    expect(mockSetIsRestoring).not.toHaveBeenCalled();
   });
 
   it("ハイドレーション前は復元しないこと", () => {
@@ -41,6 +44,7 @@ describe("PlaybackStateProvider", () => {
       songId: "song-123",
       playlist: ["song-1", "song-2"],
       hasHydrated: false,
+      setIsRestoring: mockSetIsRestoring,
     });
 
     render(
@@ -51,13 +55,15 @@ describe("PlaybackStateProvider", () => {
 
     expect(mockSetId).not.toHaveBeenCalled();
     expect(mockSetIds).not.toHaveBeenCalled();
+    expect(mockSetIsRestoring).not.toHaveBeenCalled();
   });
 
-  it("保存された再生状態がある場合にプレイヤーを設定すること", async () => {
+  it("保存された再生状態がある場合にプレイヤーを設定しisRestoringをtrueにすること", async () => {
     (usePlaybackStateStore as unknown as jest.Mock).mockReturnValue({
       songId: "song-123",
       playlist: ["song-1", "song-2", "song-3"],
       hasHydrated: true,
+      setIsRestoring: mockSetIsRestoring,
     });
 
     render(
@@ -67,6 +73,7 @@ describe("PlaybackStateProvider", () => {
     );
 
     await waitFor(() => {
+      expect(mockSetIsRestoring).toHaveBeenCalledWith(true);
       expect(mockSetIds).toHaveBeenCalledWith(["song-1", "song-2", "song-3"]);
       expect(mockSetId).toHaveBeenCalledWith("song-123");
     });
@@ -77,6 +84,7 @@ describe("PlaybackStateProvider", () => {
       songId: "song-123",
       playlist: [],
       hasHydrated: true,
+      setIsRestoring: mockSetIsRestoring,
     });
 
     render(
@@ -96,6 +104,7 @@ describe("PlaybackStateProvider", () => {
       songId: null,
       playlist: [],
       hasHydrated: true,
+      setIsRestoring: mockSetIsRestoring,
     });
 
     const { getByText } = render(

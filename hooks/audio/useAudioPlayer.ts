@@ -65,6 +65,8 @@ const useAudioPlayer = (songUrl: string) => {
     songId: savedSongId,
     position: savedPosition,
     hasHydrated: playbackStateHydrated,
+    isRestoring,
+    setIsRestoring,
   } = usePlaybackStateStore();
   const lastSaveTimeRef = useRef<number>(0);
   const hasRestoredRef = useRef<boolean>(false);
@@ -88,9 +90,13 @@ const useAudioPlayer = (songUrl: string) => {
     if (!isPlaying) {
       pauseWavePlayer();
       globalAudioPlayerRef.activePlayer = "main";
+      // 復元中フラグをクリア（以降は通常の自動再生を許可）
+      if (isRestoring) {
+        setIsRestoring(false);
+      }
     }
     setIsPlaying((prev) => !prev);
-  }, [isPlaying, pauseWavePlayer]);
+  }, [isPlaying, pauseWavePlayer, isRestoring, setIsRestoring]);
 
   const handleSeek = useCallback(
     (time: number) => {
@@ -157,7 +163,12 @@ const useAudioPlayer = (songUrl: string) => {
         onPlayNext();
       }
     };
-    const handleCanPlayThrough = () => audio.play();
+    const handleCanPlayThrough = () => {
+      // 復元中は自動再生しない（ユーザーが手動で再生ボタンを押すまで待つ）
+      if (!isRestoring) {
+        audio.play();
+      }
+    };
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => {
       setIsPlaying(false);

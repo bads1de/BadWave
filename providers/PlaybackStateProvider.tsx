@@ -14,6 +14,7 @@ const PlaybackStateProvider = ({ children }: { children: React.ReactNode }) => {
     songId: savedSongId,
     playlist: savedPlaylist,
     hasHydrated,
+    setIsRestoring,
   } = usePlaybackStateStore();
   const hasRestoredRef = useRef(false);
 
@@ -26,6 +27,9 @@ const PlaybackStateProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 保存された曲IDがあれば復元
     if (savedSongId) {
+      // 復元中フラグを設定（自動再生を防止）
+      setIsRestoring(true);
+
       // プレイリストを復元
       if (savedPlaylist.length > 0) {
         player.setIds(savedPlaylist);
@@ -36,7 +40,7 @@ const PlaybackStateProvider = ({ children }: { children: React.ReactNode }) => {
 
       hasRestoredRef.current = true;
     }
-  }, [hasHydrated, savedSongId, savedPlaylist, player]);
+  }, [hasHydrated, savedSongId, savedPlaylist, player, setIsRestoring]);
 
   return <>{children}</>;
 };
