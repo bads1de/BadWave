@@ -9,6 +9,7 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 
 import ModalProvider from "@/providers/ModalProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
+import PlaybackStateProvider from "@/providers/PlaybackStateProvider";
 
 import ToasterProvider from "@/providers/ToasterProvider";
 import UserProvider from "@/providers/UserProvider";
@@ -36,11 +37,13 @@ export default async function RootLayout({
         <TanStackProvider>
           <UserProvider>
             <ThemeProvider>
-              <ModalProvider />
-              <Sidebar>
-                <RightSidebar>{children}</RightSidebar>
-              </Sidebar>
-              <Player playlists={playlists} />
+              <PlaybackStateProvider>
+                <ModalProvider />
+                <Sidebar>
+                  <RightSidebar>{children}</RightSidebar>
+                </Sidebar>
+                <Player playlists={playlists} />
+              </PlaybackStateProvider>
             </ThemeProvider>
           </UserProvider>
         </TanStackProvider>
