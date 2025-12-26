@@ -2,7 +2,6 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 import { uploadFileToR2 } from "@/actions/r2";
@@ -54,7 +53,6 @@ const useSpotlightUploadMutation = (
 ) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const { user } = useUser();
 
   return useMutation({
@@ -113,8 +111,6 @@ const useSpotlightUploadMutation = (
       // キャッシュを無効化
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.spotlight] });
 
-      // UIを更新
-      router.refresh();
       toast.success("Spotlightに投稿しました!");
 
       // モーダルを閉じる
