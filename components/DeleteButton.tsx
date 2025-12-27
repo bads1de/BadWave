@@ -1,13 +1,9 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React from "react";
 
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { HiTrash } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
-import { useUser } from "@/hooks/auth/useUser";
-import { createClient } from "@/libs/supabase/client";
-import { deleteFileFromR2 } from "@/actions/r2";
+import useDeleteSongMutation from "@/hooks/data/useDeleteSongMutation";
 
 interface DeleteButtonProps {
   songId: string;
@@ -15,78 +11,12 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ songId, className }) => {
-  const supabaseClient = useMemo(() => createClient(), []);
-  const router = useRouter();
-  const { user } = useUser();
-  const [isLoading, setIsLoading] = useState(false);
+  const deleteMutation = useDeleteSongMutation();
 
-  const handleDelete = async () => {
-    if (isLoading) return;
+  const handleDelete = () => {
+    if (deleteMutation.isPending) return;
 
-    setIsLoading(true);
-
-    try {
-      if (!user?.id) {
-        return;
-      }
-
-      const { data, error: dbDeleteError } = await supabaseClient
-        .from("songs")
-        .delete()
-        .eq("user_id", user.id)
-        .eq("id", parseInt(songId, 10))
-        .select("*");
-
-      if (dbDeleteError) {
-        console.error(
-          "Failed to delete record from database:",
-          dbDeleteError.message
-        );
-        throw new Error(
-          "Failed to delete record from database: " + dbDeleteError.message
-        );
-      }
-
-      if (data.length === 0) {
-        console.error(
-          "No record was deleted from database. Please check the songId:",
-          songId
-        );
-        throw new Error(
-          "No record was deleted from database. Please check the songId."
-        );
-      }
-
-      const deletedSong = data[0];
-
-      // R2からファイルを削除
-      if (deletedSong.song_path) {
-        const songKey = deletedSong.song_path.split("/").pop();
-        if (songKey) {
-          const result = await deleteFileFromR2("song", songKey);
-          if (!result.success) {
-            console.error("Failed to delete song file:", result.error);
-          }
-        }
-      }
-
-      if (deletedSong.image_path) {
-        const imageKey = deletedSong.image_path.split("/").pop();
-        if (imageKey) {
-          const result = await deleteFileFromR2("image", imageKey);
-          if (!result.success) {
-            console.error("Failed to delete image file:", result.error);
-          }
-        }
-      }
-
-      toast.success("削除しました");
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    deleteMutation.mutate({ songId });
   };
 
   return (
@@ -105,7 +35,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ songId, className }) => {
         className
       )}
       onClick={handleDelete}
-      disabled={isLoading}
+      disabled={deleteMutation.isPending}
     >
       <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500/10 to-red-900/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
       <HiTrash
