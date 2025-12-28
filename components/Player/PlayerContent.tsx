@@ -52,7 +52,8 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
 
     return (
       <>
-        <audio ref={audioRef} src={song.song_path} />
+        {/* NOTE: srcはuseAudioPlayer内で設定されるため、ここでは指定しない */}
+        <audio ref={audioRef} />
 
         {isMobilePlayer ? (
           <MobilePlayer
