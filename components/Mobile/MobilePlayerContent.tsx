@@ -7,8 +7,7 @@ import CommonControls from "../Player/CommonControls";
 
 import { Playlist, Song } from "@/types";
 import Link from "next/link";
-import { useSpring, animated } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
+import { motion, useAnimationControls } from "framer-motion";
 import SeekBar from "../Player/Seekbar";
 import LyricsDrawer from "./LyricsDrawer";
 import ScrollingText from "../common/ScrollingText";
@@ -65,28 +64,22 @@ const MobilePlayerContent = React.memo(
       setShowLyrics(!showLyrics);
     };
 
-    const [{ y }, api] = useSpring(() => ({ y: 0 }));
-
-    const bind = useDrag(
-      ({ down, movement: [mx, my], velocity }) => {
-        if (!showLyrics) {
-          api.start({ y: down ? my : 0, immediate: down });
-          if (!down && my > 100) {
+    return (
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        drag={showLyrics ? false : "y"}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0.1}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 100 || info.velocity.y > 500) {
             toggleMobilePlayer();
           }
-        }
-      },
-      { axis: "y", bounds: { top: 0 }, rubberband: true }
-    );
-
-    return (
-      <animated.div
-        {...(showLyrics ? {} : bind())}
-        style={{
-          y,
-          touchAction: showLyrics ? "auto" : "none",
         }}
         className="md:hidden fixed inset-0 bg-black text-white z-50 flex flex-col"
+        style={{ touchAction: showLyrics ? "auto" : "none" }}
       >
         {/* Background Media Layer */}
         <div className="absolute inset-0 z-0">
@@ -215,7 +208,7 @@ const MobilePlayerContent = React.memo(
           toggleLyrics={toggleLyrics}
           lyrics={song?.lyrics || ""}
         />
-      </animated.div>
+      </motion.div>
     );
   }
 );
