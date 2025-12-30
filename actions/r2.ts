@@ -1,7 +1,7 @@
 "use server";
 
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { sanitizeTitle } from "@/libs/helpers";
+import { sanitizeTitle } from "@/libs/utils";
 import s3Client from "@/libs/s3";
 import { requireAdmin } from "@/libs/admin";
 
@@ -72,7 +72,8 @@ export async function uploadFileToR2(
     // ファイル名から拡張子を抽出
     const originalName = file.name;
     const lastDotIndex = originalName.lastIndexOf(".");
-    const extension = lastDotIndex !== -1 ? originalName.slice(lastDotIndex) : "";
+    const extension =
+      lastDotIndex !== -1 ? originalName.slice(lastDotIndex) : "";
     const baseName =
       lastDotIndex !== -1 ? originalName.slice(0, lastDotIndex) : originalName;
 

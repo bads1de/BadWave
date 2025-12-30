@@ -13,7 +13,7 @@ import { useState, memo, useCallback } from "react";
 import PreviewDownloadModal from "@/components/Modals/DownloadPreviewModal";
 import useDownload from "@/hooks/data/useDownload";
 import { Download } from "lucide-react";
-import { downloadFile } from "@/libs/helpers";
+import { downloadFile } from "@/libs/utils";
 import { useUser } from "@/hooks/auth/useUser";
 
 interface SongOptionsPopoverProps {

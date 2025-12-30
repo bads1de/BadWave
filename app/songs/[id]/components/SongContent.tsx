@@ -20,7 +20,7 @@ import useGetSongById from "@/hooks/data/useGetSongById";
 import { useUser } from "@/hooks/auth/useUser";
 import useGetSongsByGenres from "@/hooks/data/useGetSongGenres";
 import EditModal from "@/components/Modals/EditModal";
-import { downloadFile } from "@/libs/helpers";
+import { downloadFile } from "@/libs/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
