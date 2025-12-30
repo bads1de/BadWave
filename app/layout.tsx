@@ -39,10 +39,12 @@ export default async function RootLayout({
             <ThemeProvider>
               <PlaybackStateProvider>
                 <ModalProvider />
-                <Sidebar>
-                  <RightSidebar>{children}</RightSidebar>
-                </Sidebar>
-                <Player playlists={playlists} />
+                <div className="app-wrapper">
+                  <Sidebar>
+                    <RightSidebar>{children}</RightSidebar>
+                  </Sidebar>
+                  <Player playlists={playlists} />
+                </div>
               </PlaybackStateProvider>
             </ThemeProvider>
           </UserProvider>
