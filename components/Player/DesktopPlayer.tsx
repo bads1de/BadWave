@@ -3,10 +3,10 @@ import { MdLyrics } from "react-icons/md";
 import { Playlist, Song } from "@/types";
 import LikeButton from "../LikeButton";
 import MediaItem from "../Song/MediaItem";
-import Slider from "./Slider";
 import SeekBar from "./Seekbar";
 import AddPlaylist from "../Playlist/AddPlaylist";
 import CommonControls from "./CommonControls";
+import VolumeControl from "./VolumeControl";
 import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface DesktopPlayerProps {
@@ -19,12 +19,7 @@ interface DesktopPlayerProps {
   isPlaying: boolean;
   isShuffling: boolean;
   isRepeating: boolean;
-  volume: number;
-  setVolume: (value: number) => void;
   Icon: React.ComponentType<any>;
-  VolumeIcon: React.ComponentType<any>;
-  handleVolumeClick: () => void;
-  showVolumeSlider: boolean;
   handlePlay: () => void;
   handleSeek: (time: number) => void;
   onPlayNext: () => void;
@@ -45,12 +40,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
     isPlaying,
     isShuffling,
     isRepeating,
-    volume,
-    setVolume,
     Icon,
-    VolumeIcon,
-    handleVolumeClick,
-    showVolumeSlider,
     handlePlay,
     handleSeek,
     onPlayNext,
@@ -125,27 +115,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
             >
               <MdLyrics size={22} />
             </button>
-            <div className="relative">
-              <VolumeIcon
-                onClick={handleVolumeClick}
-                className="cursor-pointer text-neutral-400 hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
-                size={22}
-              />
-              <div
-                className={`absolute bottom-full rounded-xl mb-3 right-0 transition-all duration-200 z-50 bg-[#0c0c0c] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-[#333333] ${
-                  showVolumeSlider
-                    ? "opacity-100 transform translate-y-0"
-                    : "opacity-0 pointer-events-none transform translate-y-2"
-                }`}
-              >
-                <div className="flex flex-col items-center">
-                  <Slider
-                    value={volume}
-                    onChange={(value) => setVolume(value)}
-                  />
-                </div>
-              </div>
-            </div>
+            <VolumeControl />
           </div>
         </div>
       </div>

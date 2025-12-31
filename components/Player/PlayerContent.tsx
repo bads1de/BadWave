@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { Playlist, Song } from "@/types";
 
 import DesktopPlayer from "./DesktopPlayer";
 import MobilePlayer from "./MobilePlayer";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
-import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface PlayerContentProps {
   song: Song;
@@ -16,12 +16,8 @@ interface PlayerContentProps {
 const PlayerContent: React.FC<PlayerContentProps> = React.memo(
   ({ song, isMobilePlayer, toggleMobilePlayer, playlists }) => {
     const {
-      Icon,
-      VolumeIcon,
       formattedCurrentTime,
       formattedDuration,
-      volume,
-      setVolume,
       audioRef,
       currentTime,
       duration,
@@ -34,21 +30,10 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
       onPlayPrevious,
       toggleRepeat,
       toggleShuffle,
-      handleVolumeClick,
-      showVolumeSlider,
-      setShowVolumeSlider,
     } = useAudioPlayer(song?.song_path);
-    const { toggleLyrics } = useLyricsStore();
 
-    useEffect(() => {
-      if (!showVolumeSlider) return;
-
-      const timeout = setTimeout(() => {
-        setShowVolumeSlider(false);
-      }, 3000);
-
-      return () => clearTimeout(timeout);
-    }, [showVolumeSlider, setShowVolumeSlider]);
+    // アイコン選択ロジック
+    const Icon = isPlaying ? BsPauseFill : BsPlayFill;
 
     return (
       <>
@@ -87,12 +72,7 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
             isPlaying={isPlaying}
             isShuffling={isShuffling}
             isRepeating={isRepeating}
-            volume={volume}
-            setVolume={setVolume}
             Icon={Icon}
-            VolumeIcon={VolumeIcon}
-            handleVolumeClick={handleVolumeClick}
-            showVolumeSlider={showVolumeSlider}
             handlePlay={handlePlay}
             handleSeek={handleSeek}
             onPlayNext={onPlayNext}

@@ -67,7 +67,6 @@ describe("useAudioPlayer", () => {
     const { result } = renderHook(() => useAudioPlayer(songUrl));
 
     expect(result.current.isPlaying).toBe(false);
-    expect(result.current.volume).toBeGreaterThan(0);
     expect(result.current.currentTime).toBe(0);
   });
 

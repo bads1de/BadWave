@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import usePlayer from "@/hooks/player/usePlayer";
 import { isMobile } from "react-device-detect";
-import { BsPauseFill, BsPlayFill } from "react-icons/bs";
-import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import useAudioWaveStore, {
   globalAudioPlayerRef,
 } from "@/hooks/audio/useAudioWave";
@@ -41,7 +39,6 @@ const useAudioPlayer = (songUrl: string) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
   // モバイルは固定値1を使用、デスクトップはストアから取得
   const [mobileVolume, setMobileVolume] = useState(1);
@@ -71,8 +68,9 @@ const useAudioPlayer = (songUrl: string) => {
   const lastSaveTimeRef = useRef<number>(0);
   const hasRestoredRef = useRef<boolean>(false);
 
-  const Icon = isPlaying ? BsPauseFill : BsPlayFill;
-  const VolumeIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
+  // --- Refパターン: イベントリスナー内から最新の状態を参照するため ---
+  const isRepeatingRef = useRef(isRepeating);
+  const isRestoringRef = useRef(isRestoring);
 
   // グローバル参照にメインプレイヤーの情報を登録
   useEffect(() => {
@@ -124,6 +122,9 @@ const useAudioPlayer = (songUrl: string) => {
     }
   }, [isRepeating, player]);
 
+  // onPlayNextをRef経由で参照
+  const onPlayNextRef = useRef(onPlayNext);
+
   // 前の曲を再生する関数
   const onPlayPrevious = useCallback(() => {
     if (isRepeating) {
@@ -148,31 +149,47 @@ const useAudioPlayer = (songUrl: string) => {
     player.toggleShuffle();
   }, [player]);
 
+  // --- Refの同期: 状態が変わるたびにRefを更新 ---
+  useEffect(() => {
+    isRepeatingRef.current = isRepeating;
+  }, [isRepeating]);
+
+  useEffect(() => {
+    isRestoringRef.current = isRestoring;
+  }, [isRestoring]);
+
+  useEffect(() => {
+    onPlayNextRef.current = onPlayNext;
+  }, [onPlayNext]);
+
   // オーディオ要素のイベントリスナーを設定
+  // 注意: Refパターンを使用して、songUrl変更時のみリスナーを再登録
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleLoadedMetadata = () => setDuration(audio.duration);
+
     const handleEnded = () => {
-      if (isRepeating) {
+      if (isRepeatingRef.current) {
         audio.currentTime = 0;
         audio.play();
       } else {
-        onPlayNext();
+        onPlayNextRef.current();
       }
     };
+
     const handleCanPlayThrough = () => {
-      // 復元中は自動再生しない（ユーザーが手動で再生ボタンを押すまで待つ）
-      if (!isRestoring) {
+      if (!isRestoringRef.current) {
         audio.play();
       }
     };
+
     const handlePlay = () => setIsPlaying(true);
+
     const handlePause = () => {
       setIsPlaying(false);
-      // 一時停止時に再生位置を保存
       const activeId = player.activeId;
       if (activeId) {
         savePlaybackState(activeId, audio.currentTime, player.ids);
@@ -194,6 +211,7 @@ const useAudioPlayer = (songUrl: string) => {
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("pause", handlePause);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songUrl]);
 
   useEffect(() => {
@@ -308,20 +326,9 @@ const useAudioPlayer = (songUrl: string) => {
     [duration, formatTime]
   );
 
-  const handleVolumeClick = useCallback(() => {
-    setShowVolumeSlider((prev) => !prev);
-  }, []);
-
   return {
-    Icon,
-    VolumeIcon,
     formattedCurrentTime,
     formattedDuration,
-    volume,
-    setVolume,
-    showVolumeSlider,
-    setShowVolumeSlider,
-    handleVolumeClick,
     audioRef,
     currentTime,
     duration,
