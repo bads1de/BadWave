@@ -5,6 +5,7 @@ import { Playlist, Song } from "@/types";
 import DesktopPlayer from "./DesktopPlayer";
 import MobilePlayer from "./MobilePlayer";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
+import useAudioEqualizer from "@/hooks/audio/useAudioEqualizer";
 
 interface PlayerContentProps {
   song: Song;
@@ -32,13 +33,17 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
       toggleShuffle,
     } = useAudioPlayer(song?.song_path);
 
+    // イコライザー機能を初期化（audioRefを渡す）
+    useAudioEqualizer(audioRef);
+
     // アイコン選択ロジック
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
 
     return (
       <>
         {/* NOTE: srcはuseAudioPlayer内で設定されるため、ここでは指定しない */}
-        <audio ref={audioRef} />
+        {/* crossOrigin でWeb Audio API (イコライザー) がCORS対応できるようにする */}
+        <audio ref={audioRef} crossOrigin="anonymous" />
 
         {isMobilePlayer ? (
           <MobilePlayer

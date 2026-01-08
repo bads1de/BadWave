@@ -1,5 +1,5 @@
 import React from "react";
-import { MdLyrics } from "react-icons/md";
+import { Mic2 } from "lucide-react";
 import { Playlist, Song } from "@/types";
 import LikeButton from "../LikeButton";
 import MediaItem from "../Song/MediaItem";
@@ -7,6 +7,7 @@ import SeekBar from "./Seekbar";
 import AddPlaylist from "../Playlist/AddPlaylist";
 import CommonControls from "./CommonControls";
 import VolumeControl from "./VolumeControl";
+import EqualizerButton from "./EqualizerButton";
 import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface DesktopPlayerProps {
@@ -102,7 +103,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
         </div>
 
         <div className="hidden md:flex w-full justify-end pr-6">
-          <div className="flex items-center gap-x-8 w-full md:w-[170px] lg:w-[200px]">
+          <div className="flex items-center gap-x-6 w-full md:w-[200px] lg:w-[240px]">
             <AddPlaylist
               playlists={playlists}
               songId={song.id}
@@ -113,8 +114,9 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
               onClick={toggleLyrics}
               className="cursor-pointer text-neutral-400 hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
             >
-              <MdLyrics size={22} />
+              <Mic2 size={20} />
             </button>
+            <EqualizerButton />
             <VolumeControl />
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { BsPauseFill, BsPlayFill, BsChevronDown } from "react-icons/bs";
-import { LiaMicrophoneAltSolid } from "react-icons/lia";
+import { Mic2 } from "lucide-react";
 import { RiPlayListAddFill } from "react-icons/ri";
 import CommonControls from "../Player/CommonControls";
 
@@ -184,7 +184,7 @@ const MobilePlayerContent = React.memo(
                 showLyrics ? "text-primary" : "text-gray-400 hover:text-white"
               }`}
             >
-              <LiaMicrophoneAltSolid size={26} />
+              <Mic2 size={26} />
             </button>
 
             {/* Genre Pills could go here or above, but let's keep it clean. Maybe share button? 

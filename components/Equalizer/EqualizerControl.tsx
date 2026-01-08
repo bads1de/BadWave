@@ -1,0 +1,121 @@
+"use client";
+
+import React from "react";
+import useEqualizerStore, { EQ_BANDS } from "@/hooks/stores/useEqualizerStore";
+import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
+import EqSlider from "./EqSlider";
+import FrequencyCurve from "./FrequencyCurve";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+/**
+ * イコライザーコントロール メイン UI
+ * プリセット選択、ON/OFF切り替え、6バンドスライダー、周波数カーブを含む
+ */
+const EqualizerControl: React.FC = () => {
+  const {
+    isEnabled,
+    bands,
+    activePresetId,
+    presets,
+    setGain,
+    setPreset,
+    toggleEnabled,
+    reset,
+  } = useEqualizerStore();
+
+  const { getColorScheme, hasHydrated } = useColorSchemeStore();
+  const colorScheme = getColorScheme();
+
+  // カラースキームからアクセントカラーを取得（ハイドレーション前はデフォルト値）
+  const accentFrom = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
+  const accentTo = hasHydrated ? colorScheme.colors.accentTo : "#ec4899";
+
+  return (
+    <div className="flex flex-col gap-4 p-4 bg-[#1a1a1a] rounded-xl border border-[#333] min-w-[320px]">
+      {/* ヘッダー: ON/OFF と プリセット選択 */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Switch
+            checked={isEnabled}
+            onCheckedChange={toggleEnabled}
+            style={{
+              backgroundColor: isEnabled ? accentFrom : undefined,
+            }}
+            className="data-[state=unchecked]:bg-neutral-700"
+          />
+          <span className="text-sm font-medium text-neutral-200">
+            Equalizer
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Select value={activePresetId} onValueChange={setPreset}>
+            <SelectTrigger className="w-32 h-8 bg-[#252525] border-[#404040] text-sm">
+              <SelectValue placeholder="Preset" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#252525] border-[#404040]">
+              {presets.map((preset) => (
+                <SelectItem
+                  key={preset.id}
+                  value={preset.id}
+                  className="text-sm hover:bg-[#333]"
+                >
+                  {preset.name}
+                </SelectItem>
+              ))}
+              {activePresetId === "custom" && (
+                <SelectItem value="custom" className="text-sm hover:bg-[#333]">
+                  Custom
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+
+          <button
+            onClick={reset}
+            className="px-2 py-1 text-xs text-neutral-400 hover:text-white transition-colors"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+
+      {/* 周波数カーブ */}
+      <FrequencyCurve
+        bands={bands}
+        isEnabled={isEnabled}
+        accentFrom={accentFrom}
+        accentTo={accentTo}
+      />
+
+      {/* スライダー群 */}
+      <div className="flex justify-between gap-2">
+        {bands.map((band, index) => (
+          <EqSlider
+            key={band.freq}
+            value={band.gain}
+            onChange={(value) => setGain(band.freq, value)}
+            label={EQ_BANDS[index].label}
+            accentFrom={accentFrom}
+            accentTo={accentTo}
+          />
+        ))}
+      </div>
+
+      {/* フッター: ガイドラベル */}
+      <div className="flex justify-between text-xs text-neutral-500 px-2">
+        <span>Bass</span>
+        <span>Treble</span>
+      </div>
+    </div>
+  );
+};
+
+export default EqualizerControl;
