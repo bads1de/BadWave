@@ -41,7 +41,7 @@ const VolumeControl: React.FC = () => {
       <VolumeIcon
         onClick={handleClick}
         className="cursor-pointer text-neutral-400 hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
-        size={22}
+        size={20}
       />
       <div
         className={`absolute bottom-full rounded-xl mb-3 right-0 transition-all duration-200 z-50 bg-[#0c0c0c] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-[#333333] ${

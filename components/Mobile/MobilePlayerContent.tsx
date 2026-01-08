@@ -142,7 +142,7 @@ const MobilePlayerContent = React.memo(
               </p>
             </div>
             <div className="flex-shrink-0">
-              <LikeButton songId={song.id} size={28} songType="regular" />
+              <LikeButton songId={song.id} size={26} songType="regular" />
             </div>
           </div>
 

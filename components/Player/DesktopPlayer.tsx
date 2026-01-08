@@ -109,7 +109,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
               songId={song.id}
               songType="regular"
             />
-            <LikeButton songId={song.id} songType="regular" />
+            <LikeButton songId={song.id} songType="regular" size={20} />
             <button
               onClick={toggleLyrics}
               className="cursor-pointer text-neutral-400 hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
