@@ -8,6 +8,7 @@ import AddPlaylist from "../Playlist/AddPlaylist";
 import CommonControls from "./CommonControls";
 import VolumeControl from "./VolumeControl";
 import EqualizerButton from "./EqualizerButton";
+import PlaybackSpeedButton from "./PlaybackSpeedButton";
 import useLyricsStore from "@/hooks/stores/useLyricsStore";
 
 interface DesktopPlayerProps {
@@ -116,6 +117,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
             >
               <Mic2 size={20} />
             </button>
+            <PlaybackSpeedButton />
             <EqualizerButton />
             <VolumeControl />
           </div>

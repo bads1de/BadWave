@@ -6,6 +6,7 @@ import DesktopPlayer from "./DesktopPlayer";
 import MobilePlayer from "./MobilePlayer";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
 import useAudioEqualizer from "@/hooks/audio/useAudioEqualizer";
+import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
 
 interface PlayerContentProps {
   song: Song;
@@ -35,6 +36,9 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
 
     // イコライザー機能を初期化（audioRefを渡す）
     useAudioEqualizer(audioRef);
+
+    // 再生速度機能を初期化（audioRefを渡す）
+    usePlaybackRate(audioRef);
 
     // アイコン選択ロジック
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
