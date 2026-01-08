@@ -25,33 +25,21 @@ const useOnPlay = (songs: Song[]) => {
   const processPlayAsync = useCallback(
     async (id: string) => {
       try {
-        // songデータを取得
-        const { data: songData, error: selectError } = await supabase
-          .from("songs")
-          .select("count")
-          .eq("id", id)
-          .single();
+        // 改善点: RPCを使用してサーバー側でアトミックにカウントアップ
+        const { error: rpcError } = await supabase.rpc(
+          "increment_song_play_count",
+          { song_id: id }
+        );
 
-        if (selectError || !songData) throw selectError;
-
-        // カウントをインクリメント
-        const { data: incrementedCount, error: incrementError } =
-          await supabase.rpc("increment", { x: songData.count });
-
-        if (incrementError) throw incrementError;
-
-        // インクリメントされたカウントでsongを更新
-        const { error: updateError } = await supabase
-          .from("songs")
-          .update({ count: incrementedCount })
-          .eq("id", id);
-
-        if (updateError) throw updateError;
+        if (rpcError) {
+          console.error("RPC Error:", rpcError);
+          throw rpcError;
+        }
 
         // 再生履歴を記録
         await playHistory.recordPlay(id);
       } catch (error) {
-        console.error("エラーが発生しました:", error);
+        console.error("再生カウント/履歴の更新に失敗しました:", error);
       }
     },
     [supabase, playHistory]
