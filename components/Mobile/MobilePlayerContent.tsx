@@ -4,6 +4,8 @@ import { BsPauseFill, BsPlayFill, BsChevronDown } from "react-icons/bs";
 import { Mic2 } from "lucide-react";
 import { RiPlayListAddFill } from "react-icons/ri";
 import CommonControls from "../Player/CommonControls";
+import PlaybackSpeedButton from "../Player/PlaybackSpeedButton";
+import EqualizerButton from "../Player/EqualizerButton";
 
 import { Playlist, Song } from "@/types";
 import Link from "next/link";
@@ -177,21 +179,29 @@ const MobilePlayerContent = React.memo(
           </div>
 
           {/* Secondary Actions Row */}
-          <div className="flex justify-between items-center px-4 mt-2">
+          {/* Secondary Actions Row */}
+          <div className="flex justify-between items-center px-8 mt-4">
             <button
               onClick={toggleLyrics}
               className={`p-2 rounded-full transition-colors ${
-                showLyrics ? "text-primary" : "text-gray-400 hover:text-white"
+                showLyrics
+                  ? "text-primary hover:text-primary/80"
+                  : "text-gray-400 hover:text-white"
               }`}
+              title="Lyrics"
             >
-              <Mic2 size={26} />
+              <Mic2 size={24} />
             </button>
 
-            {/* Genre Pills could go here or above, but let's keep it clean. Maybe share button? 
-                For now just separating Lyrics and Playlist aligns with 'standard' apps nicely. 
-            */}
+            <div className="flex items-center justify-center w-12 h-12">
+              <PlaybackSpeedButton />
+            </div>
 
-            <div className="text-gray-400 hover:text-white transition-colors">
+            <div className="flex items-center justify-center w-12 h-12">
+              <EqualizerButton />
+            </div>
+
+            <div className="text-gray-400 hover:text-white transition-colors p-2">
               <AddPlaylist
                 playlists={playlists}
                 songId={song.id}
