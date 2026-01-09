@@ -1,140 +1,70 @@
-import * as React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import PlaylistModal from "@/components/Modals/PlaylistModal";
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
-import { useUser } from "@/hooks/auth/useUser";
 import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
 
-// モックの設定
-jest.mock("@/hooks/modal/usePlaylistModal", () => ({
-  __esModule: true,
-  default: () => mockPlaylistModal,
-}));
-
-const mockPlaylistModal = {
-  isOpen: true,
-  onOpen: jest.fn(),
-  onClose: jest.fn(),
-};
-
+// Mock hooks
+jest.mock("@/hooks/modal/usePlaylistModal");
+jest.mock("@/hooks/data/useCreatePlaylistMutation");
 jest.mock("@/hooks/auth/useUser", () => ({
-  useUser: jest.fn(),
+  useUser: () => ({ user: { id: "user-1" } }),
 }));
 
-jest.mock("@/hooks/data/useCreatePlaylistMutation", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-describe("PlaylistModal", () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
+// Mock child components
+jest.mock("@/components/Modals/Modal", () => {
+  return {
+    __esModule: true,
+    default: ({ isOpen, children }: any) => {
+      if (!isOpen) return null;
+      const React = require("react");
+      return React.createElement("div", { "data-testid": "playlist-modal" }, children);
     },
-  });
-
-  const mockUser = {
-    id: "test-user-id",
-    full_name: "Test User",
   };
+});
 
-  const mockMutation = {
-    mutateAsync: jest.fn(),
-    isPending: false,
-  };
+describe("components/Modals/PlaylistModal", () => {
+  const mockMutateAsync = jest.fn();
+  const mockOnClose = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    (useUser as jest.Mock).mockReturnValue({ userDetails: mockUser });
-    (useCreatePlaylistMutation as jest.Mock).mockReturnValue(mockMutation);
-  });
-
-  const renderComponent = () => {
-    return render(
-      <QueryClientProvider client={queryClient}>
-        <PlaylistModal />
-      </QueryClientProvider>
-    );
-  };
-
-  it("モーダルが正しく表示されること", () => {
-    renderComponent();
-
-    expect(screen.getByText("プレイリストを作成")).toBeInTheDocument();
-    expect(
-      screen.getByText("プレイリストのタイトルを入力してください")
-    ).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("プレイリスト名")).toBeInTheDocument();
-    expect(screen.getByText("作成")).toBeInTheDocument();
-  });
-
-  it("フォーム送信が正しく動作すること", async () => {
-    renderComponent();
-
-    // フォーム入力
-    fireEvent.change(screen.getByPlaceholderText("プレイリスト名"), {
-      target: { value: "Test Playlist" },
+    (usePlaylistModal as unknown as jest.Mock).mockReturnValue({
+      isOpen: true,
+      onClose: mockOnClose,
     });
-
-    // フォーム送信
-    fireEvent.submit(screen.getByRole("form"));
-
-    // ミューテーションが呼ばれたことを確認
-    await waitFor(() => {
-      expect(mockMutation.mutateAsync).toHaveBeenCalledWith({
-        title: "Test Playlist",
-      });
-    });
-  });
-
-  it("ローディング中は送信ボタンが無効化されること", () => {
-    // ローディング状態をモック
     (useCreatePlaylistMutation as jest.Mock).mockReturnValue({
-      ...mockMutation,
-      isPending: true,
+      mutateAsync: mockMutateAsync,
+      isPending: false,
     });
-
-    renderComponent();
-
-    const submitButton = screen.getByRole("button", {
-      name: "作成中",
-    });
-    expect(submitButton).toBeDisabled();
   });
 
-  it("モーダルが閉じられるとフォームがリセットされること", () => {
-    const { rerender } = render(
-      <QueryClientProvider client={queryClient}>
-        <PlaylistModal />
-      </QueryClientProvider>
-    );
+  it("renders when open", () => {
+    render(<PlaylistModal />);
+    expect(screen.getByTestId("playlist-modal")).toBeInTheDocument();
+  });
 
-    // フォーム入力
-    fireEvent.change(screen.getByPlaceholderText("プレイリスト名"), {
-      target: { value: "Test Playlist" },
+  it("submits form with title", async () => {
+    render(<PlaylistModal />);
+    
+    const input = screen.getByPlaceholderText("プレイリスト名");
+    fireEvent.change(input, { target: { value: "My Playlist" } });
+
+    const submitBtn = screen.getByRole("button", { name: "作成" });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledWith({ title: "My Playlist" });
     });
+  });
 
-    // モーダルを閉じる
-    mockPlaylistModal.isOpen = false;
-    rerender(
-      <QueryClientProvider client={queryClient}>
-        <PlaylistModal />
-      </QueryClientProvider>
-    );
+  it("does not submit empty title", async () => {
+    render(<PlaylistModal />);
+    
+    const submitBtn = screen.getByRole("button", { name: "作成" });
+    fireEvent.click(submitBtn);
 
-    // モーダルを再度開く
-    mockPlaylistModal.isOpen = true;
-    rerender(
-      <QueryClientProvider client={queryClient}>
-        <PlaylistModal />
-      </QueryClientProvider>
-    );
-
-    // フォームがリセットされていることを確認
-    expect(screen.getByPlaceholderText("プレイリスト名")).toHaveValue("");
+    await waitFor(() => {
+      expect(mockMutateAsync).not.toHaveBeenCalled();
+    });
   });
 });

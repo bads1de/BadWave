@@ -1,11 +1,11 @@
-import getPulses from "@/actions/getPulses";
+import getSpotlight from "@/actions/getSpotlight";
 import { createClient } from "@/libs/supabase/server";
 
 jest.mock("@/libs/supabase/server", () => ({
   createClient: jest.fn(),
 }));
 
-describe("actions/getPulses", () => {
+describe("actions/getSpotlight", () => {
   let mockSupabase: any;
   let mockOrder: jest.Mock;
 
@@ -21,13 +21,13 @@ describe("actions/getPulses", () => {
     (createClient as jest.Mock).mockResolvedValue(mockSupabase);
   });
 
-  it("should fetch pulses", async () => {
-    const mockData = [{ id: "1", title: "Pulse Item" }];
+  it("should fetch spotlights", async () => {
+    const mockData = [{ id: "1", title: "Spotlight Item" }];
     mockOrder.mockResolvedValue({ data: mockData, error: null });
 
-    const result = await getPulses();
+    const result = await getSpotlight();
 
-    expect(mockSupabase.from).toHaveBeenCalledWith("pulses");
+    expect(mockSupabase.from).toHaveBeenCalledWith("spotlights");
     expect(mockOrder).toHaveBeenCalledWith("created_at", { ascending: false });
     expect(result).toEqual(mockData);
   });
@@ -36,7 +36,7 @@ describe("actions/getPulses", () => {
     mockOrder.mockResolvedValue({ data: null, error: { message: "Error" } });
     const consoleSpy = jest.spyOn(console, "error").mockImplementation();
 
-    await expect(getPulses()).rejects.toThrow("Error");
+    await expect(getSpotlight()).rejects.toThrow("Error");
 
     expect(consoleSpy).toHaveBeenCalled();
     consoleSpy.mockRestore();

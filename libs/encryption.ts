@@ -11,8 +11,6 @@ import {
  */
 export class Encryption {
   private static readonly algorithm = "aes-256-ctr";
-  private static readonly key = process.env.ENCRYPTION_KEY;
-
   /**
    * テキストを暗号化する
    * @param text 暗号化する文字列
@@ -20,7 +18,8 @@ export class Encryption {
    * @throws 暗号化キーが設定されていない場合にエラー
    */
   static encrypt(text: string): string {
-    if (!this.key) {
+    const keyStr = process.env.ENCRYPTION_KEY;
+    if (!keyStr) {
       throw new Error("Encryption key is not set");
     }
 
@@ -29,7 +28,7 @@ export class Encryption {
     const salt = randomBytes(16);
     
     // ソルトを使用して暗号化キーを生成
-    const key = scryptSync(this.key, salt, 32);
+    const key = scryptSync(keyStr, salt, 32);
     
     // 暗号化処理の実行
     const cipher = createCipheriv(this.algorithm, key, iv);
@@ -47,7 +46,8 @@ export class Encryption {
    * @throws 暗号化キーが設定されていない場合にエラー
    */
   static decrypt(encryptedText: string): string {
-    if (!this.key) {
+    const keyStr = process.env.ENCRYPTION_KEY;
+    if (!keyStr) {
       throw new Error("Encryption key is not set");
     }
 
@@ -59,7 +59,7 @@ export class Encryption {
     const iv = Buffer.from(ivHex, "hex");
     
     // 暗号化と同じキーを生成
-    const key = scryptSync(this.key, salt, 32);
+    const key = scryptSync(keyStr, salt, 32);
     
     // 復号化処理の実行
     const decipher = createDecipheriv(this.algorithm, key, iv);

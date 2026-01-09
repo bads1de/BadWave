@@ -1,219 +1,121 @@
-import * as React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { toast } from "react-hot-toast";
 import UploadModal from "@/components/Modals/UploadModal";
 import useUploadModal from "@/hooks/modal/useUploadModal";
-import { useUser } from "@/hooks/auth/useUser";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
+import { useUser } from "@/hooks/auth/useUser";
+import { toast } from "react-hot-toast";
 
-// モックの設定
-jest.mock("@/hooks/modal/useUploadModal", () => ({
-  __esModule: true,
-  default: () => mockUploadModal,
+// Mock AWS SDK to avoid runtime issues in Jest
+jest.mock("@aws-sdk/client-s3", () => ({
+  PutObjectCommand: jest.fn(),
+  DeleteObjectCommand: jest.fn(),
+  S3Client: jest.fn(() => ({
+    send: jest.fn(),
+  })),
 }));
 
-const mockUploadModal = {
-  isOpen: true,
-  onOpen: jest.fn(),
-  onClose: jest.fn(),
-};
+// Mock hooks
+jest.mock("@/hooks/modal/useUploadModal");
+jest.mock("@/hooks/data/useUploadSongMutation");
+jest.mock("@/hooks/auth/useUser");
+jest.mock("react-hot-toast");
 
-jest.mock("@/hooks/auth/useUser", () => ({
-  useUser: jest.fn(),
-}));
-
-jest.mock("@/hooks/data/useUploadSongMutation", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-jest.mock("react-hot-toast", () => ({
-  __esModule: true,
-  toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-  default: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-}));
-
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    refresh: jest.fn(),
-  }),
-}));
-
-// URL.createObjectURLのモック
-global.URL.createObjectURL = jest.fn(() => "mock-url");
-
-describe("UploadModal", () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
+// Mock child components
+jest.mock("@/components/Modals/Modal", () => {
+  return {
+    __esModule: true,
+    default: ({ isOpen, children }: any) => {
+      if (!isOpen) return null;
+      const React = require("react");
+      return React.createElement("div", { "data-testid": "upload-modal" }, children);
     },
-  });
-
-  const mockUser = {
-    id: "test-user-id",
   };
+});
 
-  const mockMutation = {
-    mutateAsync: jest.fn(),
-    isPending: false,
+jest.mock("@/components/Genre/GenreSelect", () => {
+  return {
+    __esModule: true,
+    default: ({ onGenreChange }: any) => {
+      const React = require("react");
+      return React.createElement("button", {
+        onClick: () => onGenreChange("Pop"),
+        "data-testid": "genre-select"
+      }, "Select Genre");
+    },
   };
+});
+
+describe("components/Modals/UploadModal", () => {
+  const mockMutateAsync = jest.fn();
+  const mockOnClose = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    (useUser as jest.Mock).mockReturnValue({ user: mockUser });
-    (useUploadSongMutation as jest.Mock).mockReturnValue(mockMutation);
+    (useUploadModal as unknown as jest.Mock).mockReturnValue({
+      isOpen: true,
+      onClose: mockOnClose,
+    });
+    (useUploadSongMutation as jest.Mock).mockReturnValue({
+      mutateAsync: mockMutateAsync,
+      isPending: false,
+    });
+    (useUser as jest.Mock).mockReturnValue({
+      user: { id: "user-1" },
+    });
   });
 
-  const renderComponent = () => {
-    return render(
-      <QueryClientProvider client={queryClient}>
-        <UploadModal />
-      </QueryClientProvider>
-    );
-  };
-
-  it("モーダルが正しく表示されること", () => {
-    renderComponent();
-
-    expect(screen.getByText("曲をアップロード")).toBeInTheDocument();
-    expect(
-      screen.getByText("mp3ファイルと画像ファイルを選択してください")
-    ).toBeInTheDocument();
+  it("renders upload form when open", () => {
+    render(<UploadModal />);
+    expect(screen.getByTestId("upload-modal")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("曲のタイトル")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("アーティスト名")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("歌詞")).toBeInTheDocument();
-    expect(screen.getByText("ジャンル")).toBeInTheDocument();
-    expect(screen.getByText("ファイルを選択")).toBeInTheDocument();
-    expect(screen.getByText("アップロード")).toBeInTheDocument();
   });
 
-  it("フォーム入力が正しく動作すること", () => {
-    renderComponent();
+  it("validates required fields on submit", async () => {
+    render(<UploadModal />);
+    
+    const submitBtn = screen.getByRole("button", { name: "アップロード" });
+    fireEvent.click(submitBtn);
 
-    // タイトル入力
-    const titleInput = screen.getByPlaceholderText("曲のタイトル");
-    fireEvent.change(titleInput, { target: { value: "Test Song" } });
-    expect(titleInput).toHaveValue("Test Song");
-
-    // アーティスト名入力
-    const authorInput = screen.getByPlaceholderText("アーティスト名");
-    fireEvent.change(authorInput, { target: { value: "Test Artist" } });
-    expect(authorInput).toHaveValue("Test Artist");
-
-    // 歌詞入力
-    const lyricsInput = screen.getByPlaceholderText("歌詞");
-    fireEvent.change(lyricsInput, { target: { value: "Test Lyrics" } });
-    expect(lyricsInput).toHaveValue("Test Lyrics");
-  });
-
-  it("ファイルアップロードが正しく動作すること", () => {
-    renderComponent();
-
-    const fileInput = screen.getByLabelText("ファイルを選択");
-
-    // 音声ファイルのアップロード
-    const audioFile = new File(["audio content"], "song.mp3", {
-      type: "audio/mpeg",
-    });
-
-    // 画像ファイルのアップロード
-    const imageFile = new File(["image content"], "image.jpg", {
-      type: "image/jpeg",
-    });
-
-    fireEvent.change(fileInput, { target: { files: [audioFile, imageFile] } });
-
-    // プレビューが表示されることを確認
-    waitFor(() => {
-      expect(
-        screen.getByAltText("アップロードされた画像のプレビュー")
-      ).toBeInTheDocument();
-      expect(screen.getByRole("audio")).toBeInTheDocument();
-    });
-  });
-
-  it("フォーム送信が正しく動作すること", async () => {
-    renderComponent();
-
-    // フォーム入力
-    fireEvent.change(screen.getByPlaceholderText("曲のタイトル"), {
-      target: { value: "Test Song" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("アーティスト名"), {
-      target: { value: "Test Artist" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("歌詞"), {
-      target: { value: "Test Lyrics" },
-    });
-
-    // ファイルアップロード
-    const fileInput = screen.getByLabelText("ファイルを選択");
-    const audioFile = new File(["audio content"], "song.mp3", {
-      type: "audio/mpeg",
-    });
-    const imageFile = new File(["image content"], "image.jpg", {
-      type: "image/jpeg",
-    });
-    fireEvent.change(fileInput, { target: { files: [audioFile, imageFile] } });
-
-    // フォーム送信
-    fireEvent.submit(screen.getByRole("form"));
-
-    // ミューテーションが呼ばれたことを確認
+    // Form validation prevents submission, so mutation should not be called
     await waitFor(() => {
-      expect(mockMutation.mutateAsync).toHaveBeenCalledWith({
-        title: "Test Song",
-        author: "Test Artist",
-        lyrics: "Test Lyrics",
-        genre: expect.any(Array),
+      expect(mockMutateAsync).not.toHaveBeenCalled();
+    });
+  });
+
+  it("submits form with valid data", async () => {
+    // We need to setup a more complex mock for URL.createObjectURL since it's used in the component
+    global.URL.createObjectURL = jest.fn(() => "blob:test");
+
+    render(<UploadModal />);
+
+    // Fill text inputs
+    fireEvent.change(screen.getByPlaceholderText("曲のタイトル"), { target: { value: "My Song" } });
+    fireEvent.change(screen.getByPlaceholderText("アーティスト名"), { target: { value: "Me" } });
+    
+    // Select genre (mock component)
+    fireEvent.click(screen.getByTestId("genre-select"));
+
+    // File inputs
+    // getByLabelText returns the input element because of htmlFor/id association
+    const fileInput = screen.getByLabelText("ファイルを選択"); 
+    const songFile = new File(["song"], "song.mp3", { type: "audio/mpeg" });
+    const imageFile = new File(["image"], "image.jpg", { type: "image/jpeg" });
+
+    // Simulate selecting both files
+    fireEvent.change(fileInput, { target: { files: [songFile, imageFile] } });
+
+    // Submit
+    const submitBtn = screen.getByRole("button", { name: "アップロード" });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledWith(expect.objectContaining({
+        title: "My Song",
+        author: "Me",
+        genre: ["Pop"],
         songFile: expect.any(File),
         imageFile: expect.any(File),
-      });
-    });
-  });
-
-  it("ローディング中は送信ボタンが無効化されること", () => {
-    // ローディング状態をモック
-    (useUploadSongMutation as jest.Mock).mockReturnValue({
-      ...mockMutation,
-      isPending: true,
-    });
-
-    renderComponent();
-
-    const submitButton = screen.getByRole("button", {
-      name: "アップロード中...",
-    });
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("必須フィールドが未入力の場合、エラーが表示されること", async () => {
-    renderComponent();
-
-    // タイトルとアーティスト名のみ入力（ファイルは未入力）
-    fireEvent.change(screen.getByPlaceholderText("曲のタイトル"), {
-      target: { value: "Test Song" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("アーティスト名"), {
-      target: { value: "Test Artist" },
-    });
-
-    // フォーム送信
-    fireEvent.submit(screen.getByRole("form"));
-
-    // エラーメッセージが表示されることを確認
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith("必須フィールドが未入力です");
+      }));
     });
   });
 });

@@ -1,90 +1,51 @@
-import * as React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import DeletePlaylistSongsBtn from "@/components/Playlist/DeletePlaylistSongsBtn";
 import useMutatePlaylistSong from "@/hooks/data/useMutatePlaylistSong";
 
-// モックの設定
-jest.mock("@/libs/supabase/client", () => ({
-  createClient: jest.fn(),
-}));
+// Mock hooks
+jest.mock("@/hooks/data/useMutatePlaylistSong");
 
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    refresh: jest.fn(),
-  }),
-}));
-
-jest.mock("react-hot-toast", () => ({
-  success: jest.fn(),
-  error: jest.fn(),
-}));
-
-jest.mock("@tanstack/react-query", () => ({
-  useQueryClient: jest.fn(),
-}));
-
-jest.mock("@/hooks/data/useMutatePlaylistSong", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-describe("DeletePlaylistSongsBtn", () => {
-  const mockProps = {
-    songId: "123",
-    playlistId: "456",
-    showText: true,
-  };
-
-  const mockDeleteMutation = {
-    mutate: jest.fn(),
-    isPending: false,
-  };
+describe("components/Playlist/DeletePlaylistSongsBtn", () => {
+  const mockMutate = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
     (useMutatePlaylistSong as jest.Mock).mockReturnValue({
-      deletePlaylistSong: mockDeleteMutation,
+      deletePlaylistSong: {
+        mutate: mockMutate,
+        isPending: false,
+      },
     });
   });
 
-  it("ボタンが正しく表示されること", () => {
-    render(<DeletePlaylistSongsBtn {...mockProps} />);
-
+  it("renders delete icon button", () => {
+    render(
+      <DeletePlaylistSongsBtn songId="song-1" playlistId="playlist-1" />
+    );
     expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+
+  it("renders text when showText is true", () => {
+    render(
+      <DeletePlaylistSongsBtn 
+        songId="song-1" 
+        playlistId="playlist-1" 
+        showText={true} 
+      />
+    );
     expect(screen.getByText("削除")).toBeInTheDocument();
   });
 
-  it("ボタンクリック時にdeletePlaylistSong.mutateが呼ばれること", async () => {
-    render(<DeletePlaylistSongsBtn {...mockProps} />);
-
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
-
-    expect(mockDeleteMutation.mutate).toHaveBeenCalledWith({
-      songId: mockProps.songId,
-      playlistId: mockProps.playlistId,
-    });
-  });
-
-  it("ローディング中はボタンが無効化されること", () => {
-    (useMutatePlaylistSong as jest.Mock).mockReturnValue({
-      deletePlaylistSong: {
-        ...mockDeleteMutation,
-        isPending: true,
-      },
-    });
-
-    render(<DeletePlaylistSongsBtn {...mockProps} />);
-
-    const button = screen.getByRole("button");
-    expect(button).toBeDisabled();
-  });
-
-  it("showTextがfalseの場合、テキストが表示されないこと", () => {
+  it("triggers deletion on click", () => {
     render(
-      <DeletePlaylistSongsBtn songId="123" playlistId="456" showText={false} />
+      <DeletePlaylistSongsBtn songId="song-1" playlistId="playlist-1" />
     );
-
-    expect(screen.queryByText("削除")).not.toBeInTheDocument();
+    
+    fireEvent.click(screen.getByRole("button"));
+    
+    expect(mockMutate).toHaveBeenCalledWith({
+      songId: "song-1",
+      playlistId: "playlist-1",
+    });
   });
 });

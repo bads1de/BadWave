@@ -1,103 +1,108 @@
-import { act, renderHook } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import usePlayer from "@/hooks/player/usePlayer";
 
-describe("usePlayer", () => {
+describe("hooks/player/usePlayer", () => {
   beforeEach(() => {
-    // 各テストの前にstoreをリセット
+    // Reset store state before each test
     const { result } = renderHook(() => usePlayer());
     act(() => {
       result.current.reset();
     });
   });
 
-  describe("基本機能", () => {
-    it("初期値が正しく設定されていること", () => {
-      const { result } = renderHook(() => usePlayer());
-
-      expect(result.current.ids).toEqual([]);
-      expect(result.current.activeId).toBeUndefined();
-      expect(result.current.isRepeating).toBe(false);
-      expect(result.current.isShuffling).toBe(false);
-      expect(result.current.shuffledIds).toEqual([]);
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    it("activeIdを設定できること", () => {
-      const { result } = renderHook(() => usePlayer());
-
-      act(() => {
-        result.current.setId("test-id");
-      });
-
-      expect(result.current.activeId).toBe("test-id");
-    });
-
-    it("idsを設定できること", () => {
-      const { result } = renderHook(() => usePlayer());
-      const testIds = ["1", "2", "3"];
-
-      act(() => {
-        result.current.setIds(testIds);
-      });
-
-      expect(result.current.ids).toEqual(testIds);
-    });
+  it("should initialize with default values", () => {
+    const { result } = renderHook(() => usePlayer());
+    expect(result.current.ids).toEqual([]);
+    expect(result.current.activeId).toBeUndefined();
+    expect(result.current.isRepeating).toBe(false);
+    expect(result.current.isShuffling).toBe(false);
+    expect(result.current.isLoading).toBe(false);
   });
 
-  describe("再生コントロール", () => {
-    it("リピートをトグルできること", () => {
-      const { result } = renderHook(() => usePlayer());
-
-      act(() => {
-        result.current.toggleRepeat();
-      });
-
-      expect(result.current.isRepeating).toBe(true);
-
-      act(() => {
-        result.current.toggleRepeat();
-      });
-
-      expect(result.current.isRepeating).toBe(false);
+  it("should set active ID", () => {
+    const { result } = renderHook(() => usePlayer());
+    act(() => {
+      result.current.setId("1");
     });
-
-    it("シャッフルをトグルし、シャッフルされたプレイリストを作成できること", () => {
-      const { result } = renderHook(() => usePlayer());
-      const testIds = ["1", "2", "3", "4", "5"];
-
-      act(() => {
-        result.current.setIds(testIds);
-        result.current.toggleShuffle();
-      });
-
-      expect(result.current.isShuffling).toBe(true);
-      expect(result.current.shuffledIds).toHaveLength(testIds.length);
-      expect(result.current.shuffledIds).not.toEqual(testIds);
-    });
+    expect(result.current.activeId).toBe("1");
   });
 
-  describe("ナビゲーション", () => {
-    const setupPlaylist = (result: any) => {
-      act(() => {
-        result.current.setIds(["1", "2", "3"]);
-        result.current.setId("2");
-      });
-    };
+  it("should set IDs list", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3"];
+    act(() => {
+      result.current.setIds(ids);
+    });
+    expect(result.current.ids).toEqual(ids);
+  });
 
-    it("通常モードで次の曲のIDを取得できること", () => {
-      const { result } = renderHook(() => usePlayer());
-      setupPlaylist(result);
+  it("should toggle repeat", () => {
+    const { result } = renderHook(() => usePlayer());
+    expect(result.current.isRepeating).toBe(false);
+    act(() => {
+      result.current.toggleRepeat();
+    });
+    expect(result.current.isRepeating).toBe(true);
+    act(() => {
+      result.current.toggleRepeat();
+    });
+    expect(result.current.isRepeating).toBe(false);
+  });
 
-      const nextId = result.current.getNextSongId();
-      expect(nextId).toBe("3");
+  it("should toggle shuffle and generate shuffled IDs", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3", "4", "5"];
+    act(() => {
+      result.current.setIds(ids);
+      result.current.toggleShuffle();
+    });
+    expect(result.current.isShuffling).toBe(true);
+    expect(result.current.shuffledIds).toHaveLength(ids.length);
+    expect(result.current.shuffledIds).not.toEqual(ids); // Likely not equal, but technically possible to be same order
+    expect(result.current.shuffledIds.sort()).toEqual(ids.sort()); // Same elements
+  });
+
+  it("should get next song ID correctly", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3"];
+    
+    act(() => {
+      result.current.setIds(ids);
+      result.current.setId("1");
     });
 
-    it("通常モードで前の曲のIDを取得できること", () => {
-      const { result } = renderHook(() => usePlayer());
-      setupPlaylist(result);
+    // Normal sequence
+    expect(result.current.getNextSongId()).toBe("2");
 
-      const previousId = result.current.getPreviousSongId();
-      expect(previousId).toBe("1");
+    act(() => {
+      result.current.setId("3");
     });
+    // Loop back to start
+    expect(result.current.getNextSongId()).toBe("1");
+
+    // Repeat mode
+    act(() => {
+      result.current.toggleRepeat();
+    });
+    expect(result.current.getNextSongId()).toBe("3"); // Should stay on same song
+  });
+
+  it("should get previous song ID correctly", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3"];
+    
+    act(() => {
+      result.current.setIds(ids);
+      result.current.setId("2");
+    });
+
+    // Normal sequence
+    expect(result.current.getPreviousSongId()).toBe("1");
+
+    act(() => {
+      result.current.setId("1");
+    });
+    // Loop back to end
+    expect(result.current.getPreviousSongId()).toBe("3");
   });
 });

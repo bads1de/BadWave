@@ -1,13 +1,20 @@
 import { renderHook, act } from "@testing-library/react";
 import useUploadModal from "@/hooks/modal/useUploadModal";
 
-describe("useUploadModal", () => {
-  it("should return default values", () => {
+describe("hooks/modal/useUploadModal", () => {
+  beforeEach(() => {
+    const { result } = renderHook(() => useUploadModal());
+    act(() => {
+      result.current.onClose();
+    });
+  });
+
+  it("should initialize as closed", () => {
     const { result } = renderHook(() => useUploadModal());
     expect(result.current.isOpen).toBe(false);
   });
 
-  it("should open the modal", () => {
+  it("should open modal", () => {
     const { result } = renderHook(() => useUploadModal());
     act(() => {
       result.current.onOpen();
@@ -15,16 +22,12 @@ describe("useUploadModal", () => {
     expect(result.current.isOpen).toBe(true);
   });
 
-  it("should close the modal", () => {
+  it("should close modal", () => {
     const { result } = renderHook(() => useUploadModal());
-
-    // Open first
     act(() => {
       result.current.onOpen();
     });
     expect(result.current.isOpen).toBe(true);
-
-    // Then close
     act(() => {
       result.current.onClose();
     });

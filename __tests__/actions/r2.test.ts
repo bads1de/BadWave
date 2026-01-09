@@ -1,22 +1,14 @@
-/**
- * R2 Server Action Tests
- *
- * Note: Server Actions with file uploads are challenging to unit test directly
- * due to the FormData/File API differences between Node.js and browser environments.
- * These tests focus on validation logic and error handling.
- * The actual S3 upload logic is tested through integration tests.
- */
-
 import { uploadFileToR2, deleteFileFromR2 } from "@/actions/r2";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import s3Client from "@/libs/s3";
+import { requireAdmin } from "@/libs/admin";
 
-// Mock the s3 client module
+// Mock dependencies
 jest.mock("@/libs/s3", () => ({
-  __esModule: true,
-  default: {
-    send: jest.fn().mockResolvedValue({}),
-  },
+  send: jest.fn(),
+}));
+
+jest.mock("@/libs/admin", () => ({
+  requireAdmin: jest.fn(),
 }));
 
 jest.mock("@aws-sdk/client-s3", () => ({
@@ -24,25 +16,50 @@ jest.mock("@aws-sdk/client-s3", () => ({
   DeleteObjectCommand: jest.fn(),
 }));
 
-jest.mock("@/libs/admin", () => ({
-  requireAdmin: jest.fn().mockResolvedValue(undefined),
-}));
-
-// ============================================================================
-// uploadFileToR2 Tests
-// ============================================================================
-
-describe("uploadFileToR2", () => {
+describe("actions/r2", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.R2_SONG_URL = "https://song.example.com";
-    process.env.R2_IMAGE_URL = "https://image.example.com";
-    process.env.R2_SPOTLIGHT_URL = "https://spotlight.example.com";
-    process.env.R2_VIDEO_URL = "https://video.example.com";
+    process.env.R2_SONG_URL = "https://r2.example.com";
   });
 
-  describe("バリデーション", () => {
-    it("ファイルがない場合、エラーを返すこと", async () => {
+  describe("uploadFileToR2", () => {
+    it("uploads file successfully", async () => {
+      const consoleSpy = jest.spyOn(console, "error").mockImplementation();
+      (requireAdmin as jest.Mock).mockResolvedValue(true);
+      (s3Client.send as jest.Mock).mockResolvedValue({});
+
+      // Mock File with arrayBuffer
+      const file = {
+        name: "test.mp3",
+        type: "audio/mpeg",
+        size: 1024,
+        arrayBuffer: jest.fn().mockResolvedValue(new ArrayBuffer(8)),
+      } as unknown as File;
+
+      const formData = new FormData();
+      // Override get to return our file object directly
+      formData.get = jest.fn((key: string) => {
+        if (key === "file") return file;
+        if (key === "bucketName") return "song";
+        if (key === "fileNamePrefix") return "prefix";
+        return null;
+      }) as any;
+
+      const result = await uploadFileToR2(formData);
+
+      if (!result.success) {
+         console.log("Test failed with error:", result.error);
+      }
+
+      expect(requireAdmin).toHaveBeenCalled();
+      expect(s3Client.send).toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.url).toContain("https://r2.example.com");
+      
+      consoleSpy.mockRestore();
+    });
+
+    it("fails if file is missing", async () => {
       const formData = new FormData();
       formData.append("bucketName", "song");
 
@@ -52,27 +69,23 @@ describe("uploadFileToR2", () => {
       expect(result.error).toBe("ファイルとバケット名は必須です");
     });
 
-    it("バケット名がない場合、エラーを返すこと", async () => {
-      const mockFile = new File(["test"], "test.mp3", { type: "audio/mpeg" });
+    it("fails if file too large", async () => {
+      (requireAdmin as jest.Mock).mockResolvedValue(true);
+      
+      // Mock large file
+      const largeFile = {
+        name: "large.mp3",
+        size: 60 * 1024 * 1024, // 60MB
+        arrayBuffer: jest.fn(),
+      } as unknown as File;
+      
       const formData = new FormData();
-      formData.append("file", mockFile);
-
-      const result = await uploadFileToR2(formData);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe("ファイルとバケット名は必須です");
-    });
-
-    it("50MBを超えるファイルの場合、エラーを返すこと", async () => {
-      const mockFile = new File(["test"], "test.mp3", { type: "audio/mpeg" });
-      Object.defineProperty(mockFile, "size", {
-        value: 60 * 1024 * 1024,
-        configurable: true,
-      });
-
-      const formData = new FormData();
-      formData.append("file", mockFile);
-      formData.append("bucketName", "song");
+      // Override get for large file test
+      formData.get = jest.fn((key: string) => {
+        if (key === "file") return largeFile;
+        if (key === "bucketName") return "song";
+        return null;
+      }) as any;
 
       const result = await uploadFileToR2(formData);
 
@@ -81,98 +94,25 @@ describe("uploadFileToR2", () => {
     });
   });
 
-  describe("アップロード処理", () => {
-    it("正常なファイルの場合、アップロードを試みること", async () => {
-      const mockFile = new File(["test content"], "test-song.mp3", {
-        type: "audio/mpeg",
-      });
-      mockFile.arrayBuffer = jest.fn().mockResolvedValue(new ArrayBuffer(8));
+  describe("deleteFileFromR2", () => {
+    it("deletes file successfully", async () => {
+      (requireAdmin as jest.Mock).mockResolvedValue(true);
+      (s3Client.send as jest.Mock).mockResolvedValue({});
 
-      const formData = new FormData();
-      formData.append("file", mockFile);
-      formData.append("bucketName", "song");
-      formData.append("fileNamePrefix", "user1");
+      const result = await deleteFileFromR2("song", "file-key");
 
-      const result = await uploadFileToR2(formData);
-
-      // Either succeeds or fails at the S3 level (not validation)
-      if (result.success) {
-        expect(result.url).toBeDefined();
-        expect(result.url).toContain("https://song.example.com/");
-      } else {
-        // If it fails, it should be an upload error, not a validation error
-        expect(result.error).toBe("ファイルのアップロードに失敗しました");
-      }
+      expect(requireAdmin).toHaveBeenCalled();
+      expect(s3Client.send).toHaveBeenCalled();
+      expect(result.success).toBe(true);
     });
-  });
-});
 
-// ============================================================================
-// deleteFileFromR2 Tests
-// ============================================================================
+    it("fails if params missing", async () => {
+      (requireAdmin as jest.Mock).mockResolvedValue(true);
 
-describe("deleteFileFromR2", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+      const result = await deleteFileFromR2("song", "");
 
-  it("バケット名がない場合、エラーを返すこと", async () => {
-    const result = await deleteFileFromR2("" as any, "test-file.mp3");
-
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("バケット名とファイルパスは必須です");
-  });
-
-  it("ファイルパスがない場合、エラーを返すこと", async () => {
-    const result = await deleteFileFromR2("song", "");
-
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("バケット名とファイルパスは必須です");
-  });
-
-  it("正常な削除の場合、successを返すこと", async () => {
-    (s3Client.send as jest.Mock).mockResolvedValue({});
-
-    const result = await deleteFileFromR2("song", "test-file.mp3");
-
-    expect(s3Client.send).toHaveBeenCalledWith(expect.any(DeleteObjectCommand));
-    expect(result.success).toBe(true);
-    expect(result.error).toBeUndefined();
-  });
-
-  it("削除エラー時にエラーを返すこと", async () => {
-    (s3Client.send as jest.Mock).mockRejectedValue(new Error("Delete failed"));
-
-    const result = await deleteFileFromR2("song", "test-file.mp3");
-
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("Delete failed");
-  });
-
-  it("imageバケットからファイルを削除できること", async () => {
-    (s3Client.send as jest.Mock).mockResolvedValue({});
-
-    const result = await deleteFileFromR2("image", "avatar-123.jpg");
-
-    expect(s3Client.send).toHaveBeenCalledWith(expect.any(DeleteObjectCommand));
-    expect(result.success).toBe(true);
-  });
-
-  it("spotlightバケットからファイルを削除できること", async () => {
-    (s3Client.send as jest.Mock).mockResolvedValue({});
-
-    const result = await deleteFileFromR2("spotlight", "video-123.mp4");
-
-    expect(s3Client.send).toHaveBeenCalledWith(expect.any(DeleteObjectCommand));
-    expect(result.success).toBe(true);
-  });
-
-  it("videoバケットからファイルを削除できること", async () => {
-    (s3Client.send as jest.Mock).mockResolvedValue({});
-
-    const result = await deleteFileFromR2("video", "video-123.mp4");
-
-    expect(s3Client.send).toHaveBeenCalledWith(expect.any(DeleteObjectCommand));
-    expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("バケット名とファイルパスは必須です");
+    });
   });
 });

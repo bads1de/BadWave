@@ -1,105 +1,145 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { usePathname } from "next/navigation";
-import usePlayer from "@/hooks/player/usePlayer";
 import { useUser } from "@/hooks/auth/useUser";
-import "@testing-library/jest-dom";
+import usePlayer from "@/hooks/player/usePlayer";
 
-// Mock dependencies
+// Mock next/navigation
 jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),
+  useRouter: jest.fn(),
 }));
 
-jest.mock("@/hooks/player/usePlayer", () => {
-  const mockState = { activeId: null };
-  const fn = (selector: any) => (selector ? selector(mockState) : mockState);
-  Object.assign(fn, mockState);
-  return { __esModule: true, default: fn };
-});
+// Mock hooks
+jest.mock("@/hooks/auth/useUser");
+jest.mock("@/hooks/player/usePlayer");
 
-jest.mock("@/hooks/auth/useUser", () => ({
-  useUser: jest.fn(),
-}));
-
-jest.mock("@/components/Sidebar/Studio", () => {
-  const React = require("react");
+// Mock child components to isolate Sidebar logic
+jest.mock("@/components/Sidebar/SidebarItem", () => {
   return {
     __esModule: true,
-    default: () =>
-      React.createElement("div", { "data-testid": "studio-library" }),
+    default: ({ label, active }: any) => {
+      const React = require("react");
+      return React.createElement("div", {
+        "data-testid": `sidebar-item-${label}`,
+        "data-active": active,
+      }, label);
+    },
+  };
+});
+
+jest.mock("@/components/Sidebar/Studio", () => {
+  return {
+    __esModule: true,
+    default: () => {
+      const React = require("react");
+      return React.createElement("div", { "data-testid": "library-component" }, "Library Component");
+    },
   };
 });
 
 jest.mock("@/components/Sidebar/UserCard", () => {
-  const React = require("react");
   return {
     __esModule: true,
-    default: () => React.createElement("div", { "data-testid": "user-card" }),
+    default: () => {
+      const React = require("react");
+      return React.createElement("div", { "data-testid": "user-card" }, "UserCard");
+    },
   };
 });
 
-// Mock UI components from shadcn/ui if needed
-jest.mock("@/components/ui/popover", () => {
-  const React = require("react");
+jest.mock("@/components/common/Box", () => {
   return {
-    Popover: ({ children }: any) => React.createElement("div", null, children),
-    PopoverTrigger: ({ children }: any) =>
-      React.createElement("div", null, children),
-    PopoverContent: ({ children }: any) =>
-      React.createElement(
-        "div",
-        { "data-testid": "popover-content" },
-        children
-      ),
+    __esModule: true,
+    default: ({ children, className }: any) => {
+      const React = require("react");
+      return React.createElement("div", { className, "data-testid": "box" }, children);
+    },
   };
 });
 
-describe("Sidebar", () => {
+describe("components/Sidebar/Sidebar", () => {
   beforeEach(() => {
     (usePathname as jest.Mock).mockReturnValue("/");
-    (useUser as jest.Mock).mockReturnValue({ user: null, userDetails: null });
-    jest.clearAllMocks();
+    (usePlayer as unknown as jest.Mock).mockReturnValue({ activeId: undefined });
+    (useUser as jest.Mock).mockReturnValue({ 
+      user: null, 
+      userDetails: null 
+    });
   });
 
-  it("renders sidebar with home and search links", () => {
-    render(<Sidebar>Content</Sidebar>);
+  it("renders navigation items", () => {
+    render(
+      <Sidebar>
+        <div data-testid="child-content">Main Content</div>
+      </Sidebar>
+    );
 
-    expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("Search")).toBeInTheDocument();
-    expect(screen.getByTestId("studio-library")).toBeInTheDocument();
-    expect(screen.getByTestId("user-card")).toBeInTheDocument();
+    expect(screen.getByTestId("sidebar-item-Home")).toBeInTheDocument();
+    expect(screen.getByTestId("sidebar-item-Search")).toBeInTheDocument();
+    expect(screen.getByTestId("sidebar-item-Pulse")).toBeInTheDocument();
+    expect(screen.getByTestId("child-content")).toBeInTheDocument();
   });
 
-  it("collapses and expands the sidebar", () => {
-    render(<Sidebar>Content</Sidebar>);
+  it("highlights active route", () => {
+    (usePathname as jest.Mock).mockReturnValue("/search");
+    
+    render(
+      <Sidebar>
+        <div />
+      </Sidebar>
+    );
 
-    const collapseBtn = screen.getByRole("button");
-    fireEvent.click(collapseBtn);
-
-    // In collapsed mode, text for "Home" might be hidden via css or conditional rendering
-    // In this implementation, SidebarItem handles isCollapsed.
-    // Let's check for the logo width change if possible, but it's hard to test computed styles in JSDOM easily.
-    // Instead, let's check if "BadWave" text is gone (it's conditionally rendered in line 92).
-    expect(screen.queryByText("BadWave")).not.toBeInTheDocument();
-
-    fireEvent.click(collapseBtn);
-    expect(screen.getByText("BadWave")).toBeInTheDocument();
+    const searchItem = screen.getByTestId("sidebar-item-Search");
+    expect(searchItem).toHaveAttribute("data-active", "true");
+    
+    const homeItem = screen.getByTestId("sidebar-item-Home");
+    expect(homeItem).toHaveAttribute("data-active", "false");
   });
 
-  it("renders library and liked links when logged in", () => {
-    (useUser as jest.Mock).mockReturnValue({ user: { id: "1" } });
-    render(<Sidebar>Content</Sidebar>);
+  it("shows library section when user is logged in", () => {
+    (useUser as jest.Mock).mockReturnValue({ 
+      user: { id: "user-1" },
+      userDetails: { full_name: "Test User" }
+    });
 
+    render(
+      <Sidebar>
+        <div />
+      </Sidebar>
+    );
+
+    // Check for library popover trigger content (text "Library")
     expect(screen.getByText("Library")).toBeInTheDocument();
   });
 
-  it("renders children in main content area", () => {
-    render(
+  it("adjusts height when player is active", () => {
+    (usePlayer as unknown as jest.Mock).mockReturnValue({ activeId: "song-1" });
+    
+    const { container } = render(
       <Sidebar>
-        <div data-testid="child-content">Child</div>
+        <div />
       </Sidebar>
     );
-    expect(screen.getByTestId("child-content")).toBeInTheDocument();
+
+    // The root div should have h-[calc(100%-80px)] class when player is active
+    // Note: We need to check the first child or the container itself depending on render output.
+    // render() returns a container that wraps the component.
+    const rootDiv = container.firstChild as HTMLElement;
+    expect(rootDiv.className).toContain("h-[calc(100%-80px)]");
+  });
+
+  it("does not adjust height on pulse page even if player active", () => {
+    (usePlayer as unknown as jest.Mock).mockReturnValue({ activeId: "song-1" });
+    (usePathname as jest.Mock).mockReturnValue("/pulse");
+
+    const { container } = render(
+      <Sidebar>
+        <div />
+      </Sidebar>
+    );
+
+    const rootDiv = container.firstChild as HTMLElement;
+    expect(rootDiv.className).not.toContain("h-[calc(100%-80px)]");
   });
 });

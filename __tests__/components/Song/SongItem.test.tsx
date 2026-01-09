@@ -1,95 +1,63 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import SongItem from "@/components/Song/SongItem";
 import { Song } from "@/types";
-import "@testing-library/jest-dom";
 
-// Mock next/image
-jest.mock("next/image", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: (props: any) => React.createElement("img", props),
-  };
-});
-
-// Mock ScrollingText
+// Mock ScrollingText component
 jest.mock("@/components/common/ScrollingText", () => {
-  const React = require("react");
   return {
     __esModule: true,
-    default: ({ text }: { text: string }) =>
-      React.createElement("span", null, text),
+    default: ({ text }: { text: string }) => {
+      const React = require("react");
+      return React.createElement("span", null, text);
+    },
   };
 });
 
-// Mock react-icons
-jest.mock("react-icons/ci", () => {
-  const React = require("react");
-  return {
-    CiHeart: () => React.createElement("div", { "data-testid": "heart-icon" }),
-    CiPlay1: () => React.createElement("div", { "data-testid": "play-icon" }),
-  };
-});
-
-describe("SongItem", () => {
+describe("components/Song/SongItem", () => {
   const mockSong: Song = {
     id: "song-1",
-    title: "Test Song",
-    author: "Test Author",
-    song_path: "song.mp3",
-    image_path: "image.jpg",
     user_id: "user-1",
-    genre: "pop",
-    created_at: "2023-01-01",
+    author: "Test Author",
+    title: "Test Song",
+    song_path: "path/to/song.mp3",
+    image_path: "path/to/image.jpg",
+    genre: "Pop",
     count: "100",
-    like_count: 50,
+    like_count: "50",
+    created_at: "2024-01-01T00:00:00Z",
   };
 
   const mockOnClick = jest.fn();
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
 
   it("renders song information correctly", () => {
     render(<SongItem data={mockSong} onClick={mockOnClick} />);
 
     expect(screen.getByText("Test Song")).toBeInTheDocument();
     expect(screen.getByText("Test Author")).toBeInTheDocument();
-    expect(screen.getByText("100")).toBeInTheDocument();
-    expect(screen.getByText("50")).toBeInTheDocument();
+    expect(screen.getByText("100")).toBeInTheDocument(); // Play count
+    expect(screen.getByText("50")).toBeInTheDocument(); // Like count
+    
+    // Check for image
+    const image = screen.getByRole("img", { name: "Image" });
+    expect(image).toHaveAttribute("src", expect.stringContaining("path/to/image.jpg"));
   });
 
-  it("renders image with correct src", () => {
+  it("handles click events", () => {
     render(<SongItem data={mockSong} onClick={mockOnClick} />);
 
-    const image = screen.getByAltText("Image");
-    expect(image).toHaveAttribute("src", "image.jpg");
-  });
-
-  it("calls onClick when image is clicked", () => {
-    render(<SongItem data={mockSong} onClick={mockOnClick} />);
-
-    const image = screen.getByAltText("Image");
+    // Click on the image (which covers the item mostly)
+    const image = screen.getByRole("img", { name: "Image" });
     fireEvent.click(image);
 
     expect(mockOnClick).toHaveBeenCalledWith("song-1");
   });
 
-  it("renders play and heart icons", () => {
+  it("renders link to song page", () => {
     render(<SongItem data={mockSong} onClick={mockOnClick} />);
-
-    expect(screen.getByTestId("play-icon")).toBeInTheDocument();
-    expect(screen.getByTestId("heart-icon")).toBeInTheDocument();
-  });
-
-  it("has correct link to song detail page", () => {
-    const { container } = render(
-      <SongItem data={mockSong} onClick={mockOnClick} />
-    );
-
-    const link = container.querySelector('a[href="/songs/song-1"]');
-    expect(link).toBeInTheDocument();
+    
+    // We check if there is a link pointing to the song page
+    // The link wraps the title area
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("href", "/songs/song-1");
   });
 });

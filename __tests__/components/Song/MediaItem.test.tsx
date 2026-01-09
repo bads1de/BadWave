@@ -1,103 +1,69 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import MediaItem from "@/components/Song/MediaItem";
 import usePlayer from "@/hooks/player/usePlayer";
 import { Song } from "@/types";
-import "@testing-library/jest-dom";
 
-// Mock hooks
-jest.mock("@/hooks/player/usePlayer", () => {
-  const mockState = { setId: jest.fn() };
-  const fn = (selector: any) => (selector ? selector(mockState) : mockState);
-  Object.assign(fn, mockState);
-  return { __esModule: true, default: fn };
-});
-
-// Mock next/image
-jest.mock("next/image", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: (props: any) => React.createElement("img", props),
-  };
-});
-
-// Mock ScrollingText
+jest.mock("@/hooks/player/usePlayer");
 jest.mock("@/components/common/ScrollingText", () => {
-  const React = require("react");
   return {
     __esModule: true,
-    default: ({ text }: { text: string }) =>
-      React.createElement("span", null, text),
+    default: ({ text }: { text: string }) => {
+      const React = require("react");
+      return React.createElement("span", null, text);
+    },
   };
 });
 
-describe("MediaItem", () => {
+describe("components/Song/MediaItem", () => {
   const mockSong: Song = {
     id: "song-1",
     title: "Test Song",
     author: "Test Author",
-    song_path: "song.mp3",
     image_path: "image.jpg",
-    user_id: "user-1",
-    genre: "pop",
-    created_at: "2023-01-01",
-    count: "100",
-  };
+  } as any;
+
+  const mockSetId = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (usePlayer as unknown as jest.Mock).mockReturnValue({
+      setId: mockSetId,
+    });
   });
 
-  it("renders song information correctly", () => {
+  it("renders song info", () => {
     render(<MediaItem data={mockSong} />);
-
     expect(screen.getByText("Test Song")).toBeInTheDocument();
     expect(screen.getByText("Test Author")).toBeInTheDocument();
+    const image = screen.getByRole("img", { name: "MediaItem" });
+    expect(image).toHaveAttribute("src", expect.stringContaining("image.jpg"));
   });
 
-  it("renders image with correct src", () => {
+  it("handles default click (play song)", () => {
     render(<MediaItem data={mockSong} />);
+    
+    // Click the container
+    fireEvent.click(screen.getByText("Test Song").closest("div.cursor-pointer")!);
 
-    const image = screen.getByAltText("MediaItem");
-    expect(image).toHaveAttribute("src", "image.jpg");
+    expect(mockSetId).toHaveBeenCalledWith("song-1");
   });
 
-  it("calls custom onClick when provided", () => {
-    const mockOnClick = jest.fn();
-    render(<MediaItem data={mockSong} onClick={mockOnClick} />);
+  it("handles custom onClick", () => {
+    const customClick = jest.fn();
+    render(<MediaItem data={mockSong} onClick={customClick} />);
+    
+    fireEvent.click(screen.getByText("Test Song").closest("div.cursor-pointer")!);
 
-    const container = screen
-      .getByAltText("MediaItem")
-      .closest("div")?.parentElement;
-    fireEvent.click(container!);
-
-    expect(mockOnClick).toHaveBeenCalledWith("song-1");
+    expect(customClick).toHaveBeenCalledWith("song-1");
+    expect(mockSetId).not.toHaveBeenCalled();
   });
 
-  it("calls player.setId when no custom onClick is provided", () => {
-    const player = usePlayer as any;
-    render(<MediaItem data={mockSong} />);
-
-    const container = screen
-      .getByAltText("MediaItem")
-      .closest("div")?.parentElement;
-    fireEvent.click(container!);
-
-    expect(player.setId).toHaveBeenCalledWith("song-1");
-  });
-
-  it("hides text when isCollapsed is true", () => {
+  it("hides info when collapsed", () => {
     render(<MediaItem data={mockSong} isCollapsed={true} />);
-
+    
     expect(screen.queryByText("Test Song")).not.toBeInTheDocument();
     expect(screen.queryByText("Test Author")).not.toBeInTheDocument();
-  });
-
-  it("shows text when isCollapsed is false", () => {
-    render(<MediaItem data={mockSong} isCollapsed={false} />);
-
-    expect(screen.getByText("Test Song")).toBeInTheDocument();
-    expect(screen.getByText("Test Author")).toBeInTheDocument();
+    // Image should still be visible
+    expect(screen.getByRole("img", { name: "MediaItem" })).toBeInTheDocument();
   });
 });

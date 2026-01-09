@@ -25,7 +25,7 @@ module.exports = {
   // Some libs (d3, react-query) might be ESM only, but let's see.
   // If react-query fails, usually transformIgnorePatterns needs adjustment
   transformIgnorePatterns: [
-    "node_modules/(?!(node-fetch|@tanstack/react-query|uuid|@aws-sdk|@smithy|tailwind-merge|clsx)/)",
+    "node_modules/(?!(node-fetch|@tanstack/react-query|uuid|@aws-sdk|@smithy|tailwind-merge|clsx|query-string|decode-uri-component|split-on-first|filter-obj)/)",
   ],
   testMatch: [
     "<rootDir>/__tests__/**/*.test.ts",

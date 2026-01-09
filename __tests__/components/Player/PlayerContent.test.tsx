@@ -1,118 +1,142 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import PlayerContent from "@/components/Player/PlayerContent";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
-import { Song, Playlist } from "@/types";
-import "@testing-library/jest-dom";
+import { Song } from "@/types";
 
-// Mock child components and hooks
-jest.mock("@/components/Player/DesktopPlayer", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: () =>
-      React.createElement("div", { "data-testid": "desktop-player" }),
-  };
-});
-jest.mock("@/components/Player/MobilePlayer", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: () =>
-      React.createElement("div", { "data-testid": "mobile-player" }),
-  };
-});
-
+// Mock hooks
 jest.mock("@/hooks/audio/useAudioPlayer");
-jest.mock("@/hooks/stores/useLyricsStore", () => ({
-  __esModule: true,
-  default: () => ({ toggleLyrics: jest.fn() }),
-}));
+jest.mock("@/hooks/audio/useAudioEqualizer", () => jest.fn());
+jest.mock("@/hooks/audio/usePlaybackRate", () => jest.fn());
 
-describe("PlayerContent", () => {
+// Mock child components
+jest.mock("@/components/Player/DesktopPlayer", () => {
+  return {
+    __esModule: true,
+    default: ({ handlePlay, isPlaying }: any) => {
+      const React = require("react");
+      return React.createElement(
+        "div", 
+        { "data-testid": "desktop-player" },
+        React.createElement("button", { 
+          onClick: handlePlay, 
+          "aria-label": isPlaying ? "Pause" : "Play" 
+        }, isPlaying ? "Pause" : "Play")
+      );
+    },
+  };
+});
+
+jest.mock("@/components/Player/MobilePlayer", () => {
+  return {
+    __esModule: true,
+    default: ({ handlePlay, isPlaying }: any) => {
+      const React = require("react");
+      return React.createElement(
+        "div", 
+        { "data-testid": "mobile-player" },
+         React.createElement("button", { 
+          onClick: handlePlay,
+          "aria-label": isPlaying ? "Pause" : "Play" 
+        }, isPlaying ? "Pause" : "Play")
+      );
+    },
+  };
+});
+
+describe("components/Player/PlayerContent", () => {
   const mockSong: Song = {
-    id: "1",
-    title: "Test Song",
-    author: "Test Author",
-    song_path: "test.mp3",
-    image_path: "test.jpg",
+    id: "song-1",
     user_id: "user-1",
-    genre: "pop",
-    created_at: "2023-01-01",
-    count: "0",
+    author: "Test Author",
+    title: "Test Song",
+    song_path: "path.mp3",
+    image_path: "image.jpg",
+    genre: "Pop",
+    count: "100",
+    like_count: "50",
+    created_at: "2024-01-01",
   };
 
-  const mockPlaylists: Playlist[] = [];
-
-  const mockAudioState = {
-    Icon: () => null,
-    VolumeIcon: () => null,
-    formattedCurrentTime: "0:00",
-    formattedDuration: "3:00",
-    volume: 0.1,
-    setVolume: jest.fn(),
-    audioRef: { current: null },
-    currentTime: 0,
-    duration: 180,
-    isPlaying: false,
-    isRepeating: false,
-    isShuffling: false,
-    handlePlay: jest.fn(),
-    handleSeek: jest.fn(),
-    onPlayNext: jest.fn(),
-    onPlayPrevious: jest.fn(),
-    toggleRepeat: jest.fn(),
-    toggleShuffle: jest.fn(),
-    handleVolumeClick: jest.fn(),
-    showVolumeSlider: false,
-    setShowVolumeSlider: jest.fn(),
-  };
+  const mockHandlePlay = jest.fn();
 
   beforeEach(() => {
-    (useAudioPlayer as jest.Mock).mockReturnValue(mockAudioState);
     jest.clearAllMocks();
+    (useAudioPlayer as jest.Mock).mockReturnValue({
+      formattedCurrentTime: "0:00",
+      formattedDuration: "3:00",
+      audioRef: { current: null },
+      currentTime: 0,
+      duration: 180,
+      isPlaying: false,
+      isRepeating: false,
+      isShuffling: false,
+      handlePlay: mockHandlePlay,
+      handleSeek: jest.fn(),
+      onPlayNext: jest.fn(),
+      onPlayPrevious: jest.fn(),
+      toggleRepeat: jest.fn(),
+      toggleShuffle: jest.fn(),
+    });
   });
 
-  it("renders DesktopPlayer when isMobilePlayer is false", () => {
+  it("renders desktop player by default", () => {
     render(
-      <PlayerContent
-        song={mockSong}
-        isMobilePlayer={false}
-        toggleMobilePlayer={jest.fn()}
-        playlists={mockPlaylists}
+      <PlayerContent 
+        song={mockSong} 
+        isMobilePlayer={false} 
+        toggleMobilePlayer={jest.fn()} 
+        playlists={[]}
       />
     );
-
     expect(screen.getByTestId("desktop-player")).toBeInTheDocument();
     expect(screen.queryByTestId("mobile-player")).not.toBeInTheDocument();
   });
 
-  it("renders MobilePlayer when isMobilePlayer is true", () => {
+  it("renders mobile player when specified", () => {
     render(
-      <PlayerContent
-        song={mockSong}
-        isMobilePlayer={true}
-        toggleMobilePlayer={jest.fn()}
-        playlists={mockPlaylists}
+      <PlayerContent 
+        song={mockSong} 
+        isMobilePlayer={true} 
+        toggleMobilePlayer={jest.fn()} 
+        playlists={[]}
       />
     );
-
     expect(screen.getByTestId("mobile-player")).toBeInTheDocument();
     expect(screen.queryByTestId("desktop-player")).not.toBeInTheDocument();
   });
 
-  it("renders an audio element with the correct source", () => {
-    const { container } = render(
-      <PlayerContent
-        song={mockSong}
-        isMobilePlayer={false}
-        toggleMobilePlayer={jest.fn()}
-        playlists={mockPlaylists}
+  it("handles play/pause toggle", () => {
+    render(
+      <PlayerContent 
+        song={mockSong} 
+        isMobilePlayer={false} 
+        toggleMobilePlayer={jest.fn()} 
+        playlists={[]}
       />
     );
+    
+    // We mocked DesktopPlayer to render a button that calls handlePlay
+    const playButton = screen.getByRole("button", { name: "Play" });
+    fireEvent.click(playButton);
 
-    const audio = container.querySelector("audio");
-    expect(audio).toBeInTheDocument();
-    expect(audio).toHaveAttribute("src", mockSong.song_path);
+    expect(mockHandlePlay).toHaveBeenCalled();
+  });
+
+  it("reflects playing state", () => {
+    (useAudioPlayer as jest.Mock).mockReturnValue({
+      ...((useAudioPlayer as jest.Mock)()), // current mock return
+      isPlaying: true,
+    });
+
+    render(
+      <PlayerContent 
+        song={mockSong} 
+        isMobilePlayer={false} 
+        toggleMobilePlayer={jest.fn()} 
+        playlists={[]}
+      />
+    );
+    
+    expect(screen.getByRole("button", { name: "Pause" })).toBeInTheDocument();
   });
 });
