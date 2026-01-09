@@ -4,38 +4,6 @@ import toast from "react-hot-toast";
 import { CACHED_QUERIES } from "@/constants";
 
 /**
- * いいねカウント更新のヘルパー関数
- */
-const updateLikeCount = async (
-  supabase: ReturnType<typeof createClient>,
-  songId: string,
-  increment: number
-) => {
-  try {
-    // 現在のlike_countを取得
-    const { data, error: fetchError } = await supabase
-      .from("songs")
-      .select("like_count")
-      .eq("id", songId)
-      .single();
-
-    if (fetchError) throw fetchError;
-
-    // 新しいlike_countを計算して更新
-    const newLikeCount = (data?.like_count || 0) + increment;
-    const { error: updateError } = await supabase
-      .from("songs")
-      .update({ like_count: newLikeCount })
-      .eq("id", songId);
-
-    if (updateError) throw updateError;
-  } catch (error) {
-    console.error("Error updating like count:", error);
-    throw new Error("いいねカウントの更新に失敗しました");
-  }
-};
-
-/**
  * 曲のいいね操作を行うカスタムフック
  *
  * @param songId 曲のID
@@ -60,8 +28,11 @@ const useLikeMutation = (songId: string, userId?: string) => {
 
         if (error) throw error;
 
-        // いいねカウントを減らす
-        await updateLikeCount(supabaseClient, songId, -1);
+        // いいねカウントを減らす（RPC）
+        await supabaseClient.rpc("increment_like_count", {
+          song_id: songId,
+          increment_value: -1,
+        });
         return false;
       } else {
         // いいねを追加
@@ -74,8 +45,11 @@ const useLikeMutation = (songId: string, userId?: string) => {
 
         if (error) throw error;
 
-        // いいねカウントを増やす
-        await updateLikeCount(supabaseClient, songId, 1);
+        // いいねカウントを増やす（RPC）
+        await supabaseClient.rpc("increment_like_count", {
+          song_id: songId,
+          increment_value: 1,
+        });
         return true;
       }
     },
