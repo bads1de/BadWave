@@ -2,6 +2,7 @@ import React from "react";
 import { FaRandom } from "react-icons/fa";
 import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import { BsRepeat1 } from "react-icons/bs";
+import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 
 interface CommonControlsProps {
   isPlaying: boolean;
@@ -28,6 +29,16 @@ const CommonControls: React.FC<CommonControlsProps> = ({
   toggleRepeat,
   isMobile = false,
 }) => {
+  const { getColorScheme, hasHydrated } = useColorSchemeStore();
+  const colorScheme = getColorScheme();
+
+  // カラースキーマからの色取得（ハイドレーション前はデフォルト値を使用）
+  const accentFrom = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
+  const primary = hasHydrated ? colorScheme.colors.primary : "#4c1d95";
+  const glowColor = hasHydrated
+    ? `rgba(${colorScheme.colors.glow}, 0.8)`
+    : "rgba(139, 92, 246, 0.8)";
+
   const shuffleSize = isMobile ? 22 : 20;
   const stepSize = isMobile ? 28 : 30;
   const repeatSize = isMobile ? 28 : 25;
@@ -51,15 +62,18 @@ const CommonControls: React.FC<CommonControlsProps> = ({
 
   const playButtonClass = isMobile
     ? "flex items-center justify-center h-16 w-16 rounded-full cursor-pointer shadow-lg transition-colors"
-    : "flex items-center justify-center h-7 w-7 rounded-full bg-gradient-to-br from-[#08101f] to-[#0d0d0d] p-1 cursor-pointer group";
+    : "flex items-center justify-center h-9 w-9 rounded-full p-1 cursor-pointer group transition-all duration-300";
 
   const playButtonStyle = isMobile
     ? { backgroundColor: "var(--primary-color)" }
-    : {};
+    : {
+        background: `linear-gradient(135deg, ${primary}, ${accentFrom})`,
+        boxShadow: `0 0 12px ${glowColor}`,
+      };
 
   const playIconClass = isMobile
     ? "text-white"
-    : "text-[#f0f0f0] group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]";
+    : "text-white group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]";
 
   const stepForwardClass = stepBackClass;
 
