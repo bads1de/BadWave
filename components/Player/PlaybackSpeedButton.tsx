@@ -8,6 +8,7 @@ import * as RadixSlider from "@radix-ui/react-slider";
 import { HelpCircle } from "lucide-react";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
+import useSpatialStore from "@/hooks/stores/useSpatialStore";
 
 // HEXカラーをRGBに変換するヘルパー関数
 const hexToRgb = (hex: string): string => {
@@ -33,10 +34,11 @@ const PlaybackSpeedButton: React.FC = () => {
   const colorScheme = getColorScheme();
   const accentFrom = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
   const accentFromRgb = hexToRgb(accentFrom);
+  const { isSpatialEnabled, toggleSpatialEnabled } = useSpatialStore();
 
   const rates = [0.9, 0.95, 1, 1.05, 1.1, 1.25];
 
-  const isActive = playbackRate !== 1 || isSlowedReverb;
+  const isActive = playbackRate !== 1 || isSlowedReverb || isSpatialEnabled;
 
   return (
     <Popover>
@@ -159,6 +161,37 @@ const PlaybackSpeedButton: React.FC = () => {
               className="absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform"
               style={{
                 left: isSlowedReverb ? "calc(100% - 3px - 12px)" : "2px",
+              }}
+            />
+          </button>
+        </div>
+
+        {/* Spatial Audio (ダンスホール) */}
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-neutral-400">Spatial Mode</span>
+            <div className="group relative flex items-center justify-center">
+              <HelpCircle
+                size={12}
+                className="text-neutral-500 cursor-help hover:text-neutral-300 transition-colors"
+              />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[#252525] border border-[#404040] rounded shadow-xl text-[10px] leading-relaxed text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                ダンスホールのような、低音が響き高音がこもった、反響感のあるサウンドを再現します。
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#252525] border-b border-r border-[#404040] rotate-45"></div>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={toggleSpatialEnabled}
+            className="w-8 h-4 rounded-full transition-colors relative"
+            style={{
+              backgroundColor: isSpatialEnabled ? accentFrom : "#525252",
+            }}
+          >
+            <div
+              className="absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform"
+              style={{
+                left: isSpatialEnabled ? "calc(100% - 3px - 12px)" : "2px",
               }}
             />
           </button>
