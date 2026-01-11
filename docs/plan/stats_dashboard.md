@@ -17,7 +17,7 @@
 
 ### 1. データベース確認と拡張 (Supabase)
 
-既存の `play_history` テーブルと RPC が集計に適しているか確認し、必要であればインデックス追加などを行います。
+既存の `play_history` テーブルと RPC が集計に適しているか確認します。
 
 - [ ] **Schema 確認**: `play_history` テーブルのカラム構成が統計に適しているか確認（`duration` などが必要か検討）。
 - [ ] **RPC 実装 (集計用)**: クライアントサイドや単純なクエリで集計するとパフォーマンスが悪化するため、Supabase 側に集計用の RPC (Remote Procedure Call) を作成することを推奨します。
@@ -51,6 +51,8 @@
   - **Lists**:
     - 「よく聴く曲 (Top Songs)」: 再生回数順のリスト。
     - 「最近の再生 (Recent History)」: `play_history` の時系列リスト。
+    - 「ジャンル分布 (Genre Share)」: よく聴くジャンルのパイチャート。
+    - 「現在のストリーク (Current Streak)」: 連続聴取日数の表示。
 - [ ] **Navigation**: サイドバー (`components/Sidebar/Sidebar.tsx` 等) に「統計 (Stats)」リンクを追加。
 
 ## 技術的詳細
@@ -105,6 +107,38 @@ begin
         order by count(*) desc
         limit 10
       ) t
+    ),
+    'genre_stats', (
+      select json_agg(t) from (
+        select s.genre, count(*) as count
+        from play_history ph
+        join songs s on ph.song_id = s.id
+        where ph.user_id = target_user_id
+        and played_at >= period_start
+        and s.genre is not null
+        group by s.genre
+        order by count(*) desc
+      ) t
+    ),
+    'streak', (
+      with distinct_dates as (
+        select distinct date(played_at at time zone 'UTC') as play_date
+        from play_history
+        where user_id = target_user_id
+      ),
+      groups as (
+        select play_date,
+               play_date - (row_number() over (order by play_date) * interval '1 day') as grp
+        from distinct_dates
+      )
+      select count(*)
+      from groups
+      where grp = (
+        select grp
+        from groups
+        where play_date = current_date
+        limit 1
+      )
     )
   ) into result;
 

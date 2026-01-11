@@ -9,6 +9,9 @@ import Image from "next/image";
 import AccountModal from "./AccountModal";
 import ColorSchemeSelector from "./ColorSchemeSelector";
 import TopPlayedSongs from "./TopPlayedSongs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Palette, Activity, BarChart2 } from "lucide-react";
+import StatsOverview from "./StatsOverview";
 
 const AccountContent = () => {
   const router = useRouter();
@@ -104,11 +107,43 @@ const AccountContent = () => {
         </div>
       </div>
 
-      {/* カラースキーム設定 */}
-      <ColorSchemeSelector />
+      <Tabs defaultValue="appearance" className="space-y-6">
+        <TabsList className="bg-neutral-900/60 p-1 border border-white/[0.05] rounded-xl h-auto flex-wrap">
+          <TabsTrigger
+            value="appearance"
+            className="flex items-center gap-2 py-2 px-4 rounded-xl data-[state=active]:bg-theme-500 data-[state=active]:text-white transition-all duration-300"
+          >
+            <Palette className="w-4 h-4" />
+            外観
+          </TabsTrigger>
+          <TabsTrigger
+            value="activity"
+            className="flex items-center gap-2 py-2 px-4 rounded-xl data-[state=active]:bg-theme-500 data-[state=active]:text-white transition-all duration-300"
+          >
+            <Activity className="w-4 h-4" />
+            アクティビティ
+          </TabsTrigger>
+          <TabsTrigger
+            value="stats"
+            className="flex items-center gap-2 py-2 px-4 rounded-xl data-[state=active]:bg-theme-500 data-[state=active]:text-white transition-all duration-300"
+          >
+            <BarChart2 className="w-4 h-4" />
+            統計
+          </TabsTrigger>
+        </TabsList>
 
-      {/* 再生ランキング */}
-      <TopPlayedSongs user={user} />
+        <TabsContent value="appearance" className="mt-0 outline-none">
+          <ColorSchemeSelector />
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-0 outline-none">
+          <TopPlayedSongs user={user} />
+        </TabsContent>
+
+        <TabsContent value="stats" className="mt-0 outline-none">
+          <StatsOverview />
+        </TabsContent>
+      </Tabs>
 
       {/* プロフィール編集モーダル */}
       <AccountModal
