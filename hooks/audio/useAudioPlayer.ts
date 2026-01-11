@@ -8,6 +8,7 @@ import useVolumeStore from "@/hooks/stores/useVolumeStore";
 import usePlaybackStateStore, {
   POSITION_SAVE_INTERVAL_MS,
 } from "@/hooks/stores/usePlaybackStateStore";
+import useLatestRef from "@/hooks/utils/useLatestRef";
 
 /**
  * オーディオプレイヤーの状態と操作を管理するカスタムフック
@@ -68,9 +69,8 @@ const useAudioPlayer = (songUrl: string) => {
   const lastSaveTimeRef = useRef<number>(0);
   const hasRestoredRef = useRef<boolean>(false);
 
-  // --- Refパターン: イベントリスナー内から最新の状態を参照するため ---
-  const isRepeatingRef = useRef(isRepeating);
-  const isRestoringRef = useRef(isRestoring);
+  // --- useLatestRef: イベントリスナー内から最新の状態を参照するため ---
+  const isRestoringRef = useLatestRef(isRestoring);
 
   // グローバル参照にメインプレイヤーの情報を登録
   useEffect(() => {
@@ -113,14 +113,11 @@ const useAudioPlayer = (songUrl: string) => {
 
   // 次の曲を再生する関数
   const onPlayNext = useCallback(() => {
-    if (isRepeating) {
-      player.toggleRepeat();
-    }
     const nextSongId = player.getNextSongId();
     if (nextSongId) {
       player.setId(nextSongId);
     }
-  }, [isRepeating, player]);
+  }, [player]);
 
   // onPlayNextをRef経由で参照
   const onPlayNextRef = useRef(onPlayNext);
@@ -149,18 +146,17 @@ const useAudioPlayer = (songUrl: string) => {
     player.toggleShuffle();
   }, [player]);
 
-  // --- Refの同期: 状態が変わるたびにRefを更新 ---
-  useEffect(() => {
-    isRepeatingRef.current = isRepeating;
-  }, [isRepeating]);
-
-  useEffect(() => {
-    isRestoringRef.current = isRestoring;
-  }, [isRestoring]);
-
   useEffect(() => {
     onPlayNextRef.current = onPlayNext;
   }, [onPlayNext]);
+
+  // audio.loopをisRepeatingと同期（リピート時はブラウザネイティブで処理）
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.loop = isRepeating;
+    }
+  }, [isRepeating]);
 
   // オーディオ要素のイベントリスナーを設定
   // 注意: Refパターンを使用して、songUrl変更時のみリスナーを再登録
@@ -171,13 +167,9 @@ const useAudioPlayer = (songUrl: string) => {
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleLoadedMetadata = () => setDuration(audio.duration);
 
+    // audio.loop=true の時は ended イベントが発火しないため、次曲処理のみ
     const handleEnded = () => {
-      if (isRepeatingRef.current) {
-        audio.currentTime = 0;
-        audio.play();
-      } else {
-        onPlayNextRef.current();
-      }
+      onPlayNextRef.current();
     };
 
     const handleCanPlayThrough = () => {
