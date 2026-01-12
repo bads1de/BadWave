@@ -29,9 +29,11 @@ const hexToRgb = (hex: string): string => {
 const PlaybackSpeedButton: React.FC = () => {
   const playbackRate = usePlaybackRateStore((state) => state.rate);
   const setPlaybackRate = usePlaybackRateStore((state) => state.setRate);
-  const isSlowedReverb = usePlaybackRateStore((state) => state.isSlowedReverb);
-  const setIsSlowedReverb = usePlaybackRateStore(
-    (state) => state.setIsSlowedReverb
+
+  // Slowed + Reverb 状態 (useEffectStore から取得)
+  const isSlowedReverb = useEffectStore((state) => state.isSlowedReverb);
+  const toggleSlowedReverb = useEffectStore(
+    (state) => state.toggleSlowedReverb
   );
 
   const { getColorScheme, hasHydrated } = useColorSchemeStore();
@@ -173,7 +175,7 @@ const PlaybackSpeedButton: React.FC = () => {
             </div>
           </div>
           <button
-            onClick={() => setIsSlowedReverb(!isSlowedReverb)}
+            onClick={toggleSlowedReverb}
             className="w-8 h-4 rounded-full transition-colors relative"
             style={{
               backgroundColor: isSlowedReverb ? accentFrom : "#525252",

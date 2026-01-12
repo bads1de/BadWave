@@ -12,6 +12,10 @@ export type RotationSpeed = "slow" | "medium" | "fast";
  * - Lo-Fi / Vintage Radio Mode
  */
 interface EffectStore {
+  // Slowed + Reverb
+  isSlowedReverb: boolean;
+  toggleSlowedReverb: () => void;
+
   // 8D Audio
   is8DAudioEnabled: boolean;
   rotationSpeed: RotationSpeed;

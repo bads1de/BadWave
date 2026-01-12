@@ -11,22 +11,21 @@ describe("hooks/audio/usePlaybackRate", () => {
   beforeEach(() => {
     mockAudio = {
       playbackRate: 1,
-      preservesPitch: true,
-      mozPreservesPitch: true,
-      webkitPreservesPitch: true,
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
     };
-    
+
     // Default store state
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation((selector) => {
-      const state = { rate: 1.0, isSlowedReverb: false };
-      return selector(state);
-    });
+    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation(
+      (selector) => {
+        const state = { rate: 1.0 };
+        return selector(state);
+      }
+    );
   });
 
   it("sets playback rate on mount", () => {
-    const { result } = renderHook(() => {
+    renderHook(() => {
       const ref = useRef(mockAudio);
       return usePlaybackRate(ref);
     });
@@ -35,10 +34,12 @@ describe("hooks/audio/usePlaybackRate", () => {
   });
 
   it("updates rate when store changes", () => {
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation((selector) => {
-      const state = { rate: 1.5, isSlowedReverb: false };
-      return selector(state);
-    });
+    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation(
+      (selector) => {
+        const state = { rate: 1.5 };
+        return selector(state);
+      }
+    );
 
     renderHook(() => {
       const ref = useRef(mockAudio);
@@ -46,29 +47,15 @@ describe("hooks/audio/usePlaybackRate", () => {
     });
 
     expect(mockAudio.playbackRate).toBe(1.5);
-    expect(mockAudio.preservesPitch).toBe(true);
-  });
-
-  it("handles slowed + reverb mode", () => {
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation((selector) => {
-      const state = { rate: 1.0, isSlowedReverb: true };
-      return selector(state);
-    });
-
-    renderHook(() => {
-      const ref = useRef(mockAudio);
-      return usePlaybackRate(ref);
-    });
-
-    expect(mockAudio.playbackRate).toBe(0.85);
-    expect(mockAudio.preservesPitch).toBe(false);
   });
 
   it("re-applies settings on durationchange event", () => {
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation((selector) => {
-      const state = { rate: 1.25, isSlowedReverb: false };
-      return selector(state);
-    });
+    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation(
+      (selector) => {
+        const state = { rate: 1.25 };
+        return selector(state);
+      }
+    );
 
     renderHook(() => {
       const ref = useRef(mockAudio);
@@ -76,16 +63,19 @@ describe("hooks/audio/usePlaybackRate", () => {
     });
 
     // Check if event listener is added
-    expect(mockAudio.addEventListener).toHaveBeenCalledWith("durationchange", expect.any(Function));
-    
+    expect(mockAudio.addEventListener).toHaveBeenCalledWith(
+      "durationchange",
+      expect.any(Function)
+    );
+
     // Simulate event trigger
     const handler = mockAudio.addEventListener.mock.calls[0][1];
-    
+
     // Reset properties to verify handler effect
     mockAudio.playbackRate = 1.0;
-    
+
     handler();
-    
+
     expect(mockAudio.playbackRate).toBe(1.25);
   });
 });
