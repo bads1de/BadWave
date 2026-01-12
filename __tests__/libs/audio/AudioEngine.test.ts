@@ -45,6 +45,11 @@ const mockAudioContext = {
   createGain: jest.fn(() => createMockAudioNode()),
   createConvolver: jest.fn(() => createMockAudioNode()),
   createStereoPanner: jest.fn(() => createMockAudioNode()),
+  createWaveShaper: jest.fn(() => ({
+    ...createMockAudioNode(),
+    curve: null,
+    oversample: "none",
+  })),
   createOscillator: jest.fn(() => ({
     ...createMockAudioNode(),
     type: "sine",
@@ -83,7 +88,7 @@ describe("AudioEngine", () => {
     engine.initialize();
 
     expect(mockAudioContext.createMediaElementSource).toHaveBeenCalled();
-    expect(mockAudioContext.createBiquadFilter).toHaveBeenCalled(); 
+    expect(mockAudioContext.createBiquadFilter).toHaveBeenCalled();
     expect(mockAudioContext.createGain).toHaveBeenCalled();
     expect(mockAudioContext.createStereoPanner).toHaveBeenCalled();
     expect(engine.isInitialized).toBe(true);
@@ -98,16 +103,16 @@ describe("AudioEngine", () => {
     it("should control 8D Audio mode", () => {
       engine.set8DAudioMode(true, 4);
       expect(mockLinearRampToValueAtTime).toHaveBeenCalled();
-      
+
       engine.set8DAudioMode(false);
       expect(mockLinearRampToValueAtTime).toHaveBeenCalled();
     });
 
-    it("should control Lo-Fi mode", () => {
-      engine.setLoFiMode(true);
+    it("should control Retro mode", () => {
+      engine.setRetroMode(true);
       expect(mockExponentialRampToValueAtTime).toHaveBeenCalledTimes(2);
-      
-      engine.setLoFiMode(false);
+
+      engine.setRetroMode(false);
       expect(mockExponentialRampToValueAtTime).toHaveBeenCalled();
     });
 

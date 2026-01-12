@@ -42,13 +42,13 @@ const PlaybackSpeedButton: React.FC = () => {
   const accentFromRgb = hexToRgb(accentFrom);
   const { isSpatialEnabled, toggleSpatialEnabled } = useSpatialStore();
 
-  // 8D Audio & Lo-Fi 状態
+  // 8D Audio & Retro 状態
   const is8DAudioEnabled = useEffectStore((state) => state.is8DAudioEnabled);
   const toggle8DAudio = useEffectStore((state) => state.toggle8DAudio);
   const rotationSpeed = useEffectStore((state) => state.rotationSpeed);
   const setRotationSpeed = useEffectStore((state) => state.setRotationSpeed);
-  const isLoFiEnabled = useEffectStore((state) => state.isLoFiEnabled);
-  const toggleLoFi = useEffectStore((state) => state.toggleLoFi);
+  const isRetroEnabled = useEffectStore((state) => state.isRetroEnabled);
+  const toggleRetro = useEffectStore((state) => state.toggleRetro);
 
   const rates = [0.9, 0.95, 1, 1.05, 1.1, 1.25];
   const rotationSpeeds: { value: RotationSpeed; label: string }[] = [
@@ -62,7 +62,7 @@ const PlaybackSpeedButton: React.FC = () => {
     isSlowedReverb ||
     isSpatialEnabled ||
     is8DAudioEnabled ||
-    isLoFiEnabled;
+    isRetroEnabled;
 
   return (
     <Popover>
@@ -283,32 +283,32 @@ const PlaybackSpeedButton: React.FC = () => {
           </div>
         )}
 
-        {/* Lo-Fi Mode */}
+        {/* Retro Mode */}
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-neutral-400">Lo-Fi Mode</span>
+            <span className="text-xs text-neutral-400">Retro Mode</span>
             <div className="group relative flex items-center justify-center">
               <HelpCircle
                 size={12}
                 className="text-neutral-500 cursor-help hover:text-neutral-300 transition-colors"
               />
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[#252525] border border-[#404040] rounded shadow-xl text-[10px] leading-relaxed text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                古いテレビやラジオから聞こえてくるような、角の取れた温かみのあるサウンドにします。
+                80年代のラジカセやカセットテープのような、粗くて温かみのあるサウンドを再現します。
                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#252525] border-b border-r border-[#404040] rotate-45"></div>
               </div>
             </div>
           </div>
           <button
-            onClick={toggleLoFi}
+            onClick={toggleRetro}
             className="w-8 h-4 rounded-full transition-colors relative"
             style={{
-              backgroundColor: isLoFiEnabled ? accentFrom : "#525252",
+              backgroundColor: isRetroEnabled ? accentFrom : "#525252",
             }}
           >
             <div
               className="absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform"
               style={{
-                left: isLoFiEnabled ? "calc(100% - 3px - 12px)" : "2px",
+                left: isRetroEnabled ? "calc(100% - 3px - 12px)" : "2px",
               }}
             />
           </button>

@@ -12,7 +12,7 @@ import { AudioEngine } from "@/libs/audio/AudioEngine";
  * - Spatial Audio (空間オーディオ)
  * - Slowed + Reverb
  * - 8D Audio
- * - Lo-Fi Mode
+ * - Retro Mode
  */
 const useAudioEffects = () => {
   // Stores
@@ -23,8 +23,8 @@ const useAudioEffects = () => {
     rotationSpeed,
     toggle8DAudio,
     setRotationSpeed,
-    isLoFiEnabled,
-    toggleLoFi,
+    isRetroEnabled,
+    toggleRetro,
   } = useEffectStore();
 
   const { isSpatialEnabled, toggleSpatialEnabled } = useSpatialStore();
@@ -79,13 +79,13 @@ const useAudioEffects = () => {
     [setRotationSpeed]
   );
 
-  // --- Lo-Fi Logic ---
+  // --- Retro Logic ---
   useEffect(() => {
     const engine = AudioEngine.getInstance();
     if (!engine.isInitialized) return;
 
-    engine.setLoFiMode(isLoFiEnabled);
-  }, [isLoFiEnabled]);
+    engine.setRetroMode(isRetroEnabled);
+  }, [isRetroEnabled]);
 
   // --- 再生開始時の再適用ロジック ---
   const applyEffects = useCallback(() => {
@@ -99,8 +99,8 @@ const useAudioEffects = () => {
     const rotationPeriod = ROTATION_SPEED_VALUES[rotationSpeed];
     engine.set8DAudioMode(is8DAudioEnabled, rotationPeriod);
 
-    // Lo-Fi
-    engine.setLoFiMode(isLoFiEnabled);
+    // Retro
+    engine.setRetroMode(isRetroEnabled);
 
     // Slowed + Reverb (モード設定とピッチ補正のみ)
     if (isSlowedReverb) {
@@ -114,7 +114,7 @@ const useAudioEffects = () => {
     isSpatialEnabled,
     is8DAudioEnabled,
     rotationSpeed,
-    isLoFiEnabled,
+    isRetroEnabled,
     isSlowedReverb,
   ]);
 
@@ -164,9 +164,9 @@ const useAudioEffects = () => {
     toggle8DAudio,
     change8DRotationSpeed,
 
-    // Lo-Fi
-    isLoFiEnabled,
-    toggleLoFi,
+    // Retro
+    isRetroEnabled,
+    toggleRetro,
   };
 };
 

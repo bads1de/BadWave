@@ -40,7 +40,7 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
     // 再生速度機能を初期化
     usePlaybackRate();
 
-    // 統合オーディオエフェクト（Spatial, 8D, Lo-Fi, Slowed+Reverb）
+    // 統合オーディオエフェクト（Spatial, 8D, Retro, Slowed+Reverb）
     useAudioEffects();
 
     // アイコン選択ロジック
@@ -49,7 +49,7 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
     return (
       <>
         {/* audio要素はAudioEngineシングルトンで管理されるため、ここには不要 */}
-        
+
         {isMobilePlayer ? (
           <MobilePlayer
             song={song}
