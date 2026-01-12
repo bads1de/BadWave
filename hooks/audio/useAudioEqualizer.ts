@@ -2,6 +2,9 @@ import { useEffect, useRef, useCallback } from "react";
 import useEqualizerStore, { EQ_BANDS } from "@/hooks/stores/useEqualizerStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
+import useEffectStore, {
+  ROTATION_SPEED_VALUES,
+} from "@/hooks/stores/useEffectStore";
 
 /**
  * Web Audio API を使用したオーディオエフェクト機能を提供するフック
@@ -18,11 +21,26 @@ const useAudioEqualizer = (
   const isSpatialEnabled = useSpatialStore((state) => state.isSpatialEnabled);
   const isSlowedReverb = usePlaybackRateStore((state) => state.isSlowedReverb);
 
+  // 8D Audio & Lo-Fi 状態
+  const is8DAudioEnabled = useEffectStore((state) => state.is8DAudioEnabled);
+  const rotationSpeed = useEffectStore((state) => state.rotationSpeed);
+  const isLoFiEnabled = useEffectStore((state) => state.isLoFiEnabled);
+
   // Web Audio API ノードの参照
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
   const filtersRef = useRef<BiquadFilterNode[]>([]);
   const spatialFilterRef = useRef<BiquadFilterNode | null>(null);
+
+  // 8D Audio Nodes
+  const stereoPannerRef = useRef<StereoPannerNode | null>(null);
+  const lfoOscillatorRef = useRef<OscillatorNode | null>(null);
+  const lfoGainRef = useRef<GainNode | null>(null);
+
+  // Lo-Fi Nodes
+  const loFiLowPassRef = useRef<BiquadFilterNode | null>(null);
+  const loFiHighPassRef = useRef<BiquadFilterNode | null>(null);
+
   const reverbGainNodeRef = useRef<GainNode | null>(null);
   const convolverRef = useRef<ConvolverNode | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
@@ -53,7 +71,7 @@ const useAudioEqualizer = (
 
   /**
    * Web Audio API グラフを初期化
-   * audio要素 -> EQ -> Spatial -> Master -> Dest
+   * audio要素 -> EQ -> Spatial -> 8D -> Lo-Fi -> Master -> Dest
    *                   |-> Reverb -> Dest
    */
   const initializeAudioGraph = useCallback(() => {
@@ -96,6 +114,37 @@ const useAudioEqualizer = (
       spatialFilter.Q.value = 1.0;
       spatialFilterRef.current = spatialFilter;
 
+      // --- 8D Audio Nodes ---
+      const stereoPanner = context.createStereoPanner();
+      stereoPanner.pan.value = 0;
+      stereoPannerRef.current = stereoPanner;
+
+      const lfoOscillator = context.createOscillator();
+      lfoOscillator.type = "sine";
+      lfoOscillator.frequency.value = 0.25; // 初期値
+      lfoOscillatorRef.current = lfoOscillator;
+
+      const lfoGain = context.createGain();
+      lfoGain.gain.value = 0; // 初期OFF
+      lfoGainRef.current = lfoGain;
+
+      lfoOscillator.connect(lfoGain);
+      lfoGain.connect(stereoPanner.pan);
+      lfoOscillator.start();
+
+      // --- Lo-Fi Nodes ---
+      const loFiHighPass = context.createBiquadFilter();
+      loFiHighPass.type = "highpass";
+      loFiHighPass.frequency.value = 0; // 初期全通
+      loFiHighPass.Q.value = 0.5;
+      loFiHighPassRef.current = loFiHighPass;
+
+      const loFiLowPass = context.createBiquadFilter();
+      loFiLowPass.type = "lowpass";
+      loFiLowPass.frequency.value = 22050; // 初期全通
+      loFiLowPass.Q.value = 0.5;
+      loFiLowPassRef.current = loFiLowPass;
+
       // リバーブ用
       const convolver = context.createConvolver();
       const reverbGainNode = context.createGain();
@@ -119,21 +168,32 @@ const useAudioEqualizer = (
         currentNode = filter;
       });
 
-      // Spatial Filter 接続
+      // Spatial Filter
       currentNode.connect(spatialFilter);
+      currentNode = spatialFilter;
 
-      // Main Path: Spatial -> Master -> Dest
-      spatialFilter.connect(masterGain);
+      // 8D Panner
+      currentNode.connect(stereoPanner);
+      currentNode = stereoPanner;
+
+      // Lo-Fi Filters (HighPass -> LowPass)
+      currentNode.connect(loFiHighPass);
+      currentNode = loFiHighPass;
+      currentNode.connect(loFiLowPass);
+      currentNode = loFiLowPass;
+
+      // Master -> Output
+      currentNode.connect(masterGain);
       masterGain.connect(context.destination);
 
-      // Reverb Path: Spatial -> ReverbGain -> Convolver -> Dest
-      spatialFilter.connect(reverbGainNode);
+      // Reverb Path: 8D Panner -> ReverbGain -> Convolver -> Dest
+      stereoPanner.connect(reverbGainNode);
       reverbGainNode.connect(convolver);
       convolver.connect(context.destination);
 
       isInitializedRef.current = true;
       console.log(
-        "[useAudioEqualizer] Initialized successfully with Spatial Audio"
+        "[useAudioEqualizer] Initialized successfully with Full Effects"
       );
     } catch (error) {
       console.error("[useAudioEqualizer] Initialization failed:", error);
@@ -231,6 +291,82 @@ const useAudioEqualizer = (
     }
   }, [isSpatialEnabled, isSlowedReverb]);
 
+  // 8D Audio の反映
+  useEffect(() => {
+    const lfoOscillator = lfoOscillatorRef.current;
+    const lfoGain = lfoGainRef.current;
+    const context = audioContextRef.current;
+
+    if (!isInitializedRef.current || !lfoOscillator || !lfoGain || !context)
+      return;
+
+    const now = context.currentTime;
+    const rotationPeriod = ROTATION_SPEED_VALUES[rotationSpeed];
+    const frequency = 1 / rotationPeriod;
+
+    // 回転速度
+    try {
+      lfoOscillator.frequency.cancelScheduledValues(now);
+      lfoOscillator.frequency.linearRampToValueAtTime(frequency, now + 0.1);
+    } catch {
+      lfoOscillator.frequency.value = frequency;
+    }
+
+    // ON/OFF (Gain制御)
+    try {
+      lfoGain.gain.cancelScheduledValues(now);
+      lfoGain.gain.linearRampToValueAtTime(is8DAudioEnabled ? 1 : 0, now + 0.3);
+    } catch {
+      lfoGain.gain.value = is8DAudioEnabled ? 1 : 0;
+    }
+  }, [is8DAudioEnabled, rotationSpeed]);
+
+  // Lo-Fi Mode の反映 (Warm Radio)
+  useEffect(() => {
+    const loFiLowPass = loFiLowPassRef.current;
+    const loFiHighPass = loFiHighPassRef.current;
+    const context = audioContextRef.current;
+
+    if (!isInitializedRef.current || !loFiLowPass || !loFiHighPass || !context)
+      return;
+
+    const now = context.currentTime;
+
+    if (isLoFiEnabled) {
+      // ON: Warm Radio
+      try {
+        // HighPass: 500Hz以下カット
+        loFiHighPass.frequency.cancelScheduledValues(now);
+        loFiHighPass.frequency.exponentialRampToValueAtTime(500, now + 0.3);
+        loFiHighPass.Q.value = 0.8;
+
+        // LowPass: 3000Hz以上カット
+        loFiLowPass.frequency.cancelScheduledValues(now);
+        loFiLowPass.frequency.exponentialRampToValueAtTime(3000, now + 0.3);
+        loFiLowPass.Q.value = 0.5;
+      } catch {
+        loFiHighPass.frequency.value = 500;
+        loFiLowPass.frequency.value = 3000;
+      }
+    } else {
+      // OFF: Bypass
+      try {
+        // HighPass -> ~0
+        loFiHighPass.frequency.cancelScheduledValues(now);
+        loFiHighPass.frequency.exponentialRampToValueAtTime(10, now + 0.3);
+        loFiHighPass.Q.value = 0.5;
+
+        // LowPass -> 22050
+        loFiLowPass.frequency.cancelScheduledValues(now);
+        loFiLowPass.frequency.exponentialRampToValueAtTime(22050, now + 0.3);
+        loFiLowPass.Q.value = 0.5;
+      } catch {
+        loFiHighPass.frequency.value = 10;
+        loFiLowPass.frequency.value = 22050;
+      }
+    }
+  }, [isLoFiEnabled]);
+
   // クリーンアップ
   useEffect(() => {
     return () => {
@@ -240,6 +376,13 @@ const useAudioEqualizer = (
         sourceNodeRef.current = null;
         filtersRef.current = [];
         spatialFilterRef.current = null;
+
+        stereoPannerRef.current = null;
+        lfoOscillatorRef.current = null;
+        lfoGainRef.current = null;
+        loFiLowPassRef.current = null;
+        loFiHighPassRef.current = null;
+
         convolverRef.current = null;
         reverbGainNodeRef.current = null;
         isInitializedRef.current = false;
