@@ -13,6 +13,7 @@ import { AudioEngine } from "@/libs/audio/AudioEngine";
  * - Slowed + Reverb
  * - 8D Audio
  * - Retro Mode
+ * - Bass Boost
  */
 const useAudioEffects = () => {
   // Stores
@@ -25,6 +26,8 @@ const useAudioEffects = () => {
     setRotationSpeed,
     isRetroEnabled,
     toggleRetro,
+    isBassBoostEnabled,
+    toggleBassBoost,
   } = useEffectStore();
 
   const { isSpatialEnabled, toggleSpatialEnabled } = useSpatialStore();
@@ -87,6 +90,14 @@ const useAudioEffects = () => {
     engine.setRetroMode(isRetroEnabled);
   }, [isRetroEnabled]);
 
+  // --- Bass Boost Logic ---
+  useEffect(() => {
+    const engine = AudioEngine.getInstance();
+    if (!engine.isInitialized) return;
+
+    engine.setBassBoostMode(isBassBoostEnabled);
+  }, [isBassBoostEnabled]);
+
   // --- 再生開始時の再適用ロジック ---
   const applyEffects = useCallback(() => {
     const engine = AudioEngine.getInstance();
@@ -102,6 +113,9 @@ const useAudioEffects = () => {
     // Retro
     engine.setRetroMode(isRetroEnabled);
 
+    // Bass Boost
+    engine.setBassBoostMode(isBassBoostEnabled);
+
     // Slowed + Reverb (モード設定とピッチ補正のみ)
     if (isSlowedReverb) {
       engine.setSlowedReverbMode(true);
@@ -115,6 +129,7 @@ const useAudioEffects = () => {
     is8DAudioEnabled,
     rotationSpeed,
     isRetroEnabled,
+    isBassBoostEnabled,
     isSlowedReverb,
   ]);
 
@@ -167,6 +182,10 @@ const useAudioEffects = () => {
     // Retro
     isRetroEnabled,
     toggleRetro,
+
+    // Bass Boost
+    isBassBoostEnabled,
+    toggleBassBoost,
   };
 };
 
