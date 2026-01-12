@@ -7,6 +7,7 @@ import MobilePlayer from "./MobilePlayer";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
 import useAudioEqualizer from "@/hooks/audio/useAudioEqualizer";
 import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
+import useSlowedReverb from "@/hooks/audio/useSlowedReverb";
 
 interface PlayerContentProps {
   song: Song;
@@ -39,6 +40,9 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
 
     // 再生速度機能を初期化（audioRefを渡す）
     usePlaybackRate(audioRef);
+
+    // Slowed + Reverb 機能を初期化（速度・ピッチ制御）
+    useSlowedReverb(audioRef);
 
     // アイコン選択ロジック
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;

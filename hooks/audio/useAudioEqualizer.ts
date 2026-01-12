@@ -1,7 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import useEqualizerStore, { EQ_BANDS } from "@/hooks/stores/useEqualizerStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
-import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useEffectStore, {
   ROTATION_SPEED_VALUES,
 } from "@/hooks/stores/useEffectStore";
@@ -19,12 +18,12 @@ const useAudioEqualizer = (
   const isEqEnabled = useEqualizerStore((state) => state.isEnabled);
   const bands = useEqualizerStore((state) => state.bands);
   const isSpatialEnabled = useSpatialStore((state) => state.isSpatialEnabled);
-  const isSlowedReverb = usePlaybackRateStore((state) => state.isSlowedReverb);
 
-  // 8D Audio & Lo-Fi 状態
+  // 8D Audio & Lo-Fi & Slowed+Reverb 状態
   const is8DAudioEnabled = useEffectStore((state) => state.is8DAudioEnabled);
   const rotationSpeed = useEffectStore((state) => state.rotationSpeed);
   const isLoFiEnabled = useEffectStore((state) => state.isLoFiEnabled);
+  const isSlowedReverb = useEffectStore((state) => state.isSlowedReverb);
 
   // Web Audio API ノードの参照
   const audioContextRef = useRef<AudioContext | null>(null);
