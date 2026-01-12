@@ -39,6 +39,11 @@ export const ROTATION_SPEED_VALUES: Record<RotationSpeed, number> = {
 const useEffectStore = create<EffectStore>()(
   persist(
     (set) => ({
+      // Slowed + Reverb
+      isSlowedReverb: false,
+      toggleSlowedReverb: () =>
+        set((state) => ({ isSlowedReverb: !state.isSlowedReverb })),
+
       // 8D Audio
       is8DAudioEnabled: false,
       rotationSpeed: "medium" as RotationSpeed,
