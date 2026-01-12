@@ -9,31 +9,13 @@ import usePlaybackStateStore, {
   POSITION_SAVE_INTERVAL_MS,
 } from "@/hooks/stores/usePlaybackStateStore";
 import useLatestRef from "@/hooks/utils/useLatestRef";
+import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 /**
  * オーディオプレイヤーの状態と操作を管理するカスタムフック
  *
  * @param {string} songUrl - 再生する曲のURL
  * @returns {Object} プレイヤーの状態と操作関数を含むオブジェクト
- * @property {React.ComponentType} Icon - 再生/一時停止アイコン
- * @property {React.ComponentType} VolumeIcon - 音量アイコン
- * @property {string} formattedCurrentTime - フォーマットされた現在の再生時間
- * @property {string} formattedDuration - フォーマットされた曲の長さ
- * @property {function} toggleMute - ミュート切り替え関数
- * @property {number} volume - 現在の音量
- * @property {function} setVolume - 音量設定関数
- * @property {React.RefObject} audioRef - オーディオ要素への参照
- * @property {number} currentTime - 現在の再生時間（秒）
- * @property {number} duration - 曲の長さ（秒）
- * @property {boolean} isPlaying - 再生中かどうか
- * @property {boolean} isRepeating - リピート再生中かどうか
- * @property {boolean} isShuffling - シャッフル再生中かどうか
- * @property {function} handlePlay - 再生/一時停止切り替え関数
- * @property {function} handleSeek - シーク操作関数
- * @property {function} onPlayNext - 次の曲を再生する関数
- * @property {function} onPlayPrevious - 前の曲を再生する関数
- * @property {function} toggleRepeat - リピート切り替え関数
- * @property {function} toggleShuffle - シャッフル切り替え関数
  */
 const useAudioPlayer = (songUrl: string) => {
   const player = usePlayer();
@@ -49,7 +31,6 @@ const useAudioPlayer = (songUrl: string) => {
   const volume = isMobile ? mobileVolume : storedVolume;
   const setVolume = isMobile ? setMobileVolume : setStoredVolume;
 
-  const audioRef = useRef<HTMLAudioElement>(null);
   const isRepeating = usePlayer((state) => state.isRepeating);
   const isShuffling = usePlayer((state) => state.isShuffling);
 
@@ -72,16 +53,27 @@ const useAudioPlayer = (songUrl: string) => {
   // --- useLatestRef: イベントリスナー内から最新の状態を参照するため ---
   const isRestoringRef = useLatestRef(isRestoring);
 
+  // AudioEngineからaudio要素を取得
+  const engine = AudioEngine.getInstance();
+  const audio = engine.audio;
+
+  // 初期化時にAudioEngineを初期化
+  useEffect(() => {
+    if (!engine.isInitialized) {
+      engine.initialize();
+    }
+  }, [engine]);
+
   // グローバル参照にメインプレイヤーの情報を登録
   useEffect(() => {
-    globalAudioPlayerRef.mainPlayerAudioRef = audioRef.current;
+    globalAudioPlayerRef.mainPlayerAudioRef = audio;
     globalAudioPlayerRef.pauseMainPlayer = () => setIsPlaying(false);
 
     return () => {
       globalAudioPlayerRef.mainPlayerAudioRef = null;
       globalAudioPlayerRef.pauseMainPlayer = null;
     };
-  }, []);
+  }, [audio]);
 
   const handlePlay = useCallback(() => {
     // 再生を開始する場合、波形プレイヤーを停止する
@@ -98,8 +90,8 @@ const useAudioPlayer = (songUrl: string) => {
 
   const handleSeek = useCallback(
     (time: number) => {
-      if (audioRef.current) {
-        audioRef.current.currentTime = time;
+      if (audio) {
+        audio.currentTime = time;
         setCurrentTime(time);
         // シーク時に再生位置を保存
         const activeId = player.activeId;
@@ -108,7 +100,7 @@ const useAudioPlayer = (songUrl: string) => {
         }
       }
     },
-    [player.activeId, player.ids, savePlaybackState]
+    [player.activeId, player.ids, savePlaybackState, audio]
   );
 
   // 次の曲を再生する関数
@@ -125,8 +117,8 @@ const useAudioPlayer = (songUrl: string) => {
   // 前の曲を再生する関数
   const onPlayPrevious = useCallback(() => {
     if (isRepeating) {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
+      if (audio) {
+        audio.currentTime = 0;
       }
     } else {
       const prevSongId = player.getPreviousSongId();
@@ -134,7 +126,7 @@ const useAudioPlayer = (songUrl: string) => {
         player.setId(prevSongId);
       }
     }
-  }, [isRepeating, player]);
+  }, [isRepeating, player, audio]);
 
   // リピート切り替え関数
   const toggleRepeat = useCallback(() => {
@@ -152,16 +144,13 @@ const useAudioPlayer = (songUrl: string) => {
 
   // audio.loopをisRepeatingと同期（リピート時はブラウザネイティブで処理）
   useEffect(() => {
-    const audio = audioRef.current;
     if (audio) {
       audio.loop = isRepeating;
     }
-  }, [isRepeating]);
+  }, [isRepeating, audio]);
 
   // オーディオ要素のイベントリスナーを設定
-  // 注意: Refパターンを使用して、songUrl変更時のみリスナーを再登録
   useEffect(() => {
-    const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
@@ -174,11 +163,14 @@ const useAudioPlayer = (songUrl: string) => {
 
     const handleCanPlayThrough = () => {
       if (!isRestoringRef.current) {
-        audio.play();
+        audio.play().catch((e) => console.error("Auto-play failed:", e));
       }
     };
 
-    const handlePlay = () => setIsPlaying(true);
+    const handlePlayEvent = () => {
+        setIsPlaying(true);
+        engine.resumeContext();
+    };
 
     const handlePause = () => {
       setIsPlaying(false);
@@ -192,7 +184,7 @@ const useAudioPlayer = (songUrl: string) => {
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("canplaythrough", handleCanPlayThrough);
-    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("play", handlePlayEvent);
     audio.addEventListener("pause", handlePause);
 
     return () => {
@@ -200,31 +192,28 @@ const useAudioPlayer = (songUrl: string) => {
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("canplaythrough", handleCanPlayThrough);
-      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("play", handlePlayEvent);
       audio.removeEventListener("pause", handlePause);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [songUrl]);
+  }, [songUrl, audio]);
 
   useEffect(() => {
-    const audio = audioRef.current;
     if (!audio) return;
 
     if (isPlaying) {
-      audio.play();
+      audio.play().catch((e) => console.error("Play failed:", e));
     } else {
       audio.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, audio]);
 
   useEffect(() => {
-    const audio = audioRef.current;
     if (!audio) return;
     audio.volume = volume;
-  }, [volume]);
+  }, [volume, audio]);
 
   useEffect(() => {
-    const audio = audioRef.current;
     if (!audio || !songUrl) return;
 
     // 前の曲を停止してリセット
@@ -238,14 +227,13 @@ const useAudioPlayer = (songUrl: string) => {
 
     // 明示的にロードして再生を開始
     audio.load();
-  }, [songUrl]);
+  }, [songUrl, audio]);
 
   // 定期的な再生位置の保存（5秒ごと、デバウンス）
   useEffect(() => {
     if (!isPlaying) return;
 
     const interval = setInterval(() => {
-      const audio = audioRef.current;
       const activeId = player.activeId;
       if (audio && activeId) {
         const now = Date.now();
@@ -257,12 +245,11 @@ const useAudioPlayer = (songUrl: string) => {
     }, POSITION_SAVE_INTERVAL_MS);
 
     return () => clearInterval(interval);
-  }, [isPlaying, player.activeId, updatePosition]);
+  }, [isPlaying, player.activeId, updatePosition, audio]);
 
   // ページ離脱時に再生位置を保存
   useEffect(() => {
     const handleBeforeUnload = () => {
-      const audio = audioRef.current;
       const activeId = player.activeId;
       if (audio && activeId) {
         savePlaybackState(activeId, audio.currentTime, player.ids);
@@ -271,11 +258,10 @@ const useAudioPlayer = (songUrl: string) => {
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [player.activeId, player.ids, savePlaybackState]);
+  }, [player.activeId, player.ids, savePlaybackState, audio]);
 
   // 保存された再生位置から復元
   useEffect(() => {
-    const audio = audioRef.current;
     if (
       !audio ||
       !playbackStateHydrated ||
@@ -298,7 +284,7 @@ const useAudioPlayer = (songUrl: string) => {
       audio.addEventListener("canplay", handleCanPlay, { once: true });
       return () => audio.removeEventListener("canplay", handleCanPlay);
     }
-  }, [playbackStateHydrated, savedSongId, savedPosition, player.activeId]);
+  }, [playbackStateHydrated, savedSongId, savedPosition, player.activeId, audio]);
 
   const formatTime = useMemo(() => {
     return (time: number) => {
@@ -321,7 +307,6 @@ const useAudioPlayer = (songUrl: string) => {
   return {
     formattedCurrentTime,
     formattedDuration,
-    audioRef,
     currentTime,
     duration,
     isPlaying,

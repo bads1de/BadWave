@@ -1,30 +1,27 @@
-import { useEffect, RefObject } from "react";
+import { useEffect } from "react";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
+import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 /**
  * オーディオ要素に再生速度を適用するカスタムフック
- *
- * @param audioRef - HTMLAudioElement への参照
- *
- * @description
- * ストアの状態に基づいて以下の設定を行う：
- * - 通常モード: preservesPitch = true（ピッチを維持）
- * - Slowed + Reverb モード: playbackRate = 0.85, preservesPitch = false（ピッチを下げる）
+ * AudioEngine の audio 要素に対して playbackRate を設定する
  */
-const usePlaybackRate = (audioRef: RefObject<HTMLAudioElement | null>) => {
+const usePlaybackRate = () => {
   const rate = usePlaybackRateStore((state) => state.rate);
 
   // 再生速度を適用
   useEffect(() => {
-    const audio = audioRef.current;
+    const engine = AudioEngine.getInstance();
+    const audio = engine.audio;
     if (!audio) return;
 
     audio.playbackRate = rate;
-  }, [audioRef, rate]);
+  }, [rate]);
 
   // ソース変更時に再生速度を再適用
   useEffect(() => {
-    const audio = audioRef.current;
+    const engine = AudioEngine.getInstance();
+    const audio = engine.audio;
     if (!audio) return;
 
     const handleDurationChange = () => {
@@ -35,7 +32,7 @@ const usePlaybackRate = (audioRef: RefObject<HTMLAudioElement | null>) => {
     return () => {
       audio.removeEventListener("durationchange", handleDurationChange);
     };
-  }, [audioRef, rate]);
+  }, [rate]);
 
   return { rate };
 };

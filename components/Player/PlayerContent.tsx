@@ -7,7 +7,7 @@ import MobilePlayer from "./MobilePlayer";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
 import useAudioEqualizer from "@/hooks/audio/useAudioEqualizer";
 import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
-import useSlowedReverb from "@/hooks/audio/useSlowedReverb";
+import useAudioEffects from "@/hooks/audio/useAudioEffects";
 
 interface PlayerContentProps {
   song: Song;
@@ -21,7 +21,6 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
     const {
       formattedCurrentTime,
       formattedDuration,
-      audioRef,
       currentTime,
       duration,
       isPlaying,
@@ -35,24 +34,22 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
       toggleShuffle,
     } = useAudioPlayer(song?.song_path);
 
-    // イコライザー機能を初期化（audioRefを渡す）
-    useAudioEqualizer(audioRef);
+    // イコライザー機能を初期化（AudioEngineを使用）
+    useAudioEqualizer();
 
-    // 再生速度機能を初期化（audioRefを渡す）
-    usePlaybackRate(audioRef);
+    // 再生速度機能を初期化
+    usePlaybackRate();
 
-    // Slowed + Reverb 機能を初期化（速度・ピッチ制御）
-    useSlowedReverb(audioRef);
+    // 統合オーディオエフェクト（Spatial, 8D, Lo-Fi, Slowed+Reverb）
+    useAudioEffects();
 
     // アイコン選択ロジック
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
 
     return (
       <>
-        {/* NOTE: srcはuseAudioPlayer内で設定されるため、ここでは指定しない */}
-        {/* crossOrigin でWeb Audio API (イコライザー) がCORS対応できるようにする */}
-        <audio ref={audioRef} crossOrigin="anonymous" />
-
+        {/* audio要素はAudioEngineシングルトンで管理されるため、ここには不要 */}
+        
         {isMobilePlayer ? (
           <MobilePlayer
             song={song}

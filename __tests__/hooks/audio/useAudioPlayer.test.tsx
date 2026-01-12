@@ -1,9 +1,34 @@
 import { renderHook, act } from "@testing-library/react";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import usePlayer from "@/hooks/player/usePlayer";
 import useAudioWaveStore from "@/hooks/audio/useAudioWave";
-import React from "react";
+import { AudioEngine } from "@/libs/audio/AudioEngine";
+
+// Mock AudioEngine
+const mockAudio = {
+  currentTime: 0,
+  duration: 0,
+  play: jest.fn().mockResolvedValue(undefined),
+  pause: jest.fn(),
+  load: jest.fn(),
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  src: "",
+  volume: 1,
+} as unknown as HTMLAudioElement;
+
+const mockEngine = {
+  isInitialized: false,
+  initialize: jest.fn(),
+  audio: mockAudio,
+  resumeContext: jest.fn(),
+};
+
+jest.mock("@/libs/audio/AudioEngine", () => ({
+  AudioEngine: {
+    getInstance: jest.fn(() => mockEngine),
+  },
+}));
 
 // Mock hooks
 jest.mock("@/hooks/player/usePlayer", () => {
@@ -55,12 +80,8 @@ describe("useAudioPlayer", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Mock HTMLMediaElement methods
-    window.HTMLMediaElement.prototype.play = jest
-      .fn()
-      .mockResolvedValue(undefined);
-    window.HTMLMediaElement.prototype.pause = jest.fn();
-    window.HTMLMediaElement.prototype.load = jest.fn();
+    mockAudio.currentTime = 0;
+    mockEngine.isInitialized = false;
   });
 
   it("should initialize with default values", () => {
@@ -68,6 +89,7 @@ describe("useAudioPlayer", () => {
 
     expect(result.current.isPlaying).toBe(false);
     expect(result.current.currentTime).toBe(0);
+    expect(mockEngine.initialize).toHaveBeenCalled();
   });
 
   it("should toggle play state", () => {
@@ -82,14 +104,6 @@ describe("useAudioPlayer", () => {
 
   it("should seek to a specific time", () => {
     const { result } = renderHook(() => useAudioPlayer(songUrl));
-
-    const mockAudio = {
-      currentTime: 0,
-      play: jest.fn(),
-      pause: jest.fn(),
-    } as unknown as HTMLAudioElement;
-
-    (result.current.audioRef as any).current = mockAudio;
 
     act(() => {
       result.current.handleSeek(30);
@@ -114,13 +128,6 @@ describe("useAudioPlayer", () => {
 
   it("should format time correctly", () => {
     const { result } = renderHook(() => useAudioPlayer(songUrl));
-
-    const mockAudio = {
-      currentTime: 0,
-      play: jest.fn(),
-      pause: jest.fn(),
-    } as unknown as HTMLAudioElement;
-    (result.current.audioRef as any).current = mockAudio;
 
     act(() => {
       result.current.handleSeek(65);

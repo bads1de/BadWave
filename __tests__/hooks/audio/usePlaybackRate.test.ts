@@ -1,81 +1,68 @@
-import { renderHook } from "@testing-library/react";
+/**
+ * @jest-environment jsdom
+ */
+import { renderHook, act } from "@testing-library/react";
 import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
-import { useRef } from "react";
+import { AudioEngine } from "@/libs/audio/AudioEngine";
 
-jest.mock("@/hooks/stores/usePlaybackRateStore");
+// Mock AudioEngine
+const mockAudio = {
+  playbackRate: 1,
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+};
+
+jest.mock("@/libs/audio/AudioEngine", () => ({
+  AudioEngine: {
+    getInstance: jest.fn(() => ({
+      audio: mockAudio,
+    })),
+  },
+}));
 
 describe("hooks/audio/usePlaybackRate", () => {
-  let mockAudio: any;
-
   beforeEach(() => {
-    mockAudio = {
-      playbackRate: 1,
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-    };
-
-    // Default store state
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation(
-      (selector) => {
-        const state = { rate: 1.0 };
-        return selector(state);
-      }
-    );
+    jest.clearAllMocks();
+    mockAudio.playbackRate = 1;
+    act(() => {
+      usePlaybackRateStore.setState({ rate: 1.0 });
+    });
   });
 
   it("sets playback rate on mount", () => {
-    renderHook(() => {
-      const ref = useRef(mockAudio);
-      return usePlaybackRate(ref);
-    });
-
+    renderHook(() => usePlaybackRate());
     expect(mockAudio.playbackRate).toBe(1.0);
   });
 
   it("updates rate when store changes", () => {
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation(
-      (selector) => {
-        const state = { rate: 1.5 };
-        return selector(state);
-      }
-    );
+    renderHook(() => usePlaybackRate());
 
-    renderHook(() => {
-      const ref = useRef(mockAudio);
-      return usePlaybackRate(ref);
+    act(() => {
+      usePlaybackRateStore.setState({ rate: 1.5 });
     });
 
     expect(mockAudio.playbackRate).toBe(1.5);
   });
 
   it("re-applies settings on durationchange event", () => {
-    (usePlaybackRateStore as unknown as jest.Mock).mockImplementation(
-      (selector) => {
-        const state = { rate: 1.25 };
-        return selector(state);
-      }
-    );
-
-    renderHook(() => {
-      const ref = useRef(mockAudio);
-      return usePlaybackRate(ref);
+    act(() => {
+        usePlaybackRateStore.setState({ rate: 1.25 });
     });
 
-    // Check if event listener is added
-    expect(mockAudio.addEventListener).toHaveBeenCalledWith(
-      "durationchange",
-      expect.any(Function)
-    );
+    renderHook(() => usePlaybackRate());
 
-    // Simulate event trigger
+    expect(mockAudio.addEventListener).toHaveBeenCalledWith("durationchange", expect.any(Function));
+    
     const handler = mockAudio.addEventListener.mock.calls[0][1];
-
+    
     // Reset properties to verify handler effect
     mockAudio.playbackRate = 1.0;
-
-    handler();
-
+    
+    act(() => {
+        handler();
+    });
+    
     expect(mockAudio.playbackRate).toBe(1.25);
   });
 });
