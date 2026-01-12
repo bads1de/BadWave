@@ -2,7 +2,7 @@
 
 ## プロジェクト概要
 
-BadWave は、Next.js 14+ (App Router) で構築された音楽ストリーミングアプリケーションです。Tailwind CSS と shadcn/ui を使用したモダンな UI、Zustand による状態管理、React Query によるデータフェッチングを特徴としています。バックエンドサービスには認証とデータベースに Supabase、決済に Stripe を使用しています。
+BadWave は、Next.js 14+ (App Router) で構築された音楽ストリーミングアプリケーションです。Tailwind CSS と shadcn/ui を使用したモダンな UI、Zustand による状態管理、React Query によるデータフェッチングを特徴としています。バックエンドサービスには認証とデータベースに Supabase を使用しています。
 
 ## 技術スタック
 
@@ -13,7 +13,6 @@ BadWave は、Next.js 14+ (App Router) で構築された音楽ストリーミ�
 - **データフェッチング:** TanStack Query (React Query)
 - **データベース & 認証:** Supabase
 - **ストレージ:** Cloudflare R2 (`next.config.js`で設定)
-- **決済:** Stripe
 - **テスト:** Jest, React Testing Library
 - **アイコン:** React Icons, Lucide React
 
@@ -61,7 +60,7 @@ badwave/
   - `ui/`: shadcn/ui のプリミティブコンポーネント。
 - `actions/`: データ変更と取得のための Server Actions。
 - `hooks/`: カスタム React フック (ストアを含む)。
-- `libs/`: ユーティリティ関数とライブラリ設定 (Supabase, Stripe など)。
+- `libs/`: ユーティリティ関数とライブラリ設定 (Supabase など)。
 - `providers/`: React コンテキストプロバイダー (Theme, Toast など)。
 - `__tests__/`: Jest テストファイル。
 - `types.ts`: グローバルな TypeScript 型定義。
