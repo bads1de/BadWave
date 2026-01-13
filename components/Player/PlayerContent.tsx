@@ -8,6 +8,7 @@ import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
 import useAudioEqualizer from "@/hooks/audio/useAudioEqualizer";
 import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
 import useAudioEffects from "@/hooks/audio/useAudioEffects";
+import useMediaSession from "@/hooks/player/useMediaSession";
 
 interface PlayerContentProps {
   song: Song;
@@ -42,6 +43,21 @@ const PlayerContent: React.FC<PlayerContentProps> = React.memo(
 
     // 統合オーディオエフェクト（Spatial, 8D, Retro, Slowed+Reverb）
     useAudioEffects();
+
+    // Media Session API Integration
+    useMediaSession({
+      song: song,
+      isPlaying: isPlaying,
+      onPlay: () => {
+        if (!isPlaying) handlePlay();
+      },
+      onPause: () => {
+        if (isPlaying) handlePlay();
+      },
+      onPlayNext: onPlayNext,
+      onPlayPrevious: onPlayPrevious,
+      onSeek: handleSeek,
+    });
 
     // アイコン選択ロジック
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
