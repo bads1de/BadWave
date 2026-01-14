@@ -62,7 +62,6 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@faker-js/faker": "^9.5.0",
-    "@oxc-resolver/binding-win32-x64-msvc": "^11.16.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
