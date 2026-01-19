@@ -8,9 +8,9 @@ interface LrcLine {
   text: string;
 }
 
-// LRC形式かどうかを判定
+// LRC形式かどうかを判定（ファイル内のどこかにタイムスタンプがあればOK）
 const isLrcFormat = (lyrics: string): boolean => {
-  return /^\[\d{2}:\d{2}\.\d{2}\]/.test(lyrics.trim());
+  return /\[\d{2}:\d{2}\.\d{2,3}\]/.test(lyrics);
 };
 
 // LRC文字列をパース
