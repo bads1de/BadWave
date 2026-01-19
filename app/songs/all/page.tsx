@@ -25,9 +25,9 @@ export default function AllSongsPage() {
   const [page, setPage] = useState(0);
 
   // データ取得（TanStack Queryでキャッシュ管理）
-  const { songs, totalPages, isLoading, isFetching } = useGetAllSongsPaginated(
+  const { songs, totalPages, isLoading } = useGetAllSongsPaginated(
     page,
-    PAGE_SIZE
+    PAGE_SIZE,
   );
 
   // 再生機能
@@ -75,13 +75,6 @@ export default function AllSongsPage() {
               全ての最新リリース楽曲を閲覧できます
             </p>
           </div>
-
-          {/* ローディングインジケータ */}
-          {isFetching && (
-            <div className="flex justify-center mb-4">
-              <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
 
           {/* 曲一覧 */}
           {isLoading && songs.length === 0 ? (

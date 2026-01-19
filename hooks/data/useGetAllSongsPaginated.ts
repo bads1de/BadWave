@@ -30,9 +30,7 @@ const useGetAllSongsPaginated = (page: number = 0, pageSize: number = 24) => {
       queryFn: () => getSongsPaginated(page, pageSize),
       staleTime: CACHE_CONFIG.staleTime,
       gcTime: CACHE_CONFIG.gcTime,
-      // ページ切り替え時にプレースホルダとして前のデータを表示
-      placeholderData: (previousData) => previousData,
-    }
+    },
   );
 
   if (error) {
