@@ -115,12 +115,42 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
           {...register("author", { required: true })}
           placeholder="曲の作者"
         />
-        <Textarea
-          disabled={isLoading}
-          {...register("lyrics")}
-          placeholder="歌詞"
-          className="bg-neutral-700"
-        />
+        <div className="relative">
+          <Textarea
+            disabled={isLoading}
+            {...register("lyrics")}
+            placeholder="歌詞 (LRC形式も可)"
+            className="bg-neutral-700 min-h-[150px]"
+          />
+          <div className="absolute top-2 right-2">
+            <label
+              htmlFor="lrc-upload"
+              className="cursor-pointer bg-neutral-600 hover:bg-neutral-500 text-white text-xs px-2 py-1 rounded transition"
+            >
+              LRC読込
+            </label>
+            <input
+              id="lrc-upload"
+              type="file"
+              accept=".lrc,.txt"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                  const text = ev.target?.result as string;
+                  if (text) {
+                    setValue("lyrics", text);
+                  }
+                };
+                reader.readAsText(file);
+                // Reset input value to allow selecting the same file again
+                e.target.value = "";
+              }}
+            />
+          </div>
+        </div>
         <GenreSelect
           onGenreChange={(genres: string) => setSelectedGenres([genres])}
         />
