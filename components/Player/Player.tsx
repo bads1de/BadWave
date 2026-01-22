@@ -9,6 +9,7 @@ import { Playlist } from "@/types";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
 import { usePathname } from "next/navigation";
 import useAudioControl from "@/hooks/audio/useAudioControl";
+import LyricsModal from "../Modals/LyricsModal/LyricsModal";
 
 interface PlayerProps {
   playlists: Playlist[];
@@ -61,6 +62,9 @@ const Player = ({ playlists }: PlayerProps) => {
           <MobileTabs />
         </div>
       )}
+
+      {/* 全画面歌詞モーダル */}
+      <LyricsModal song={song} />
     </>
   );
 };

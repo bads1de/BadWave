@@ -10,6 +10,7 @@ import VolumeControl from "./VolumeControl";
 import EqualizerButton from "./EqualizerButton";
 import PlaybackSpeedButton from "./PlaybackSpeedButton";
 import useLyricsStore from "@/hooks/stores/useLyricsStore";
+import useLyricsModalStore from "@/hooks/stores/useLyricsModalStore";
 
 interface DesktopPlayerProps {
   song: Song;
@@ -52,12 +53,22 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
     toggleMobilePlayer,
   }) => {
     const { toggleLyrics } = useLyricsStore();
+    const { openModal } = useLyricsModalStore();
+
+    // PCサイズ（md: 768px以上）では歌詞モーダル、それ以下ではモバイルプレイヤーを開く
+    const handleMediaClick = () => {
+      if (window.innerWidth >= 768) {
+        openModal();
+      } else {
+        toggleMobilePlayer();
+      }
+    };
 
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 h-full bg-[#121212] border-t border-[#303030] rounded-t-xl">
         <div className="flex w-full justify-start px-4">
           <div className="flex items-center gap-x-4">
-            <MediaItem data={song} onClick={toggleMobilePlayer} />
+            <MediaItem data={song} onClick={handleMediaClick} />
           </div>
         </div>
 
@@ -124,7 +135,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 DesktopPlayer.displayName = "DesktopPlayer";
