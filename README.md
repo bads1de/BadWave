@@ -1,10 +1,41 @@
+<div align="center">
+
 # BadWave (Web)
 
-**BadWave** は、Next.js 16 (App Router) を採用した、モダンかつ高機能な音楽ストリーミング Web アプリケーションです。「ただ音楽を聴くだけ」ではなく、視覚的な没入感（Pulse Mode）や、高度なオーディオエフェクト（8D Audio, Nightcore）など、Web 技術の限界に挑戦したリッチなユーザー体験を提供します。
+**Next.js 16 (App Router) を採用した、モダンかつ高機能な音楽ストリーミング Web アプリケーション**
+
+<p align="center">
+  <a href="https://nextjs.org/">
+    <img src="https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  </a>
+  <a href="https://supabase.com/">
+    <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase">
+  </a>
+  <a href="https://tanstack.com/query/latest">
+    <img src="https://img.shields.io/badge/React_Query-FF4154?style=for-the-badge&logo=react-query&logoColor=white" alt="TanStack Query">
+  </a>
+</p>
+
+<br>
+
+<img src="public/fcf430a869c666199aedf5deeaa0e6c5.jpg" width="100%" alt="BadWave Screenshot" style="border-radius: 10px;">
+
+<br>
+<br>
+
+「ただ音楽を聴くだけ」ではなく、視覚的な没入感 (**Pulse Mode**) や、<br>高度なオーディオエフェクト (**8D Audio**, **Nightcore**) など、**Web 技術の限界に挑戦**したリッチなユーザー体験を提供します。
+
+</div>
+
+---
 
 ## 🚀 プロジェクトのハイライト
-
-採用担当者・エンジニアの方へ向けた、本プロジェクトの技術的なこだわりポイントです。
 
 ### 1. 高度なオーディオエンジンとエフェクト
 
