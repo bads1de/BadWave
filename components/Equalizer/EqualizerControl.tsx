@@ -18,7 +18,15 @@ import {
  * イコライザーコントロール メイン UI
  * プリセット選択、ON/OFF切り替え、6バンドスライダー、周波数カーブを含む
  */
-const EqualizerControl: React.FC = () => {
+interface EqualizerControlProps {
+  className?: string;
+}
+
+/**
+ * イコライザーコントロール メイン UI
+ * プリセット選択、ON/OFF切り替え、6バンドスライダー、周波数カーブを含む
+ */
+const EqualizerControl: React.FC<EqualizerControlProps> = ({ className }) => {
   const {
     isEnabled,
     bands,
@@ -38,7 +46,9 @@ const EqualizerControl: React.FC = () => {
   const accentTo = hasHydrated ? colorScheme.colors.accentTo : "#ec4899";
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-[#1a1a1a] rounded-xl border border-[#333] min-w-[320px]">
+    <div
+      className={`flex flex-col gap-4 p-4 bg-[#1a1a1a] rounded-xl border border-[#333] min-w-[320px] ${className}`}
+    >
       {/* ヘッダー: ON/OFF と プリセット選択 */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">

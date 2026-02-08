@@ -7,8 +7,7 @@ import SeekBar from "./Seekbar";
 import AddPlaylist from "../Playlist/AddPlaylist";
 import CommonControls from "./CommonControls";
 import VolumeControl from "./VolumeControl";
-import EqualizerButton from "./EqualizerButton";
-import PlaybackSpeedButton from "./PlaybackSpeedButton";
+import AudioSettingsButton from "./AudioSettingsButton";
 import useLyricsStore from "@/hooks/stores/useLyricsStore";
 import useLyricsModalStore from "@/hooks/stores/useLyricsModalStore";
 
@@ -128,8 +127,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
             >
               <Mic2 size={20} />
             </button>
-            <PlaybackSpeedButton />
-            <EqualizerButton />
+            <AudioSettingsButton />
             <VolumeControl />
           </div>
         </div>
