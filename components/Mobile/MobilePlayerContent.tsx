@@ -165,7 +165,7 @@ const MobilePlayerContent = React.memo(
           {/* Title, Artist */}
           <div className="space-y-2 text-center">
             <div className="inline-block px-2 py-0.5 bg-theme-500/20 border border-theme-500/40 text-[8px] text-theme-300 mb-2 uppercase tracking-widest">
-               Track_ID: {song.id.slice(0, 8)}
+               Track_ID: {String(song.id).slice(0, 8)}
             </div>
             <Link href={`/songs/${song.id}`}>
               <h1 className="text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)] hover:text-theme-300 transition-colors">

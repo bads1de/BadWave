@@ -71,9 +71,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
     >
       <div
         className={twMerge(
-          "flex flex-col gap-y-3 bg-[#0a0a0f]/95 h-full p-3 transition-all duration-700 backdrop-blur-3xl border-r border-theme-500/20 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative",
-          isCollapsed ? "w-24" : "w-80",
-          "hidden md:flex font-mono"
+          "flex flex-col gap-y-3 bg-[#0a0a0f]/95 h-full p-3 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] backdrop-blur-3xl border-r border-theme-500/20 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative z-50",
+          isCollapsed ? "w-[100px]" : "w-[320px]",
+          "hidden md:flex font-mono shrink-0"
         )}
       >
         {/* スキャンライン / グリッド装飾 */}
