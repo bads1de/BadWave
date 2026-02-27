@@ -2,6 +2,7 @@ import React from "react";
 import { FaRandom } from "react-icons/fa";
 import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import { BsRepeat1 } from "react-icons/bs";
+import { twMerge } from "tailwind-merge";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 
 interface CommonControlsProps {
@@ -32,98 +33,85 @@ const CommonControls: React.FC<CommonControlsProps> = ({
   const { getColorScheme, hasHydrated } = useColorSchemeStore();
   const colorScheme = getColorScheme();
 
-  // カラースキーマからの色取得（ハイドレーション前はデフォルト値を使用）
-  const accentFrom = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
-  const primary = hasHydrated ? colorScheme.colors.primary : "#4c1d95";
-  const glowColor = hasHydrated
-    ? `rgba(${colorScheme.colors.glow}, 0.8)`
-    : "rgba(139, 92, 246, 0.8)";
-
-  const shuffleSize = isMobile ? 22 : 20;
-  const stepSize = isMobile ? 28 : 30;
-  const repeatSize = isMobile ? 28 : 25;
-  const playSize = isMobile ? 28 : 30;
-
-  const shuffleClass = isMobile
-    ? `cursor-pointer transition ${
-        isShuffling ? "text-gray-400" : "text-gray-400"
-      }`
-    : `cursor-pointer transition-all duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] ${
-        isShuffling
-          ? "text-neutral-400 hover:text-white"
-          : "text-neutral-400 hover:text-white"
-      }`;
-
-  const shuffleStyle = isShuffling ? { color: "var(--primary-color)" } : {};
-
-  const stepBackClass = isMobile
-    ? "text-gray-400 cursor-pointer hover:text-white transition"
-    : "text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300";
-
-  const playButtonClass = isMobile
-    ? "flex items-center justify-center h-16 w-16 rounded-full cursor-pointer shadow-lg transition-colors"
-    : "flex items-center justify-center h-9 w-9 rounded-full p-1 cursor-pointer group transition-all duration-300";
-
-  const playButtonStyle = isMobile
-    ? { backgroundColor: "var(--primary-color)" }
-    : {
-        background: `linear-gradient(135deg, ${primary}, ${accentFrom})`,
-        boxShadow: `0 0 12px ${glowColor}`,
-      };
-
-  const playIconClass = isMobile
-    ? "text-white"
-    : "text-white group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]";
-
-  const stepForwardClass = stepBackClass;
-
-  const repeatClass = isMobile
-    ? `cursor-pointer transition ${
-        isRepeating ? "text-gray-400" : "text-gray-400"
-      }`
-    : `cursor-pointer transition-all duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] ${
-        isRepeating
-          ? "text-neutral-400 hover:text-white"
-          : "text-neutral-400 hover:text-white"
-      }`;
-
-  const repeatStyle = isRepeating ? { color: "var(--primary-color)" } : {};
+  // カラースキーマからの色取得
+  const theme500 = hasHydrated ? `rgba(${colorScheme.colors.theme500}, 1)` : "#06b6d4";
+  const glowColor = hasHydrated ? `rgba(${colorScheme.colors.glow}, 0.6)` : "rgba(0, 255, 255, 0.6)";
 
   return (
     <div
-      className={`flex items-center ${
-        isMobile ? "justify-between" : "gap-x-8"
-      }`}
+      className={twMerge(
+        "flex items-center font-mono",
+        isMobile ? "justify-between w-full" : "gap-x-10"
+      )}
     >
-      <FaRandom
-        onClick={toggleShuffle}
-        size={shuffleSize}
-        className={shuffleClass}
-        style={shuffleStyle}
-      />
+      <div className="group relative">
+        <FaRandom
+          onClick={toggleShuffle}
+          size={isMobile ? 22 : 18}
+          className={twMerge(
+            "cursor-pointer transition-all duration-300",
+            isShuffling 
+              ? "text-white drop-shadow-[0_0_8px_rgba(var(--theme-500),0.8)]" 
+              : "text-theme-500/40 hover:text-theme-300"
+          )}
+        />
+        {isShuffling && (
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-theme-500 rounded-full animate-pulse" />
+        )}
+      </div>
+
       <AiFillStepBackward
         onClick={onPlayPrevious}
-        size={stepSize}
-        className={stepBackClass}
+        size={isMobile ? 32 : 28}
+        className="text-theme-500/60 cursor-pointer hover:text-white transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]"
       />
+
       <div
         onClick={handlePlay}
-        className={playButtonClass}
-        style={playButtonStyle}
+        className={twMerge(
+          "relative flex items-center justify-center cursor-pointer group/play transition-all duration-500",
+          isMobile ? "h-20 w-20" : "h-12 w-12"
+        )}
       >
-        <Icon size={playSize} className={playIconClass} />
+        {/* 背景装飾サークル */}
+        <div className="absolute inset-0 border border-theme-500/20 rounded-full group-hover/play:border-theme-500/40 animate-[spin_8s_linear_infinite]" />
+        <div className="absolute inset-1 border-2 border-theme-500/40 rounded-full group-hover/play:border-theme-500/80 transition-colors" />
+        
+        <div className={twMerge(
+          "flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(var(--theme-500),0.3)] group-hover/play:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] group-hover/play:scale-110 cyber-glitch",
+          isMobile ? "h-16 w-16 bg-theme-500" : "h-10 w-10 bg-theme-500/20 border border-theme-500/60"
+        )}>
+          <Icon 
+            size={isMobile ? 36 : 24} 
+            className={twMerge(
+              "transition-all duration-300",
+              isMobile ? "text-[#0a0a0f]" : "text-white group-hover/play:drop-shadow-[0_0_8px_white]"
+            )} 
+          />
+        </div>
       </div>
+
       <AiFillStepForward
         onClick={onPlayNext}
-        size={stepSize}
-        className={stepForwardClass}
+        size={isMobile ? 32 : 28}
+        className="text-theme-500/60 cursor-pointer hover:text-white transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]"
       />
-      <BsRepeat1
-        onClick={toggleRepeat}
-        size={repeatSize}
-        className={repeatClass}
-        style={repeatStyle}
-      />
+
+      <div className="group relative">
+        <BsRepeat1
+          onClick={toggleRepeat}
+          size={isMobile ? 28 : 22}
+          className={twMerge(
+            "cursor-pointer transition-all duration-300",
+            isRepeating 
+              ? "text-white drop-shadow-[0_0_8px_rgba(var(--theme-500),0.8)]" 
+              : "text-theme-500/40 hover:text-theme-300"
+          )}
+        />
+        {isRepeating && (
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-theme-500 rounded-full animate-pulse" />
+        )}
+      </div>
     </div>
   );
 };

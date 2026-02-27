@@ -25,22 +25,27 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ songId, className }) => {
         `
         group
         relative
-        rounded-full
+        rounded-none
         p-2
+        bg-red-500/5
+        border
+        border-red-500/20
+        hover:border-red-500/60
         hover:bg-red-500/10
         transition-all
-        duration-300
+        duration-500
         focus:outline-none
+        cyber-glitch
       `,
         className
       )}
       onClick={handleDelete}
       disabled={deleteMutation.isPending}
     >
-      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500/10 to-red-900/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+      <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-red-500/0 group-hover:border-red-500 transition-colors" />
       <HiTrash
-        className="text-neutral-400 group-hover:text-red-500 transition-colors duration-300 transform group-hover:scale-110"
-        size={20}
+        className="text-red-500/40 group-hover:text-red-500 transition-colors duration-300 drop-shadow-[0_0_5px_rgba(239,68,68,0.5)]"
+        size={18}
       />
     </button>
   );

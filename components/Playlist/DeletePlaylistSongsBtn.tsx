@@ -32,12 +32,14 @@ const DeletePlaylistSongsBtn: React.FC<DeletePlaylistSongsBtnProps> = ({
 
   return (
     <button
-      className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-red-500 hover:filter hover:drop-shadow-[0_0_8px_rgba(255,0,0,0.8)] transition-all duration-300"
+      className="w-full flex items-center text-red-500/60 cursor-pointer hover:text-red-500 transition-all duration-500 font-mono uppercase tracking-widest group cyber-glitch"
       disabled={deletePlaylistSong.isPending}
       onClick={handleDeletePlaylistSongs}
     >
-      <RiDeleteBin5Line size={28} className="mr-2" />
-      {showText && <span className="text-sm font-semibold">削除</span>}
+      <div className="p-2 border border-red-500/20 group-hover:border-red-500 transition-colors mr-3">
+        <RiDeleteBin5Line size={18} />
+      </div>
+      {showText && <span className="text-[10px] font-black tracking-widest">// PURGE_ENTRY</span>}
     </button>
   );
 };

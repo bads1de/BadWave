@@ -47,28 +47,34 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   };
 
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
+    <div className={`flex items-center gap-x-4 font-mono ${className}`}>
       <button
         onClick={() => handleTabChange("songs")}
-        className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch ${
           activeTab === "songs"
-            ? "bg-theme-600/90 text-white shadow-md shadow-theme-900/20"
-            : "bg-neutral-800/80 text-neutral-300 hover:bg-neutral-700/80 hover:text-white"
+            ? "bg-theme-500/20 text-white border border-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
+            : "bg-theme-500/5 border border-theme-500/10 text-theme-500/60 hover:text-white hover:border-theme-500/40"
         }`}
       >
-        <MdLibraryMusic size={18} />
-        <span>曲</span>
+        {activeTab === "songs" && (
+           <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white" />
+        )}
+        <MdLibraryMusic size={14} className={activeTab === "songs" ? "text-theme-500" : ""} />
+        <span>[ AUDIO_NODES ]</span>
       </button>
       <button
         onClick={() => handleTabChange("playlists")}
-        className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch ${
           activeTab === "playlists"
-            ? "bg-theme-600/90 text-white shadow-md shadow-theme-900/20"
-            : "bg-neutral-800/80 text-neutral-300 hover:bg-neutral-700/80 hover:text-white"
+            ? "bg-theme-500/20 text-white border border-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
+            : "bg-theme-500/5 border border-theme-500/10 text-theme-500/60 hover:text-white hover:border-theme-500/40"
         }`}
       >
-        <RiPlayListFill size={18} />
-        <span>プレイリスト</span>
+        {activeTab === "playlists" && (
+           <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white" />
+        )}
+        <RiPlayListFill size={14} className={activeTab === "playlists" ? "text-theme-500" : ""} />
+        <span>[ COLLECTION_DATA ]</span>
       </button>
     </div>
   );

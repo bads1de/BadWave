@@ -37,14 +37,16 @@ const LikeButton: React.FC<LikeButtonProps> = memo(
     return (
       <button
         onClick={handleLike}
-        className="text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
+        className="text-theme-500/60 cursor-pointer hover:text-white transition-all duration-500 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)] font-mono uppercase tracking-widest cyber-glitch outline-none group"
         aria-label={isLiked ? "Remove like" : "Add like"}
         disabled={likeMutation.isPending}
       >
-        <div className="flex items-center">
-          <Icon color={isLiked ? "#FF69B4" : "white"} size={size || 25} />
+        <div className="flex items-center gap-2">
+          <Icon className={isLiked ? "text-theme-500 animate-pulse" : "text-theme-500/40 group-hover:text-theme-500"} size={size || 22} />
           {showText && (
-            <span className="ml-2">{isLiked ? "いいね済み" : "いいね"}</span>
+            <span className="text-[10px] font-black">
+              {isLiked ? "// AFFINITY_SYNCED" : "// INITIALIZE_SYNC"}
+            </span>
           )}
         </div>
       </button>

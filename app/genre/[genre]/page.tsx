@@ -16,9 +16,11 @@ const page = async (props: genreProps) => {
   const songs = await getSongsByGenre(decodedGenre);
 
   return (
-    <div className="bg-[#0d0d0d] rounded-lg w-full h-full overflow-hidden overflow-y-auto custom-scrollbar">
+    <div className="bg-[#0a0a0f] h-full w-full overflow-hidden overflow-y-auto custom-scrollbar font-mono">
       <GenreHeader genre={decodedGenre} />
-      <GenreContent songs={songs} />
+      <div className="max-w-7xl mx-auto py-10">
+        <GenreContent songs={songs} />
+      </div>
     </div>
   );
 };

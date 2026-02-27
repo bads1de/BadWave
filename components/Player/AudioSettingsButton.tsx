@@ -57,42 +57,58 @@ const AudioSettingsButton: React.FC = () => {
         side="top"
         align="center"
         sideOffset={10}
-        className="w-[360px] p-0 bg-[#1a1a1a] border-[#333333] overflow-hidden"
+        className="w-[380px] p-0 bg-[#0a0a0f]/95 backdrop-blur-xl border border-theme-500/40 shadow-[0_0_40px_rgba(0,0,0,0.8),0_0_20px_rgba(var(--theme-500),0.1)] overflow-hidden rounded-none font-mono"
       >
+        {/* HUD装飾コーナー */}
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-theme-500/40 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-theme-500/40 pointer-events-none" />
+
         {/* タブヘッダー */}
-        <div className="flex border-b border-[#333333]">
+        <div className="flex border-b border-theme-500/20 bg-theme-500/5 relative z-10">
           <button
             onClick={() => setActiveTab("effects")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch ${
               activeTab === "effects"
-                ? "bg-[#252525] text-white border-b-2 border-theme-500"
-                : "text-neutral-400 hover:text-white hover:bg-[#252525]/50"
+                ? "text-white bg-theme-500/20"
+                : "text-theme-500/40 hover:text-theme-300 hover:bg-theme-500/5"
             }`}
           >
-            <Music2 size={14} />
-            <span>Effects & Speed</span>
+            {activeTab === "effects" && (
+               <div className="absolute top-0 left-0 w-full h-0.5 bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.8)]" />
+            )}
+            <Music2 size={12} className={activeTab === "effects" ? "text-theme-500" : ""} />
+            <span>EFFECTS_LOG</span>
           </button>
           <button
             onClick={() => setActiveTab("equalizer")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch ${
               activeTab === "equalizer"
-                ? "bg-[#252525] text-white border-b-2 border-theme-500"
-                : "text-neutral-400 hover:text-white hover:bg-[#252525]/50"
+                ? "text-white bg-theme-500/20"
+                : "text-theme-500/40 hover:text-theme-300 hover:bg-theme-500/5"
             }`}
           >
-            <SlidersVertical size={14} />
-            <span>Equalizer</span>
+            {activeTab === "equalizer" && (
+               <div className="absolute top-0 left-0 w-full h-0.5 bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.8)]" />
+            )}
+            <SlidersVertical size={12} className={activeTab === "equalizer" ? "text-theme-500" : ""} />
+            <span>FREQ_CONFIG</span>
           </button>
         </div>
 
         {/* コンテンツエリア */}
-        <div className="p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+        <div className="p-6 max-h-[450px] overflow-y-auto custom-scrollbar relative z-10">
+          <div className="mb-4 text-[8px] text-theme-500/40 tracking-[0.4em] uppercase border-b border-theme-500/10 pb-1">
+             // INITIALIZING_SIGNAL_PROCESSOR_v4.2
+          </div>
           {activeTab === "effects" ? (
             <SpeedAndEffectsControl />
           ) : (
             <EqualizerControl className="!bg-transparent !border-none !rounded-none !p-0 !min-w-0 shadow-none" />
           )}
         </div>
+        
+        {/* スキャンライン的な横線 */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
       </PopoverContent>
     </Popover>
   );

@@ -14,7 +14,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-10 items-center justify-center rounded-md bg-[#202225] p-1",
+      "inline-flex h-12 items-center justify-center rounded-none bg-[#0a0a0f] p-1 border border-theme-500/20 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] font-mono",
       className
     )}
     {...props}
@@ -29,7 +29,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium  transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-[#36393f] data-[state=active]:text-white",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-none px-6 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-theme-500/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-theme-500 data-[state=active]:shadow-[0_0_15px_rgba(var(--theme-500),0.3)] cyber-glitch",
       className
     )}
     {...props}

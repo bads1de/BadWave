@@ -77,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav
-      className={cn("flex items-center justify-center gap-1", className)}
+      className={cn("flex items-center justify-center gap-2 font-mono", className)}
       aria-label="Pagination"
     >
       {/* 前へボタン */}
@@ -85,60 +85,60 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 0}
         className={cn(
-          "flex items-center justify-center w-10 h-10 rounded-lg transition-colors",
+          "flex items-center justify-center w-10 h-10 border transition-all duration-300",
           currentPage === 0
-            ? "text-neutral-600 cursor-not-allowed"
-            : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+            ? "border-theme-500/10 text-theme-900 cursor-not-allowed"
+            : "border-theme-500/30 text-theme-500 hover:text-white hover:border-theme-500 hover:bg-theme-500/10 hover:shadow-[0_0_10px_rgba(var(--theme-500),0.3)] cyber-glitch"
         )}
         aria-label="Previous page"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={18} />
       </button>
 
       {/* ページ番号 */}
-      {pageNumbers.map((pageNum, index) =>
-        pageNum === "..." ? (
-          <span
-            key={`dots-${index}`}
-            className="flex items-center justify-center w-10 h-10 text-neutral-500"
-          >
-            ...
-          </span>
-        ) : (
-          <button
-            key={pageNum}
-            onClick={() => onPageChange(pageNum)}
-            className={cn(
-              "flex items-center justify-center min-w-10 h-10 px-3 rounded-lg font-medium transition-colors",
-              pageNum === currentPage
-                ? "text-white shadow-md shadow-black/20"
-                : "text-neutral-400 hover:text-white hover:bg-neutral-800"
-            )}
-            style={
-              pageNum === currentPage
-                ? { backgroundColor: theme.colors.accentFrom }
-                : undefined
-            }
-            aria-current={pageNum === currentPage ? "page" : undefined}
-          >
-            {pageNum + 1}
-          </button>
-        )
-      )}
+      <div className="flex items-center gap-1.5">
+        {pageNumbers.map((pageNum, index) =>
+          pageNum === "..." ? (
+            <span
+              key={`dots-${index}`}
+              className="flex items-center justify-center w-8 h-10 text-theme-900 font-black"
+            >
+              //
+            </span>
+          ) : (
+            <button
+              key={pageNum}
+              onClick={() => onPageChange(pageNum)}
+              className={cn(
+                "flex items-center justify-center min-w-10 h-10 px-2 border transition-all duration-500 relative overflow-hidden text-xs font-black uppercase",
+                pageNum === currentPage
+                  ? "bg-theme-500/20 border-theme-500 text-white shadow-[0_0_15px_rgba(var(--theme-500),0.4)] cyber-glitch"
+                  : "bg-transparent border-theme-500/10 text-theme-500/40 hover:text-theme-300 hover:border-theme-500/40 hover:bg-theme-500/5"
+              )}
+              aria-current={pageNum === currentPage ? "page" : undefined}
+            >
+              {pageNum === currentPage && (
+                 <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-white" />
+              )}
+              {(pageNum + 1).toString().padStart(2, '0')}
+            </button>
+          )
+        )}
+      </div>
 
       {/* 次へボタン */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages - 1}
         className={cn(
-          "flex items-center justify-center w-10 h-10 rounded-lg transition-colors",
+          "flex items-center justify-center w-10 h-10 border transition-all duration-300",
           currentPage >= totalPages - 1
-            ? "text-neutral-600 cursor-not-allowed"
-            : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+            ? "border-theme-500/10 text-theme-900 cursor-not-allowed"
+            : "border-theme-500/30 text-theme-500 hover:text-white hover:border-theme-500 hover:bg-theme-500/10 hover:shadow-[0_0_10px_rgba(var(--theme-500),0.3)] cyber-glitch"
         )}
         aria-label="Next page"
       >
-        <ChevronRight size={20} />
+        <ChevronRight size={18} />
       </button>
     </nav>
   );

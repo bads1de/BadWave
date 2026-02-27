@@ -42,18 +42,20 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
 
   if (isCollapsed) {
     return (
-      <div className="flex flex-col gap-3 px-1 pt-4">
+      <div className="flex flex-col gap-4 px-2 pt-6 font-mono">
         <Hover
           contentSize="w-auto px-3 py-2"
           side="right"
-          description="プレイリストを作成"
+          description="[ CREATE_PLAYLIST ]"
         >
-          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <button 
+            onClick={() => openModal("playlist")}
+            className="w-full aspect-square bg-[#0a0a0f] border border-theme-500/30 hover:border-theme-500 hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-500 flex items-center justify-center group relative overflow-hidden cyber-glitch"
+          >
+            <div className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <AiOutlineBars
-              className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
-              size={20}
-              onClick={() => openModal("playlist")}
+              className="text-theme-500/60 group-hover:text-white transition-all duration-300 transform group-hover:scale-110 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
+              size={24}
             />
           </button>
         </Hover>
@@ -61,14 +63,16 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
         <Hover
           contentSize="w-auto px-3 py-2"
           side="right"
-          description="曲を追加"
+          description="[ INGEST_TRACK ]"
         >
-          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <button 
+            onClick={() => openModal("music")}
+            className="w-full aspect-square bg-[#0a0a0f] border border-theme-500/30 hover:border-theme-500 hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-500 flex items-center justify-center group relative overflow-hidden cyber-glitch"
+          >
+            <div className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <AiOutlinePlus
-              className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
-              size={20}
-              onClick={() => openModal("music")}
+              className="text-theme-500/60 group-hover:text-white transition-all duration-300 transform group-hover:scale-110 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
+              size={24}
             />
           </button>
         </Hover>
@@ -76,14 +80,16 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
         <Hover
           contentSize="w-auto px-3 py-2"
           side="right"
-          description="スポットライトを作成"
+          description="[ SYNC_SPOTLIGHT ]"
         >
-          <button className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          <button 
+            onClick={() => openModal("spotlight")}
+            className="w-full aspect-square bg-[#0a0a0f] border border-theme-500/30 hover:border-theme-500 hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-500 flex items-center justify-center group relative overflow-hidden cyber-glitch"
+          >
+            <div className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <GiMicrophone
-              className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
-              size={20}
-              onClick={() => openModal("spotlight")}
+              className="text-theme-500/60 group-hover:text-white transition-all duration-300 transform group-hover:scale-110 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
+              size={24}
             />
           </button>
         </Hover>
@@ -91,16 +97,16 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
         <Hover
           contentSize="w-auto px-3 py-2"
           side="right"
-          description="Pulseを作成"
+          description="[ INITIALIZE_PULSE ]"
         >
           <button
             onClick={() => openModal("pulse")}
-            className="w-full aspect-square rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 flex items-center justify-center group relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
+            className="w-full aspect-square bg-[#0a0a0f] border border-theme-500/30 hover:border-theme-500 hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-500 flex items-center justify-center group relative overflow-hidden cyber-glitch"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+            <div className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <RiPulseLine
-              className="text-neutral-400 group-hover:text-white transition-all duration-300 transform group-hover:scale-110"
-              size={20}
+              className="text-theme-500/60 group-hover:text-white transition-all duration-300 transform group-hover:scale-110 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
+              size={24}
             />
           </button>
         </Hover>
@@ -109,95 +115,47 @@ const Studio: React.FC<StudioProps> = ({ isCollapsed }) => {
   }
 
   return (
-    <div className="flex flex-col gap-4 px-3 pt-10">
-      <div className="grid grid-cols-1 gap-3">
-        <button
-          onClick={() => openModal("playlist")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-          <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
-              <RiPlayListFill
-                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
-                size={24}
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-300">
-                プレイリストを作成
-              </span>
-              <span className="text-xs text-neutral-400">
-                お気に入りの曲をまとめよう
-              </span>
-            </div>
-          </div>
-        </button>
+    <div className="flex flex-col gap-6 px-4 pt-12 font-mono">
+      <div className="flex items-center gap-2 text-[10px] text-theme-500/40 uppercase tracking-[0.4em] mb-2 border-b border-theme-500/10 pb-2">
+         <span>[ STUDIO_TOOLS_v2.0 ]</span>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-4">
+        {[
+          { icon: RiPlayListFill, label: "INIT_PLAYLIST", desc: "ASSEMBLE_COLLECTION", action: "playlist" },
+          { icon: AiOutlinePlus, label: "INGEST_BINARY", desc: "TRANSMIT_NEW_TRACK", action: "music" },
+          { icon: GiMicrophone, label: "SPOTLIGHT_SYNC", desc: "PRIORITY_HIGHLIGHT", action: "spotlight" },
+          { icon: RiPulseLine, label: "PULSE_GEN", desc: "SIGNAL_BROADCAST", action: "pulse" },
+        ].map((item) => (
+          <button
+            key={item.action}
+            onClick={() => openModal(item.action as any)}
+            className="group w-full p-4 bg-[#0a0a0f] border border-theme-500/20 hover:border-theme-500/60 transition-all duration-500 relative overflow-hidden shadow-[inset_0_0_15px_rgba(var(--theme-500),0.05)] hover:shadow-[0_0_20px_rgba(var(--theme-500),0.15)] cyber-glitch"
+          >
+            <div className="absolute inset-0 bg-theme-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            
+            {/* 角の装飾 */}
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-theme-500/40 group-hover:border-theme-500 transition-colors" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-theme-500/40 group-hover:border-theme-500 transition-colors" />
 
-        <button
-          onClick={() => openModal("music")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-          <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
-              <AiOutlinePlus
-                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
-                size={24}
-              />
+            <div className="relative flex items-center gap-4">
+              <div className="p-2.5 bg-theme-500/10 border border-theme-500/20 group-hover:bg-theme-500/30 group-hover:border-theme-500/60 transition-all duration-500">
+                <item.icon
+                  className="text-theme-500 group-hover:text-white transition-all duration-300 transform group-hover:scale-110 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
+                  size={20}
+                />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-black text-theme-300 uppercase tracking-widest group-hover:text-white transition-colors">
+                  // {item.label}
+                </span>
+                <span className="text-[8px] text-theme-500/60 uppercase tracking-tight mt-0.5">
+                  {item.desc}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-300">
-                曲を追加
-              </span>
-              <span className="text-xs text-neutral-400">
-                新しい曲をアップロード
-              </span>
-            </div>
-          </div>
-        </button>
-
-        <button
-          onClick={() => openModal("spotlight")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-          <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
-              <GiMicrophone
-                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
-                size={24}
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-300">
-                スポットライト
-              </span>
-              <span className="text-xs text-neutral-400">Spotlightを共有</span>
-            </div>
-          </div>
-        </button>
-
-        <button
-          onClick={() => openModal("pulse")}
-          className="group w-full p-4 rounded-xl bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-lg border border-white/5 hover:border-theme-500/30 transition-all duration-500 relative overflow-hidden shadow-lg hover:shadow-theme-500/10"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-theme-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-          <div className="relative flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-theme-500/10 group-hover:bg-theme-500/20 transition-all duration-500 shadow-inner">
-              <RiPulseLine
-                className="text-theme-400 group-hover:text-theme-300 transition-all duration-300 transform group-hover:scale-110"
-                size={24}
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-300">
-                Pulse
-              </span>
-              <span className="text-xs text-neutral-400">Pulseを作成</span>
-            </div>
-          </div>
-        </button>
+          </button>
+        ))}
       </div>
     </div>
   );

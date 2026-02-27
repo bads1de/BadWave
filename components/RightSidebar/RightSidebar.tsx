@@ -31,11 +31,18 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ children }) => {
         <div
           className={twMerge(
             "hidden xl:flex w-96 flex-col h-full",
-            "bg-gradient-to-br from-black/95 via-neutral-900/90 to-neutral-900/85",
-            "backdrop-blur-2xl border-l border-white/[0.02] shadow-2xl shadow-black/20",
-            "p-2 transition-all duration-500 z-40"
+            "bg-[#0a0a0f] border-l border-theme-500/20 shadow-[-10px_0_30px_rgba(0,0,0,0.8)]",
+            "p-2 transition-all duration-700 z-40 relative"
           )}
         >
+          {/* 背景装飾 */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+               style={{ 
+                 backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
+                 backgroundSize: '40px 40px'
+               }} 
+          />
+          
           <FullScreenLayout
             song={currentSong!}
             videoPath={song?.video_path}

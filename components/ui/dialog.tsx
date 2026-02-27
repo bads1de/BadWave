@@ -28,22 +28,25 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay />
+    <DialogOverlay className="backdrop-blur-md bg-[#0a0a0f]/80" />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-neutral-800 bg-black p-8 shadow-2xl duration-200",
-        "text-white",
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-6 border border-theme-500/30 bg-[#0a0a0f]/95 p-10 shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_30px_rgba(var(--theme-500),0.1)] duration-500",
+        "text-white font-mono",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
-        "sm:rounded-2xl",
-        "after:absolute after:inset-0 after:rounded-2xl after:shadow-[0_0_15px_rgba(255,255,255,0.07)] after:pointer-events-none",
+        "rounded-none cyber-glitch",
         className
       )}
       {...props}
     >
+      {/* HUD装飾コーナー */}
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-theme-500/40" />
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-theme-500/40" />
+      
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 disabled:pointer-events-none">
-        <X className="h-4 w-4" />
+      <DialogPrimitive.Close className="absolute right-6 top-6 border border-theme-500/30 p-2 opacity-70 transition-all hover:opacity-100 hover:bg-theme-500/20 hover:border-theme-500 focus:outline-none group">
+        <X className="h-4 w-4 text-theme-500 group-hover:text-white transition-colors" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
@@ -57,7 +60,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col space-y-2 text-center sm:text-left",
+      "flex flex-col space-y-2 text-left border-l-4 border-theme-500 pl-4 mb-4",
       className
     )}
     {...props}

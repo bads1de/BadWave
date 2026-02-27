@@ -23,30 +23,35 @@ const GenreContent: React.FC<Props> = memo(({ songs }) => {
     [onPlay]
   );
 
-  if (songs.length === 0) {
-    return (
-      <div className="flex flex-col gap-y-2 w-full px-6 text-neutral-400">
-        <h1>該当の曲が見つかりませんでした</h1>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-y-2 w-full p-6">
-      {songs.map((song) => (
-        <div key={song.id} className="flex items-center gap-x-4 w-full">
-          <div className="flex-1 min-w-0">
-            <SongList data={song} onClick={handlePlay} />
+      if (songs.length === 0) {
+        return (
+          <div className="flex flex-col gap-y-2 w-full px-8 py-20 text-theme-500 font-mono tracking-widest uppercase">
+            [ ! ] NO_DATA_DETECTED_IN_SECTOR_GENRE
           </div>
-          {user?.id && (
-            <div className="flex items-center gap-x-2">
-              <SongOptionsPopover song={song} />
+        );
+      }
+  
+      return (
+        <div className="flex flex-col gap-y-4 w-full px-8 font-mono">
+          <div className="mb-4 flex items-center justify-between text-[10px] text-theme-500/40 tracking-[0.3em] uppercase">
+             <span>// SECTOR_SCAN_RESULTS</span>
+             <span>NODES_IDENTIFIED: {songs.length}</span>
+          </div>
+          {songs.map((song) => (
+            <div key={song.id} className="flex items-center gap-x-4 w-full">
+              <div className="flex-1 min-w-0">
+                <SongList data={song} onClick={handlePlay} />
+              </div>
+              {user?.id && (
+                <div className="flex items-center gap-x-2">
+                  <SongOptionsPopover song={song} />
+                </div>
+              )}
             </div>
-          )}
+          ))}
         </div>
-      ))}
-    </div>
-  );
+      );
+  
 });
 
 // displayName を設定

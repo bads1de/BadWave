@@ -75,24 +75,29 @@ const AddPlaylist: React.FC<PlaylistMenuProps> = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300">
-        {children || <RiPlayListAddFill size={20} />}
+      <DropdownMenuTrigger className="text-theme-500 cursor-pointer hover:text-white transition-all duration-300 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)] cyber-glitch outline-none group">
+        <div className="p-2 border border-theme-500/20 group-hover:border-theme-500/60 bg-theme-500/5 group-hover:bg-theme-500/20 transition-all">
+          {children || <RiPlayListAddFill size={20} />}
+        </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent side="top" align="center" className="font-mono">
+        <div className="px-3 py-2 text-[8px] text-theme-500/40 border-b border-theme-500/10 mb-1 tracking-widest uppercase">
+           // SELECT_TARGET_COLLECTION
+        </div>
         {playlists.length === 0 ? (
-          <DropdownMenuItem>プレイリストを作成しましょう！</DropdownMenuItem>
+          <DropdownMenuItem className="text-theme-900">[ ! ] NO_PLAYLISTS_FOUND</DropdownMenuItem>
         ) : (
           playlists.map((playlist) => (
             <DropdownMenuItem
               key={playlist.id}
               onClick={() => handleAddToPlaylist(playlist.id)}
-              className="flex items-center justify-between"
+              className="flex items-center justify-between group/item"
             >
               <div className="flex items-center">
-                <RiPlayListFill size={15} className="mr-1" />
+                <RiPlayListFill size={14} className="mr-3 text-theme-500/60 group-hover/item:text-theme-500" />
                 <span>{playlist.title}</span>
               </div>
-              {isInPlaylist[playlist.id] && <span className="ml-2">✓</span>}
+              {isInPlaylist[playlist.id] && <span className="ml-2 text-theme-500 font-bold">SCAN_OK</span>}
             </DropdownMenuItem>
           ))
         )}

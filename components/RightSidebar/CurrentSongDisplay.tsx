@@ -28,77 +28,76 @@ const CurrentSongDisplay: React.FC<CurrentSongDisplayProps> = React.memo(
     const hasMoreGenres = tags.length > MAX_VISIBLE_TAGS;
 
     return (
-      <div className="relative w-full h-full group">
+      <div className="relative w-full h-full group font-mono">
         {song.video_path ? (
           <video
             src={videoPath!}
             autoPlay
             loop
             muted
-            className="z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="z-0 h-full w-full object-cover transition-all duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-40"
           />
         ) : (
           <Image
             src={imagePath || "/images/loading.jpg"}
             alt="Song Image"
             fill
-            className="z-0 object-cover transition-transform duration-700 group-hover:scale-105"
+            className="z-0 object-cover transition-all duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-40"
             unoptimized
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/90 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 pointer-events-none" />
+        
+        {/* 背景装飾 */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/40 via-transparent to-[#0a0a0f]" />
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
 
-        {/* Current Song Info */}
-        <div className="absolute bottom-28 left-0 right-0 px-6 pb-2 flex flex-col justify-end">
-          <div className="mb-4">
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1 drop-shadow-md">
-              <Link
-                className="cursor-pointer hover:underline decoration-2 underline-offset-4 decoration-white/50"
-                href={`/songs/${song.id}`}
-              >
+        {/* Current Song Info (HUD Style) */}
+        <div className="absolute bottom-28 left-0 right-0 px-6 flex flex-col justify-end space-y-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-[8px] text-theme-500 tracking-[0.5em] uppercase animate-pulse">
+               <span className="w-1.5 h-1.5 bg-theme-500 rounded-full" />
+               [ LIVE_STREAM_DATA ]
+            </div>
+            <h1 className="text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)] cyber-glitch">
+              <Link href={`/songs/${song.id}`}>
                 <ScrollingText text={song.title} />
               </Link>
             </h1>
-            <p className="text-neutral-300 text-lg font-medium drop-shadow-sm flex items-center gap-2">
-              <span className="opacity-80">by</span>
-              <span className="text-white">{song.author}</span>
+            <p className="text-theme-400 text-lg uppercase tracking-widest border-l-2 border-theme-500 pl-3">
+              // AUTH: {song.author}
             </p>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center gap-2 text-sm">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
               {visibleGenres.map((genre, index) => (
                 <Link
                   key={index}
                   href={`/genre/${genre}`}
-                  className="bg-white/10 backdrop-blur-sm border border-white/5 px-3 py-1 rounded-full text-neutral-200 hover:bg-white/20 hover:text-white transition-all shadow-sm"
+                  className="bg-theme-500/5 border border-theme-500/20 px-3 py-1 text-[10px] text-theme-400 font-bold uppercase tracking-widest hover:bg-theme-500/20 hover:border-theme-500/40 transition-all shadow-[inset_0_0_5px_rgba(var(--theme-500),0.1)]"
                 >
-                  {genre}
+                  # {genre}
                 </Link>
               ))}
               {hasMoreGenres && !showAllGenres && (
                 <button
                   onClick={() => setShowAllGenres(true)}
-                  className="flex items-center justify-center bg-white/10 backdrop-blur-sm border border-white/5 px-2 py-1 h-[28px] rounded-full hover:bg-white/20 text-neutral-200 transition-all"
+                  className="bg-theme-500/5 border border-theme-500/20 px-2 py-1 text-[10px] text-theme-500 font-bold uppercase hover:bg-theme-500/20 transition-all"
                 >
-                  <span className="text-xs">
-                    +{tags.length - MAX_VISIBLE_TAGS}
-                  </span>
-                  <BiChevronRight className="ml-0.5" size={16} />
+                  +{tags.length - MAX_VISIBLE_TAGS}
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-5 pt-2 border-t border-white/10">
-              <div className="flex items-center gap-2 text-neutral-300">
-                <CiPlay1 size={20} className="text-white" />
-                <span className="text-sm font-medium">{song.count}</span>
+            <div className="flex items-center gap-6 py-3 border-y border-theme-500/10 text-[10px] font-bold text-theme-500/60 tracking-widest uppercase">
+              <div className="flex items-center gap-2">
+                <CiPlay1 size={14} className="text-theme-500" />
+                <span>LOG: {song.count}</span>
               </div>
-              <div className="flex items-center gap-2 text-neutral-300">
-                <AiOutlineHeart size={20} className="text-white" />
-                <span className="text-sm font-medium">{song.like_count}</span>
+              <div className="flex items-center gap-2">
+                <AiOutlineHeart size={14} className="text-theme-500" />
+                <span>AFF: {song.like_count}</span>
               </div>
             </div>
           </div>

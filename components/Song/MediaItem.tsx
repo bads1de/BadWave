@@ -36,13 +36,14 @@ const MediaItem: React.FC<MediaItemProps> = memo(
           `
         flex
         items-center
-        gap-x-3
+        gap-x-4
         cursor-pointer
-        rounded-xl
+        rounded-none
         p-2
         group
         relative
         animate-fade-in
+        font-mono
         `,
           className
         )}
@@ -51,12 +52,19 @@ const MediaItem: React.FC<MediaItemProps> = memo(
           className={twMerge(
             `
           relative
-          rounded-lg
+          rounded-none
+          h-12
+          w-12
           min-h-[48px]
           min-w-[48px]
-          transition-transform
-          duration-300
-          shadow-md
+          transition-all
+          duration-500
+          border
+          border-theme-500/20
+          group-hover:border-theme-500/60
+          group-hover:shadow-[0_0_15px_rgba(var(--theme-500),0.3)]
+          overflow-hidden
+          cyber-glitch
           `
           )}
         >
@@ -65,16 +73,20 @@ const MediaItem: React.FC<MediaItemProps> = memo(
               fill
               src={data.image_path!}
               alt="MediaItem"
-              className="object-cover rounded-xl transition-all duration-500 group-hover:scale-110"
+              className="object-cover transition-all duration-700 group-hover:scale-125 group-hover:opacity-70"
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
             />
           )}
+          {/* シグナルオーバーレイ */}
+          <div className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
         </div>
         {!isCollapsed && (
-          <div className="flex flex-col gap-y-1 overflow-hidden w-[70%]">
-            <ScrollingText text={data.title} limitCharacters={10} />
-            <p className="text-neutral-400 text-sm truncate group-hover:text-neutral-300 transition-colors">
-              {data.author}
+          <div className="flex flex-col gap-y-0.5 overflow-hidden w-[75%]">
+            <div className="text-theme-300 font-bold text-sm truncate uppercase tracking-tighter group-hover:text-white transition-colors group-hover:drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]">
+              <ScrollingText text={data.title} limitCharacters={15} />
+            </div>
+            <p className="text-[10px] text-theme-500/60 truncate uppercase tracking-widest">
+              // AUTH: {data.author}
             </p>
           </div>
         )}
