@@ -47,7 +47,7 @@ const StatsOverview: React.FC = memo(() => {
   const hourlyData = React.useMemo(() => {
     if (!stats?.hourly_activity) return [];
     const fullData = Array.from({ length: 24 }, (_, i) => ({
-      hour: `${i}時`,
+      hour: `${i.toString().padStart(2, '0')}H`,
       count: 0,
     }));
     stats.hourly_activity.forEach((item) => {
@@ -66,21 +66,21 @@ const StatsOverview: React.FC = memo(() => {
   const streak = stats?.streak ?? 0;
 
   const topGenre = React.useMemo(() => {
-    if (!stats?.genre_stats || stats.genre_stats.length === 0) return "なし";
-    return stats.genre_stats[0].genre;
+    if (!stats?.genre_stats || stats.genre_stats.length === 0) return "NONE";
+    return stats.genre_stats[0].genre.toUpperCase();
   }, [stats?.genre_stats]);
 
   // ジャンルデータをrecharts用に整形
   const genreData = React.useMemo(() => {
     if (!stats?.genre_stats) return [];
     return stats.genre_stats.map((item) => ({
-      name: item.genre,
+      name: item.genre.toUpperCase(),
       value: item.count,
     }));
   }, [stats?.genre_stats]);
 
   // 曜日別データを整形 (0=日曜 ~ 6=土曜)
-  const DAY_NAMES = ["日", "月", "火", "水", "木", "金", "土"];
+  const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const weeklyData = React.useMemo(() => {
     const fullData = DAY_NAMES.map((name) => ({ day: name, count: 0 }));
     if (!stats?.weekly_activity) return fullData;

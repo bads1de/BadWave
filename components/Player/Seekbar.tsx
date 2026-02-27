@@ -22,7 +22,7 @@ const SeekBar: React.FC<SeekBarProps> = ({
   const normalizedValue = (currentTime / duration) * 100;
 
   return (
-    <div className={`relative group w-full ${className}`}>
+    <div className={`relative flex items-center h-6 group w-full ${className}`}>
       <input
         type="range"
         min="0"
@@ -30,7 +30,7 @@ const SeekBar: React.FC<SeekBarProps> = ({
         value={normalizedValue.toString()}
         onChange={handleChange}
         className="
-          w-full h-1.5 cursor-pointer appearance-none bg-transparent relative z-10
+          w-full h-full cursor-pointer appearance-none bg-transparent relative z-10
           [&::-webkit-slider-thumb]:appearance-none
           [&::-webkit-slider-thumb]:w-3
           [&::-webkit-slider-thumb]:h-3
@@ -43,7 +43,7 @@ const SeekBar: React.FC<SeekBarProps> = ({
           group-hover:[&::-webkit-slider-thumb]:scale-125
         "
       />
-      <div className="absolute inset-0 h-1.5 bg-theme-900/40 border border-theme-500/20 pointer-events-none overflow-hidden">
+      <div className="absolute left-0 right-0 h-1.5 bg-theme-900/40 border border-theme-500/20 pointer-events-none overflow-hidden rounded-none">
         <div 
           className="h-full bg-gradient-to-r from-theme-500/60 to-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.5)]" 
           style={{ width: `${normalizedValue}%` }}

@@ -149,24 +149,6 @@ html[data-theme="cyberpunk"] body {
   font-family: var(--font-space-mono);
 }
 
-.range-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  cursor: pointer;
-}
-
-.range-slider::-moz-range-thumb {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  cursor: pointer;
-}
-
 .active-tab {
   color: var(--active-tab-color);
 }
