@@ -54,7 +54,7 @@ const HomeContent: React.FC<HomeClientProps> = ({
         />
         
         {isMobile && !isMobilePlayer && (
-          <section className="relative z-10">
+          <section className="relative z-50">
             <HomeHeader />
           </section>
         )}

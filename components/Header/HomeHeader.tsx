@@ -40,10 +40,10 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
   const handleLogout = async () => {
     try {
       await supabaseClient.auth.signOut();
-      toast.success("ログアウトしました");
+      toast.success("LOGOUT_SUCCESSFUL");
       router.refresh();
     } catch (error) {
-      toast.error("エラーが発生しました");
+      toast.error("SYSTEM_ERROR_DURING_LOGOUT");
     }
   };
 
@@ -56,165 +56,146 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
         z-50
         w-full
         h-fit
-        bg-gradient-to-b
-        from-theme-900/10
-        via-neutral-900/95
-        to-neutral-900/90
+        bg-[#0a0a0f]/90
         backdrop-blur-xl
+        border-b-2
+        border-theme-500/40
         transition-all
-        duration-300
+        duration-500
+        font-mono
         `,
-        scrolled ? "shadow-lg shadow-theme-900/10" : "",
+        scrolled ? "shadow-[0_10px_30px_rgba(0,0,0,0.8),0_5px_15px_rgba(var(--theme-500),0.1)]" : "",
         className
       )}
     >
-      <div className="w-full px-4 md:px-6 py-3 md:py-4">
+      {/* 背景装飾 */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
+      
+      <div className="w-full px-6 py-4 relative z-10">
         <div className="flex items-center justify-between w-full">
           {/* Logo and app name */}
-          <div className="flex items-center gap-x-2 md:gap-x-4">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-theme-500/20 to-theme-900/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-              <Image
-                src="/logo.svg"
-                alt="Logo"
-                width={36}
-                height={36}
-                className="relative cursor-pointer transition-all duration-300 hover:scale-105 z-10"
-                onClick={() => router.push("/")}
-              />
+          <div className="flex items-center gap-x-4 group/logo cursor-pointer" onClick={() => router.push("/")}>
+            <div className="relative">
+              <div className="absolute -inset-2 bg-theme-500/20 rounded-none blur-md opacity-0 group-hover/logo:opacity-100 transition-all duration-500" />
+              <div className="relative p-1 border border-theme-500/30 group-hover/logo:border-theme-500 transition-colors">
+                <Image
+                  src="/logo.svg"
+                  alt="Logo"
+                  width={32}
+                  height={32}
+                  className="relative z-10 drop-shadow-[0_0_8px_rgba(var(--theme-500),0.6)] group-hover/logo:scale-110 transition-transform"
+                />
+              </div>
             </div>
-            <h1 className="font-bold text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-neutral-400 md:inline">
-              BadWave
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="font-black text-2xl tracking-[0.2em] text-white uppercase drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)] cyber-glitch">
+                BadWave
+              </h1>
+              <span className="text-[8px] text-theme-500/40 tracking-[0.5em] uppercase -mt-1 font-bold">
+                // SYSTEM_CORE_v2.0
+              </span>
+            </div>
           </div>
 
           {/* Right side controls */}
-          <div className="flex items-center gap-x-2 md:gap-x-4">
+          <div className="flex items-center gap-x-6">
             {user ? (
-              <div className="flex items-center gap-x-2 md:gap-x-4">
+              <div className="flex items-center gap-x-4">
                 {/* Mobile menu toggle */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="md:hidden rounded-full p-2 hover:bg-neutral-800 transition"
+                  className="xl:hidden p-2 bg-theme-500/10 border border-theme-500/30 text-theme-500 hover:text-white transition-all"
                 >
                   {mobileMenuOpen ? (
-                    <X className="w-5 h-5 text-white" />
+                    <X className="w-5 h-5" />
                   ) : (
-                    <Menu className="w-5 h-5 text-white" />
+                    <Menu className="w-5 h-5" />
                   )}
                 </button>
 
                 {/* User profile */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 to-theme-900/10 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                  <Link href="/account">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 flex-shrink-0 shadow-inner group transition-transform duration-300 hover:scale-105">
+                <div className="relative group/user">
+                  <div className="absolute -inset-1 bg-theme-500/20 rounded-none blur-sm opacity-0 group-hover/user:opacity-100 transition-all duration-500" />
+                  <Link href="/account" className="relative flex items-center gap-3 bg-theme-500/5 border border-theme-500/20 px-3 py-1.5 hover:border-theme-500/60 transition-all">
+                    <div className="relative w-8 h-8 rounded-none overflow-hidden border border-theme-500/40 shrink-0">
                       {userDetails?.avatar_url ? (
                         <Image
                           src={userDetails.avatar_url}
-                          alt="ユーザーアバター"
+                          alt="avatar"
                           fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
+                          className="object-cover grayscale-[50%] group-hover/user:grayscale-0 transition-all duration-500 group-hover/user:scale-110"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
-                          <User className="w-5 h-5 text-neutral-400" />
+                        <div className="w-full h-full flex items-center justify-center bg-[#0a0a0f]">
+                          <User className="w-4 h-4 text-theme-500" />
                         </div>
                       )}
                     </div>
+                    <div className="hidden md:flex flex-col items-start">
+                       <span className="text-[10px] text-white font-black uppercase tracking-widest truncate max-w-[100px]">
+                          {userDetails?.full_name || "OPERATOR"}
+                       </span>
+                       <span className="text-[7px] text-theme-500/60 uppercase font-bold tracking-tighter">
+                          [ IDENTITY_VERIFIED ]
+                       </span>
+                    </div>
                   </Link>
                 </div>
-
-                {/* Desktop logout button */}
-                {/* <div className="hidden md:block">
-                  <Button
-                    onClick={handleLogout}
-                    className="bg-transparent border border-white/10 text-neutral-300 font-medium hover:text-white hover:bg-neutral-800 transition-all duration-300"
-                    size="sm"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    ログアウト
-                  </Button>
-                </div> */}
               </div>
             ) : (
-              <>
-                <div>
-                  <Button
-                    onClick={authModal.onOpen}
-                    className="bg-transparent text-neutral-300 font-medium hover:text-white"
-                    size="sm"
-                  >
-                    ログイン
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    onClick={authModal.onOpen}
-                    className="px-4 md:px-6 bg-gradient-to-r from-theme-600 to-theme-900 hover:from-theme-500 hover:to-theme-600 transition-all duration-300"
-                    size="sm"
-                  >
-                    新規登録
-                  </Button>
-                </div>
-              </>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={authModal.onOpen}
+                  className="text-theme-500/60 font-black text-[10px] uppercase tracking-[0.3em] hover:text-white transition-all"
+                >
+                  [ LOGIN ]
+                </button>
+                <button
+                  onClick={authModal.onOpen}
+                  className="px-6 py-2 bg-theme-500 text-[#0a0a0f] font-black text-[10px] uppercase tracking-[0.3em] hover:shadow-[0_0_20px_rgba(var(--theme-500),0.6)] transition-all cyber-glitch"
+                >
+                  // INITIALIZE_AUTH
+                </button>
+              </div>
             )}
           </div>
         </div>
 
         {/* Mobile menu */}
         {mobileMenuOpen && user && (
-          <div className="md:hidden pt-4 pb-2 mt-2 border-t border-white/5 animate-fadeDown">
-            <div className="flex flex-col space-y-3">
-              <Link
-                href="/"
-                className="flex items-center gap-x-3 text-neutral-300 hover:text-white p-2 rounded-lg hover:bg-white/5 transition"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Home className="w-5 h-5" />
-                <span>ホーム</span>
-              </Link>
-              <Link
-                href="/search"
-                className="flex items-center gap-x-3 text-neutral-300 hover:text-white p-2 rounded-lg hover:bg-white/5 transition"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Search className="w-5 h-5" />
-                <span>検索</span>
-              </Link>
-              <Link
-                href="/playlists"
-                className="flex items-center gap-x-3 text-neutral-300 hover:text-white p-2 rounded-lg hover:bg-white/5 transition"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <RiPlayListFill className="w-5 h-5" />
-                <span>プレイリスト</span>
-              </Link>
-              <Link
-                href="/liked"
-                className="flex items-center gap-x-3 text-neutral-300 hover:text-white p-2 rounded-lg hover:bg-white/5 transition"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <FaHeart className="w-5 h-5" />
-                <span>お気に入り</span>
-              </Link>
-              <Link
-                href="/account"
-                className="flex items-center gap-x-3 text-neutral-300 hover:text-white p-2 rounded-lg hover:bg-white/5 transition"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Settings className="w-5 h-5" />
-                <span>アカウント設定</span>
-              </Link>
+          <div className="xl:hidden absolute top-full left-0 w-full bg-[#0a0a0f]/95 backdrop-blur-2xl border-b border-theme-500/40 animate-fadeDown overflow-hidden">
+            {/* スキャンライン */}
+            <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
+            
+            <div className="flex flex-col p-6 gap-y-2 relative z-10 font-mono text-[10px] font-black tracking-widest uppercase">
+              {[
+                { icon: Home, label: "CENTRAL_HUB", href: "/" },
+                { icon: Search, label: "SIGNAL_SCAN", href: "/search" },
+                { icon: RiPlayListFill, label: "DATA_CLUSTERS", href: "/playlists" },
+                { icon: FaHeart, label: "FAVORITE_LOGS", href: "/liked" },
+                { icon: Settings, label: "NODE_CONFIG", href: "/account" },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center gap-x-4 px-4 py-4 border border-theme-500/10 hover:bg-theme-500/10 hover:border-theme-500/40 transition-all group"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <item.icon size={18} className="text-theme-500 group-hover:text-white transition-colors" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-x-3 text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-900/10 transition text-left"
+                className="flex items-center gap-x-4 px-4 py-4 border border-red-500/20 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white transition-all mt-4"
               >
-                <LogOut className="w-5 h-5" />
-                <span>ログアウト</span>
+                <LogOut size={18} />
+                <span>[ TERMINATE_SESSION ]</span>
               </button>
             </div>
+            
+            {/* HUDコーナー */}
+            <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-theme-500/20 pointer-events-none" />
           </div>
         )}
       </div>
