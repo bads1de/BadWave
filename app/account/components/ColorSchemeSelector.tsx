@@ -9,25 +9,26 @@ const ColorSchemeSelector = () => {
   const { colorSchemeId, setColorScheme } = useColorSchemeStore();
 
   return (
-    <div className="relative overflow-hidden bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/30 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-none p-8 font-mono group">
+    <div className="relative overflow-hidden bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/30 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-none p-5 md:p-8 font-mono group">
       {/* 背景装飾 */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-             backgroundSize: '20px 20px'
-           }} 
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
       />
-      
+
       {/* HUDコーナー */}
-      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/40" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-theme-500/40" />
+      <div className="absolute top-0 right-0 w-6 md:w-8 h-6 md:h-8 border-t border-r border-theme-500/40" />
+      <div className="absolute bottom-0 left-0 w-6 md:w-8 h-6 md:h-8 border-b border-l border-theme-500/40" />
 
       <div className="relative z-10">
-        <div className="mb-8 border-l-4 border-theme-500 pl-4">
-          <p className="text-[10px] text-theme-500/60 uppercase tracking-[0.4em] mb-1">
+        <div className="mb-6 md:mb-8 border-l-4 border-theme-500 pl-4">
+          <p className="text-[10px] text-theme-500/60 uppercase tracking-[0.3em] md:tracking-[0.4em] mb-1">
             [ SYSTEM_PREFERENCE_ENGINE ]
           </p>
-          <h3 className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]">
+          <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-widest drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]">
             CHROMATIC_OVERRIDE
           </h3>
         </div>
@@ -41,10 +42,10 @@ const ColorSchemeSelector = () => {
                 key={scheme.id}
                 onClick={() => setColorScheme(scheme.id)}
                 className={`
-                  relative overflow-hidden rounded-none p-5 text-left transition-all duration-500
+                  relative overflow-hidden rounded-none p-4 md:p-5 text-left transition-all duration-500
                   ${
                     isSelected
-                      ? "border border-theme-500/60 bg-theme-500/10 shadow-[0_0_20px_rgba(var(--theme-500),0.2)] cyber-glitch"
+                      ? "border border-theme-500/60 bg-theme-500/10 shadow-[0_0_20px_rgba(var(--theme-500),0.2)]"
                       : "bg-[#0a0a0f] border border-theme-500/10 hover:border-theme-500/40 hover:bg-theme-500/5"
                   }
                 `}
