@@ -65,11 +65,16 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 min-w-[8rem] overflow-hidden rounded-xl bg-black p-1 text-white shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "z-50 min-w-[10rem] overflow-hidden rounded-none bg-[#0a0a0f]/95 backdrop-blur-xl p-1.5 text-white border border-theme-500/40 shadow-[0_0_30px_rgba(0,0,0,0.8),0_0_15px_rgba(var(--theme-500),0.1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className
       )}
       {...props}
-    />
+    >
+      {/* HUDコーナー */}
+      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-theme-500/60" />
+      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-theme-500/60" />
+      {props.children}
+    </DropdownMenuPrimitive.Content>
   </DropdownMenuPrimitive.Portal>
 ));
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
@@ -83,7 +88,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-xl px-2 py-1.5 text-sm outline-none transition-colors focus:bg-neutral-100/20 focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-neutral-100/20",
+      "relative flex cursor-default select-none items-center rounded-none px-3 py-2 text-[10px] font-mono uppercase tracking-widest outline-none transition-all focus:bg-theme-500/20 focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-theme-500/10 cyber-glitch",
       inset && "pl-8",
       className
     )}

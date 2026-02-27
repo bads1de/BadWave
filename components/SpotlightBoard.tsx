@@ -46,25 +46,33 @@ const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
 
   return (
     <div
-      className="w-full cursor-pointer"
+      className="w-full cursor-pointer relative"
       onMouseEnter={() => setShowArrows(true)}
       onMouseLeave={() => setShowArrows(false)}
     >
       {isLoading ? (
-        <p className="text-center text-cyan-400 animate-pulse">LOADING...</p>
+        <div className="flex flex-col items-center justify-center py-10">
+          <p className="text-center text-theme-400 animate-pulse font-mono tracking-[0.5em] text-lg">
+            [ SYSTEM LOADING... ]
+          </p>
+          <div className="w-48 h-1 bg-theme-900 mt-2 overflow-hidden relative">
+             <div className="absolute top-0 left-0 h-full bg-theme-500 animate-slide-in w-1/2" />
+          </div>
+        </div>
       ) : error ? (
-        <p className="text-red-500 text-center">{error.message}</p>
+        <p className="text-red-500 text-center font-mono">[ ERROR: {error.message} ]</p>
       ) : (
         <ScrollableContainer showArrows={showArrows} className="p-4">
           <div className="flex gap-4">
             {spotlights.map((item, index) => (
               <div
                 key={item.id}
-                className="flex-none w-40 relative aspect-[9/16] rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                className="flex-none w-40 relative aspect-[9/16] rounded-xl overflow-hidden shadow-lg border border-theme-500/20 hover:border-theme-400 hover:shadow-[0_0_15px_rgba(var(--theme-500),0.3)] transition-all duration-300 hover:scale-105 group cyber-glitch"
                 onMouseEnter={() => handleVideoHover(index)}
                 onMouseLeave={handleVideoLeave}
                 onClick={() => spotlightModal.onOpen(item)}
               >
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-theme-900/60 z-10 pointer-events-none" />
                 <video
                   ref={(el) => {
                     if (el) videoRefs.current[index] = el;
@@ -73,17 +81,17 @@ const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
                   muted={isMuted}
                   playsInline
                   loop
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90"
                 />
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleMuteToggle();
                   }}
-                  className="absolute bottom-2 right-2 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+                  className="absolute bottom-2 right-2 p-2 rounded-full bg-theme-900/50 hover:bg-theme-500/40 backdrop-blur-md transition-colors z-20 border border-theme-500/30"
                 >
                   <svg
-                    className="w-4 h-4 text-white/80"
+                    className="w-4 h-4 text-theme-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

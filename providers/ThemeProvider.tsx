@@ -27,7 +27,16 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     return <>{children}</>;
   }
 
-  return <>{children}</>;
+  const isCyberpunk = colorSchemeId === "cyberpunk";
+
+  return (
+    <>
+      {isCyberpunk && (
+        <div className="scanline-overlay scanline-moving" aria-hidden="true" />
+      )}
+      {children}
+    </>
+  );
 };
 
 export default ThemeProvider;

@@ -51,8 +51,8 @@ const AuthModal = () => {
 
   return (
     <Modal
-      title="おかえりなさい"
-      description="ログインしてください"
+      title="IDENTITY_VERIFICATION"
+      description="ESTABLISH_SECURE_CONNECTION_TO_THE_NETWORK"
       isOpen={isOpen}
       onChange={onChange}
     >
@@ -69,8 +69,8 @@ const AuthModal = () => {
           variables: {
             default: {
               colors: {
-                brand: "#404040",
-                brandAccent: "#4c1d95",
+                brand: "#0a0a0f",
+                brandAccent: "#00ffff",
               },
             },
           },

@@ -15,21 +15,34 @@ const Slider: React.FC<SliderProps> = ({ value = 1, onChange }) => {
 
   return (
     <RadixSlider.Root
-      className="relative flex items-center select-none touch-none h-[100px] "
+      className="relative flex items-center select-none touch-none h-[120px] group"
       defaultValue={[1]}
       value={[value]}
       onValueChange={handleChange}
       max={1}
-      step={0.1}
+      step={0.01}
       orientation="vertical"
       aria-label="Volume"
     >
-      <RadixSlider.Track className="relative bg-gray-300 rounded-full w-[6px] h-full">
+      <RadixSlider.Track className="relative bg-[#0a0a0f] border border-theme-500/30 rounded-none w-2 h-full overflow-hidden shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
+        {/* 背景グリッド */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none" 
+             style={{ 
+               backgroundImage: 'linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px)',
+               backgroundSize: '100% 10px'
+             }} 
+        />
         <RadixSlider.Range
-          className="absolute rounded-full w-full"
-          style={{ backgroundColor: "var(--primary-color)" }}
+          className="absolute w-full bg-gradient-to-t from-theme-500/40 via-theme-500 to-white shadow-[0_0_15px_rgba(var(--theme-500),0.8)]"
         />
       </RadixSlider.Track>
+      <RadixSlider.Thumb
+        className="
+          block w-4 h-2 bg-white border border-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.8)]
+          focus:outline-none transition-all duration-300 group-hover:scale-x-125
+        "
+        aria-label="Volume Thumb"
+      />
     </RadixSlider.Root>
   );
 };

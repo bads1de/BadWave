@@ -69,9 +69,9 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = memo(
           </PopoverTrigger>
           <PopoverContent
             side="left"
-            className="w-48 p-0 bg-neutral-800 border-neutral-700"
+            className="w-56 p-0 bg-[#0a0a0f] border-theme-500/40 font-mono"
           >
-            <div className="flex flex-col text-sm">
+            <div className="flex flex-col text-[10px] uppercase tracking-widest">
               {user && (
                 <div className="px-4 py-3">
                   <LikeButton
@@ -83,7 +83,7 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = memo(
               )}
 
               {isPlaylistCreator && (
-                <div className="px-4 py-3 border-t border-neutral-700">
+                <div className="px-4 py-3 border-t border-theme-500/10">
                   <DeletePlaylistSongsBtn
                     songId={song.id}
                     playlistId={playlistId}
@@ -93,15 +93,15 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = memo(
               )}
               <div
                 className={`px-4 py-3 ${
-                  hasOtherOptions ? "border-t border-neutral-700" : ""
+                  hasOtherOptions ? "border-t border-theme-500/10" : ""
                 }`}
               >
                 <button
-                  className="w-full flex items-center text-neutral-400 cursor-pointer hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
+                  className="w-full flex items-center text-theme-500/60 hover:text-white transition-all duration-300 group"
                   onClick={() => setIsDownloadModalOpen(true)}
                 >
-                  <Download size={28} className="mr-2" />
-                  ダウンロード
+                  <Download size={16} className="mr-3 group-hover:text-theme-500" />
+                  // EXTRACT_ASSET
                 </button>
               </div>
             </div>

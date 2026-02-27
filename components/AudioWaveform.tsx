@@ -168,10 +168,27 @@ const AudioWaveform = ({
     // キャンバスをクリア
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // サイバーパンクな背景グリッドを描画
+    ctx.strokeStyle = "rgba(0, 255, 255, 0.05)";
+    ctx.lineWidth = 1;
+    const gridSize = 30;
+    for (let i = 0; i < canvas.width; i += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvas.height);
+      ctx.stroke();
+    }
+    for (let i = 0; i < canvas.height; i += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvas.width, i);
+      ctx.stroke();
+    }
+
     // 背景グラデーションを設定
     const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    bgGradient.addColorStop(0, "rgba(0, 0, 0, 0.8)");
-    bgGradient.addColorStop(1, "rgba(0, 0, 0, 0.6)");
+    bgGradient.addColorStop(0, "rgba(10, 10, 15, 0.9)");
+    bgGradient.addColorStop(1, "rgba(10, 10, 15, 0.7)");
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -201,7 +218,8 @@ const AudioWaveform = ({
         centerY + adjustedHeight
       );
       gradient.addColorStop(0, primaryColor);
-      gradient.addColorStop(1, secondaryColor);
+      gradient.addColorStop(0.5, secondaryColor);
+      gradient.addColorStop(1, primaryColor);
 
       // 上部のバーを描画（中心から上）
       ctx.beginPath();
@@ -224,7 +242,7 @@ const AudioWaveform = ({
       ctx.fill();
 
       // グロー効果を追加
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = isPlaying ? 15 : 0;
       ctx.shadowColor = primaryColor;
 
       // 次のバーの位置に移動
@@ -233,12 +251,26 @@ const AudioWaveform = ({
 
     // 再生進捗バーを描画
     const progress = currentTime / duration;
+    
+    // 進捗バーのグロー
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = secondaryColor;
+    
     ctx.beginPath();
-    ctx.strokeStyle = primaryColor;
-    ctx.lineWidth = 2;
-    ctx.moveTo(0, canvas.height - 5);
-    ctx.lineTo(canvas.width * progress, canvas.height - 5);
+    ctx.strokeStyle = secondaryColor;
+    ctx.lineWidth = 3;
+    
+    // グリッチ風の進捗バー
+    const glitchOffset = isPlaying ? (Math.random() > 0.95 ? (Math.random() - 0.5) * 4 : 0) : 0;
+    ctx.moveTo(0, canvas.height - 5 + glitchOffset);
+    ctx.lineTo(canvas.width * progress, canvas.height - 5 + glitchOffset);
     ctx.stroke();
+
+    // スキャンライン（走査線）のエフェクト
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    for (let i = 0; i < canvas.height; i += 4) {
+      ctx.fillRect(0, i, canvas.width, 1);
+    }
 
     // アニメーションフレームを要求して連続的に描画
     animationRef.current = requestAnimationFrame(draw);

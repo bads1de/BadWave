@@ -40,18 +40,25 @@ const VolumeControl: React.FC = () => {
     <div className="relative">
       <VolumeIcon
         onClick={handleClick}
-        className="cursor-pointer text-neutral-400 hover:text-white hover:filter hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
+        className="cursor-pointer text-theme-500 hover:text-white transition-all duration-300 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
         size={20}
       />
       <div
-        className={`absolute bottom-full rounded-xl mb-3 right-0 transition-all duration-200 z-50 bg-[#0c0c0c] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-[#333333] ${
+        className={`absolute bottom-full rounded-none mb-4 right-0 transition-all duration-500 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.8),0_0_15px_rgba(var(--theme-500),0.1)] border border-theme-500/30 ${
           showSlider
             ? "opacity-100 transform translate-y-0"
-            : "opacity-0 pointer-events-none transform translate-y-2"
+            : "opacity-0 pointer-events-none transform translate-y-4"
         }`}
       >
-        <div className="flex flex-col items-center">
+        {/* HUD装飾コーナー */}
+        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-theme-500/60" />
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-theme-500/60" />
+        
+        <div className="flex flex-col items-center gap-y-2">
           <Slider value={volume} onChange={(value) => setVolume(value)} />
+          <span className="text-[8px] font-mono text-theme-500 font-bold uppercase tracking-tighter">
+            VOL_{Math.round(volume * 100)}%
+          </span>
         </div>
       </div>
     </div>

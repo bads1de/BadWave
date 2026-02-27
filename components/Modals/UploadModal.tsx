@@ -167,69 +167,69 @@ const UploadModal: React.FC = memo(() => {
 
   return (
     <Modal
-      title="曲をアップロード"
-      description="mp3ファイルと画像ファイルを選択してください"
+      title="DATA_INGESTION"
+      description="TRANSMIT_BINARY_STREAM_TO_CENTRAL_CORE"
       isOpen={uploadModal.isOpen}
       onChange={onChange}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 md:grid-cols-2 gap-3"
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono"
         aria-label="曲をアップロード"
       >
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="title" className="text-xs text-zinc-400">
-                タイトル
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-1">
+              <label htmlFor="title" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ ASSET_TITLE ]
               </label>
               <Input
                 id="title"
                 disabled={isLoading}
                 {...register("title", { required: true })}
-                placeholder="曲のタイトル"
-                className="h-9 bg-zinc-800/50 border-zinc-700/50 focus:border-theme-500/50"
+                placeholder="INPUT_TRACK_NAME"
+                className="h-10 bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] rounded-none"
               />
             </div>
-            <div>
-              <label htmlFor="author" className="text-xs text-zinc-400">
-                アーティスト
+            <div className="space-y-1">
+              <label htmlFor="author" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ ORIGIN_AUTHOR ]
               </label>
               <Input
                 id="author"
                 disabled={isLoading}
                 {...register("author", { required: true })}
-                placeholder="アーティスト名"
-                className="h-9 bg-zinc-800/50 border-zinc-700/50 focus:border-theme-500/50"
+                placeholder="INPUT_OPERATOR_ID"
+                className="h-10 bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] rounded-none"
               />
             </div>
           </div>
 
-          <div>
-            <label htmlFor="lyrics" className="text-xs text-zinc-400">
-              歌詞
+          <div className="space-y-1">
+            <label htmlFor="lyrics" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+              [ TEXTUAL_DATA_LOG ]
             </label>
             <Textarea
               id="lyrics"
               disabled={isLoading}
               {...register("lyrics")}
-              placeholder="歌詞"
-              className="bg-zinc-800/50 border-zinc-700/50 focus:border-theme-500/50 h-20 resize-none"
+              placeholder="PASTE_LOG_STREAM_HERE"
+              className="bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 h-24 resize-none rounded-none shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)]"
             />
           </div>
 
-          <div>
-            <label className="text-xs text-zinc-400">ジャンル</label>
+          <div className="space-y-1">
+            <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">[ SECTOR_INDEX ]</label>
             <GenreSelect
               onGenreChange={(genres: string) => setSelectedGenres([genres])}
             />
           </div>
         </div>
 
-        <div className="space-y-3">
-          <div>
-            <label htmlFor="file" className="text-xs text-zinc-400">
-              ファイルを選択
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <label htmlFor="file" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+              [ BINARY_SOURCE ]
             </label>
             <div
               ref={dropRef}
@@ -237,11 +237,11 @@ const UploadModal: React.FC = memo(() => {
               onDragLeave={handleDragLeave}
               onDrop={handleFileDrop}
               className={`
-                relative p-3 border-2 border-dashed rounded-lg transition-all duration-300 cursor-pointer group
+                relative p-6 border-2 border-dashed transition-all duration-500 cursor-pointer group rounded-none
                 ${
                   isDragging
-                    ? "border-theme-500 bg-theme-500/10"
-                    : "border-zinc-700/50 bg-zinc-800/30 hover:border-theme-500/50 hover:bg-zinc-800/50 hover:shadow-[0_0_15px_rgba(var(--theme-rgb),0.15)]"
+                    ? "border-theme-500 bg-theme-500/20 shadow-[0_0_20px_rgba(var(--theme-500),0.3)]"
+                    : "border-theme-500/20 bg-[#0a0a0f] hover:border-theme-500/50 hover:bg-theme-500/5 hover:shadow-[0_0_15px_rgba(var(--theme-500),0.1)]"
                 }
               `}
             >
@@ -254,78 +254,68 @@ const UploadModal: React.FC = memo(() => {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 multiple
               />
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-theme-500/10 group-hover:bg-theme-500/20 transition-colors">
-                  <RiUploadCloud2Line className="w-5 h-5 text-theme-400 group-hover:text-theme-300 transition-colors" />
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className="p-3 bg-theme-500/10 border border-theme-500/30 group-hover:bg-theme-500/20 transition-all duration-500">
+                  <RiUploadCloud2Line className="w-8 h-8 text-theme-500 group-hover:text-white drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]" />
                 </div>
                 <div>
-                  <p className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
-                    クリックまたはドラッグ&ドロップ
+                  <p className="text-xs text-theme-300 font-bold tracking-widest group-hover:text-white transition-colors">
+                    INITIATE_UPLOADER_SCAN
                   </p>
-                  <p className="text-xs text-zinc-500">MP3および画像ファイル</p>
+                  <p className="text-[8px] text-theme-500/60 mt-1 uppercase">
+                    SUPPORTED: .MP3 // .JPG // .PNG
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {imagePreview && (
-              <div className="aspect-square relative overflow-hidden rounded-lg border border-zinc-700/50">
+              <div className="aspect-square relative overflow-hidden rounded-none border border-theme-500/40 shadow-[0_0_15px_rgba(var(--theme-500),0.2)] cyber-glitch">
                 <Image
                   src={imagePreview}
-                  alt="アップロードされた画像のプレビュー"
-                  className="object-cover"
+                  alt="PREVIEW"
+                  className="object-cover opacity-80"
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
                 />
+                <div className="absolute inset-0 bg-theme-500/10 mix-blend-overlay animate-pulse" />
               </div>
             )}
             {audioPreview && (
-              <div className="flex items-center p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
-                <audio ref={audioRef} controls className="w-full h-8">
-                  <source src={audioPreview} type="audio/mpeg" />
-                </audio>
+              <div className="flex flex-col items-center justify-center p-4 bg-[#0a0a0f] border border-theme-500/40 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.1)]">
+                <RiMusic2Line className="w-8 h-8 text-theme-500 mb-2 animate-pulse" />
+                <span className="text-[8px] text-theme-500 tracking-[0.2em]">SIGNAL_DETECTED</span>
               </div>
             )}
           </div>
         </div>
 
-        <Button
+        <button
           disabled={isLoading}
           type="submit"
-          className="col-span-full bg-gradient-to-r from-theme-500 to-theme-600 hover:from-theme-600 hover:to-theme-700 text-white font-medium py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-theme-500/20 hover:shadow-theme-500/40"
+          className="col-span-full relative group overflow-hidden bg-theme-500 text-[#0a0a0f] font-black py-4 uppercase tracking-[0.5em] transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] disabled:opacity-50 cyber-glitch"
         >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <svg
-                className="animate-spin h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              アップロード中...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <RiMusic2Line className="w-5 h-5" />
-              アップロード
-            </span>
-          )}
-        </Button>
+          <div className="relative z-10 flex items-center justify-center gap-3">
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                TRANSMITTING...
+              </>
+            ) : (
+              <>
+                <RiMusic2Line className="w-6 h-6" />
+                EXECUTE_INGESTION
+              </>
+            )}
+          </div>
+          {/* 背景装飾 */}
+          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
+        </button>
       </form>
     </Modal>
   );

@@ -47,49 +47,54 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = memo(
           />
         </div>
         {/* グラデーションオーバーレイ */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 via-neutral-900/90 to-neutral-900/95" />
-        {/* グラスモーフィズム効果 */}
-        <div className="absolute inset-0 backdrop-blur-sm bg-black/20">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.2), transparent 70%)",
-            }}
-          />
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-theme-900/40 to-[#0a0a0f]/90" />
+        {/* スキャンライン / グリッド効果 */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none" 
+             style={{ 
+               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.1) 1px, transparent 1px)`,
+               backgroundSize: '30px 30px'
+             }} 
+        />
         {/* コンテンツ */}
         <div className="relative h-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex items-end">
-          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-x-6 w-full">
+          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-x-8 w-full">
             {/* プレイリストアートワーク */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="relative h-32 w-32 md:h-52 md:w-52 group mx-auto md:mx-0"
+              className="relative h-32 w-32 md:h-64 md:w-64 group mx-auto md:mx-0 cyber-glitch"
             >
-              <div className="absolute -top-2 -left-2 w-full h-full bg-purple-900/50 transform rotate-3 rounded-xl hidden md:block" />
-              <div className="absolute -top-1 -left-1 w-full h-full bg-purple-800/50 transform rotate-2 rounded-xl hidden md:block" />
-              <Image
-                src={imageUrl}
-                alt="Playlist"
-                fill
-                className="object-cover rounded-xl shadow-2xl"
-                sizes="(max-width: 640px) 128px, (max-width: 768px) 208px, 208px"
-              />
+              {/* HUDコーナー */}
+              <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-theme-500/60 pointer-events-none rounded-tl-xl shadow-[-5px_-5px_15px_rgba(var(--theme-500),0.2)]" />
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-theme-500/60 pointer-events-none rounded-br-xl shadow-[5px_5px_15px_rgba(var(--theme-500),0.2)]" />
+              
+              <div className="relative h-full w-full overflow-hidden rounded-xl border border-theme-500/40 shadow-[0_0_30px_rgba(var(--theme-500),0.2)]">
+                <Image
+                  src={imageUrl}
+                  alt="Playlist"
+                  fill
+                  className="object-cover transition-all duration-700 group-hover:scale-125"
+                  sizes="(max-width: 640px) 128px, (max-width: 768px) 256px, 256px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f]/80 to-transparent" />
+              </div>
             </motion.div>
             {/* プレイリスト情報 */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex flex-col gap-y-2 text-center md:text-left"
+              className="flex flex-col gap-y-3 text-center md:text-left font-mono"
             >
+              <p className="text-theme-500 text-xs tracking-[0.3em] uppercase opacity-80">
+                [ ACCESSING_PLAYLIST_DATA... ]
+              </p>
               <div className="flex items-center justify-center md:justify-start gap-x-4">
-                <h1 className="text-3xl md:text-5xl font-bold text-white tracking-wide drop-shadow-lg break-all">
+                <h1 className="text-4xl md:text-6xl font-bold text-white tracking-widest drop-shadow-[0_0_15px_rgba(var(--theme-500),0.8)] break-all uppercase">
                   {playlistTitle}
                 </h1>
-                {user?.id === userId && ( // 条件付きレンダリングを追加
+                {user?.id === userId && (
                   <PlaylistOptionsPopover
                     playlistId={playlistId}
                     currentTitle={playlistTitle}
@@ -97,17 +102,21 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = memo(
                   />
                 )}
               </div>
-              <div className="flex items-center gap-x-2 text-sm text-white/80">
-                {isPublic ? (
-                  <Globe className="w-4 h-4" />
-                ) : (
-                  <Lock className="w-4 h-4" />
-                )}
-                <span>{isPublic ? "公開" : "非公開"}</span>
-                <span className="mx-2">•</span>
-                <span>{songCount} 曲</span>
-                <span className="mx-2">•</span>
-                <span>作成日: {formattedDate}</span>
+              <div className="flex items-center justify-center md:justify-start gap-x-6 text-xs md:text-sm text-theme-400/90 tracking-widest uppercase">
+                <div className="flex items-center gap-x-2 border-r border-theme-500/30 pr-4">
+                  {isPublic ? (
+                    <Globe className="w-4 h-4 text-theme-500" />
+                  ) : (
+                    <Lock className="w-4 h-4 text-theme-500" />
+                  )}
+                  <span>{isPublic ? "STATUS: PUBLIC" : "STATUS: PRIVATE"}</span>
+                </div>
+                <div className="flex items-center gap-x-2 border-r border-theme-500/30 pr-4">
+                   <span>DATA_COUNT: {songCount}</span>
+                </div>
+                <div className="hidden md:block">
+                  <span>INIT_DATE: {formattedDate}</span>
+                </div>
               </div>
             </motion.div>
           </div>

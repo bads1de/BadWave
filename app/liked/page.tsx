@@ -6,19 +6,30 @@ const Liked = async () => {
   const songs = await getLikedSongs();
 
   return (
-    <div className="bg-[#0d0d0d] rounded-lg h-full w-full overflow-hidden overflow-y-auto custom-scrollbar">
-      <Header>
-        <div className="mt-20">
-          <div className="flex flex-col md:flex-row items-center gap-x-5">
-            <div className="flex flex-col gap-y-2 mt-4 md:mt-0">
-              <h1 className="text-white text-4xl sm:text-5xl lg:text-7xl font-bold">
-                お気に入り
-              </h1>
-            </div>
+    <div className="bg-[#0a0a0f] h-full w-full overflow-hidden overflow-y-auto custom-scrollbar font-mono">
+      <Header className="relative overflow-hidden">
+        {/* 背景装飾 */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" 
+             style={{ 
+               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
+               backgroundSize: '40px 40px'
+             }} 
+        />
+        <div className="mt-20 relative z-10 px-8">
+          <div className="flex flex-col gap-y-3">
+            <p className="text-theme-500 text-xs tracking-[0.5em] uppercase animate-pulse">
+              [ ACCESSING_FAVORITE_LOG... ]
+            </p>
+            <h1 className="text-white text-5xl sm:text-7xl lg:text-9xl font-bold uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(var(--theme-500),0.8)]">
+              LIKED_LOG
+            </h1>
+            <div className="h-1 w-64 bg-theme-500/40 shadow-[0_0_10px_rgba(var(--theme-500),0.5)] mt-4" />
           </div>
         </div>
       </Header>
-      <LikedContent songs={songs} />
+      <div className="max-w-7xl mx-auto py-10">
+        <LikedContent songs={songs} />
+      </div>
     </div>
   );
 };

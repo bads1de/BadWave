@@ -18,6 +18,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        cyber: "bg-theme-900/50 text-theme-300 border border-theme-500/50 hover:bg-theme-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-300 uppercase tracking-widest font-mono cyber-glitch",
       },
       size: {
         default: "h-10 px-4 py-2",

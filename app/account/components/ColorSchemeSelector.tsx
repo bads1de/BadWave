@@ -9,20 +9,30 @@ const ColorSchemeSelector = () => {
   const { colorSchemeId, setColorScheme } = useColorSchemeStore();
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-neutral-900/80 via-neutral-800/20 to-neutral-900/80 backdrop-blur-xl border border-white/[0.05] shadow-lg rounded-2xl p-8">
+    <div className="relative overflow-hidden bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/30 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-none p-8 font-mono group">
       {/* 背景装飾 */}
-      <div className="absolute -top-24 -right-24 w-64 h-64 bg-[var(--accent-from)]/10 rounded-full blur-3xl"></div>
-      <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-[var(--accent-to)]/10 rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+           style={{ 
+             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
+             backgroundSize: '20px 20px'
+           }} 
+      />
+      
+      {/* HUDコーナー */}
+      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/40" />
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-theme-500/40" />
 
-      <div className="relative">
-        <div className="mb-6">
-          <h3 className="text-xl font-bold text-white mb-2">カラースキーム</h3>
-          <p className="text-sm text-neutral-400">
-            アプリ全体の配色を変更します
+      <div className="relative z-10">
+        <div className="mb-8 border-l-4 border-theme-500 pl-4">
+          <p className="text-[10px] text-theme-500/60 uppercase tracking-[0.4em] mb-1">
+            [ SYSTEM_PREFERENCE_ENGINE ]
           </p>
+          <h3 className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]">
+            CHROMATIC_OVERRIDE
+          </h3>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {colorSchemes.map((scheme) => {
             const isSelected = colorSchemeId === scheme.id;
 
@@ -31,31 +41,35 @@ const ColorSchemeSelector = () => {
                 key={scheme.id}
                 onClick={() => setColorScheme(scheme.id)}
                 className={`
-                  relative overflow-hidden rounded-xl p-4 text-left transition-all duration-300
+                  relative overflow-hidden rounded-none p-5 text-left transition-all duration-500
                   ${
                     isSelected
-                      ? "ring-2 ring-white/50 bg-white/10"
-                      : "bg-neutral-800/50 hover:bg-neutral-700/50 border border-white/5"
+                      ? "border border-theme-500/60 bg-theme-500/10 shadow-[0_0_20px_rgba(var(--theme-500),0.2)] cyber-glitch"
+                      : "bg-[#0a0a0f] border border-theme-500/10 hover:border-theme-500/40 hover:bg-theme-500/5"
                   }
                 `}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {/* カラープレビュー */}
-                <div
-                  className="w-full h-16 rounded-lg mb-3 shadow-inner"
-                  style={{
-                    background: scheme.previewGradient,
-                  }}
-                />
+                {/* カラープレビュー (Terminal Style) */}
+                <div className="relative mb-4 group/preview">
+                  <div
+                    className="w-full h-20 rounded-none shadow-[inset_0_0_15px_rgba(0,0,0,0.5)] border border-theme-500/20"
+                    style={{
+                      background: scheme.previewGradient,
+                    }}
+                  />
+                  {/* スキャンライン */}
+                  <div className="absolute inset-0 opacity-20 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
+                </div>
 
                 {/* スキーム名 */}
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-white text-sm">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-white text-xs uppercase tracking-widest truncate">
                       {scheme.name}
                     </h4>
-                    <p className="text-xs text-neutral-400 mt-0.5">
+                    <p className="text-[10px] text-theme-500/60 mt-1 uppercase tracking-tight truncate">
                       {scheme.description}
                     </p>
                   </div>
@@ -65,20 +79,20 @@ const ColorSchemeSelector = () => {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="flex items-center justify-center w-6 h-6 rounded-full bg-white"
+                      className="flex items-center justify-center w-6 h-6 border border-theme-500 bg-theme-500/20 shadow-[0_0_10px_rgba(var(--theme-500),0.5)]"
                     >
-                      <HiCheck className="w-4 h-4 text-neutral-900" />
+                      <HiCheck className="w-4 h-4 text-white" />
                     </motion.div>
                   )}
                 </div>
 
-                {/* ホバーエフェクト */}
-                <div
-                  className="absolute inset-0 opacity-0 hover:opacity-10 transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    background: scheme.previewGradient,
-                  }}
-                />
+                {/* 背景装飾パーツ (角) */}
+                {isSelected && (
+                  <>
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-theme-500" />
+                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-theme-500" />
+                  </>
+                )}
               </motion.button>
             );
           })}

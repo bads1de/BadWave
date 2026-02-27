@@ -80,14 +80,14 @@ const MobilePlayerContent = React.memo(
             toggleMobilePlayer();
           }
         }}
-        className="md:hidden fixed inset-0 bg-black text-white z-50 flex flex-col"
+        className="md:hidden fixed inset-0 bg-[#0a0a0f] text-white z-50 flex flex-col font-mono"
         style={{ touchAction: showLyrics ? "auto" : "none" }}
       >
         {/* Background Media Layer */}
         <div className="absolute inset-0 z-0">
           {videoUrl ? (
             <video
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-40"
               src={videoUrl}
               muted
               autoPlay
@@ -99,71 +99,101 @@ const MobilePlayerContent = React.memo(
               src={imageUrl}
               alt="song image"
               fill={true}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-30 blur-sm scale-110"
               priority
             />
           )}
-          {/* Main Overlay Gradient - Stronger at bottom for controls visibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90" />
-          <div className="absolute bottom-0 h-2/3 w-full bg-gradient-to-t from-black via-black/60 to-transparent" />
+          {/* Cyberpunk Overlay Effects */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-transparent to-[#0a0a0f]" />
+          <div className="absolute inset-0 opacity-10 pointer-events-none" 
+               style={{ 
+                 backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
+                 backgroundSize: '30px 30px'
+               }} 
+          />
+          <div className="absolute inset-0 pointer-events-none opacity-5 bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
         </div>
+
+        {/* HUD Corners */}
+        <div className="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-theme-500/40 pointer-events-none z-20" />
+        <div className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-theme-500/40 pointer-events-none z-20" />
+        <div className="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-theme-500/40 pointer-events-none z-20" />
+        <div className="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-theme-500/40 pointer-events-none z-20" />
 
         {/* Top Bar */}
-        <div className="relative z-10 flex items-center justify-between px-6 pt-12 pb-4">
+        <div className="relative z-10 flex items-center justify-between px-8 pt-14 pb-4">
           <button
             onClick={toggleMobilePlayer}
-            className="p-2 -ml-2 text-white/80 hover:text-white transition-colors"
+            className="p-3 bg-theme-500/10 border border-theme-500/30 text-theme-500 hover:text-white transition-all cyber-glitch"
           >
-            <BsChevronDown size={28} />
+            <BsChevronDown size={24} />
           </button>
           <div className="flex flex-col items-center">
-            <span className="text-xs font-medium text-white/70 uppercase tracking-widest">
-              Now Playing
+            <span className="text-[10px] font-bold text-theme-500 tracking-[0.5em] uppercase animate-pulse">
+              [ STREAM_MONITORING ]
             </span>
+            <div className="flex gap-2 items-center mt-1">
+               <div className="w-1 h-1 bg-red-500 rounded-full animate-ping" />
+               <span className="text-[8px] text-theme-500/60 font-mono">LIVE_DECRYPTING...</span>
+            </div>
           </div>
-          <div className="w-8" /> {/* Spacer for balance */}
+          <div className="w-12" /> {/* Spacer for balance */}
         </div>
 
-        {/* Middle Spacer */}
-        <div className="flex-1" />
+        {/* Middle Area: Artwork / Visualizer */}
+        <div className="flex-1 flex flex-col items-center justify-center px-10 relative">
+           <div className="relative w-full aspect-square max-w-[280px] group">
+              {/* 装飾用サークル */}
+              <div className="absolute -inset-4 border border-theme-500/20 rounded-full animate-[spin_10s_linear_infinite]" />
+              <div className="absolute -inset-8 border border-theme-500/10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+              
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-theme-500/60 shadow-[0_0_30px_rgba(var(--theme-500),0.3)] cyber-glitch">
+                 <Image
+                   src={imageUrl}
+                   alt="artwork"
+                   fill
+                   className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                 />
+                 {/* シグナルオーバーレイ */}
+                 <div className="absolute inset-0 bg-theme-500/10 mix-blend-overlay animate-pulse" />
+              </div>
+           </div>
+        </div>
 
         {/* Bottom Controls Area */}
-        <div className="relative z-10 px-6 pb-12 w-full flex flex-col gap-6">
-          {/* Title, Artist, Like Row */}
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0 pr-4">
-              <Link href={`/songs/${song.id}`}>
-                <h1 className="text-2xl font-bold text-white drop-shadow-md hover:underline truncate">
-                  {" "}
-                  {/* ScrollingText handles its own truncation often, but parent needs overflow hidden */}
-                  <ScrollingText text={song.title} limitCharacters={20} />
-                </h1>
-              </Link>
-              <p className="text-lg text-gray-300 truncate font-medium">
-                {song.author}
-              </p>
+        <div className="relative z-10 px-8 pb-16 w-full flex flex-col gap-8 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent pt-10">
+          {/* Title, Artist */}
+          <div className="space-y-2 text-center">
+            <div className="inline-block px-2 py-0.5 bg-theme-500/20 border border-theme-500/40 text-[8px] text-theme-300 mb-2 uppercase tracking-widest">
+               Track_ID: {song.id.slice(0, 8)}
             </div>
-            <div className="flex-shrink-0">
-              <LikeButton songId={song.id} size={26} songType="regular" />
-            </div>
+            <Link href={`/songs/${song.id}`}>
+              <h1 className="text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)] hover:text-theme-300 transition-colors">
+                <ScrollingText text={song.title} limitCharacters={15} />
+              </h1>
+            </Link>
+            <p className="text-sm text-theme-500 uppercase tracking-[0.3em]">
+              // AUTH: {song.author}
+            </p>
           </div>
 
           {/* Seekbar Section */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <SeekBar
               currentTime={currentTime}
               duration={duration}
               onSeek={handleSeek}
-              className="w-full h-1"
+              className="w-full h-1.5"
             />
-            <div className="flex justify-between text-xs font-medium text-gray-400">
-              <span>{formattedCurrentTime}</span>
-              <span>{formattedDuration}</span>
+            <div className="flex justify-between text-[10px] font-bold font-mono text-theme-500/60 tracking-widest">
+              <span>{formattedCurrentTime} // [START]</span>
+              <div className="h-px flex-1 mx-4 bg-theme-500/10 self-center" />
+              <span>[END] // {formattedDuration}</span>
             </div>
           </div>
 
           {/* Main Transport Controls */}
-          <div className="px-2">
+          <div className="px-4">
             <CommonControls
               isPlaying={isPlaying}
               isShuffling={isShuffling}
@@ -178,37 +208,33 @@ const MobilePlayerContent = React.memo(
             />
           </div>
 
-          {/* Secondary Actions Row */}
-          {/* Secondary Actions Row */}
-          <div className="flex justify-between items-center px-8 mt-4">
+          {/* HUD Tools Bar */}
+          <div className="flex justify-between items-center px-4 bg-[#0a0a0f]/60 border border-theme-500/20 py-2 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.05)]">
             <button
               onClick={toggleLyrics}
-              className={`p-2 rounded-full transition-colors ${
+              className={`p-3 transition-all ${
                 showLyrics
-                  ? "text-primary hover:text-primary/80"
-                  : "text-gray-400 hover:text-white"
+                  ? "bg-theme-500/30 text-white shadow-[0_0_15px_rgba(var(--theme-500),0.4)]"
+                  : "text-theme-500/60 hover:text-theme-300"
               }`}
-              title="Lyrics"
             >
-              <Mic2 size={24} />
+              <Mic2 size={20} />
             </button>
 
-            <div className="flex items-center justify-center w-12 h-12">
-              <PlaybackSpeedButton />
+            <div className="flex gap-4">
+               <PlaybackSpeedButton />
+               <EqualizerButton />
             </div>
 
-            <div className="flex items-center justify-center w-12 h-12">
-              <EqualizerButton />
-            </div>
-
-            <div className="text-gray-400 hover:text-white transition-colors p-2">
-              <AddPlaylist
-                playlists={playlists}
-                songId={song.id}
-                songType="regular"
-              >
-                <RiPlayListAddFill size={26} />
-              </AddPlaylist>
+            <div className="flex gap-4 items-center">
+               <LikeButton songId={song.id} size={22} songType="regular" />
+               <AddPlaylist
+                 playlists={playlists}
+                 songId={song.id}
+                 songType="regular"
+               >
+                 <RiPlayListAddFill size={22} className="text-theme-500/60 hover:text-theme-300" />
+               </AddPlaylist>
             </div>
           </div>
         </div>

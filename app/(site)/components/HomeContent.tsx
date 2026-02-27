@@ -43,18 +43,34 @@ const HomeContent: React.FC<HomeClientProps> = ({
   }, []);
 
   return (
-    <div className="flex bg-[#0d0d0d] h-full overflow-hidden">
-      <div className="w-full h-full overflow-y-auto custom-scrollbar">
+    <div className="flex bg-[#0a0a0f] h-full overflow-hidden font-mono">
+      <div className="w-full h-full overflow-y-auto custom-scrollbar relative">
+        {/* 背景装飾 */}
+        <div className="fixed inset-0 opacity-[0.03] pointer-events-none" 
+             style={{ 
+               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
+               backgroundSize: '100px 100px'
+             }} 
+        />
+        
         {isMobile && !isMobilePlayer && (
-          <section>
+          <section className="relative z-10">
             <HomeHeader />
           </section>
         )}
         <main
-          className={`px-6 py-8 pb-[70px] md:pb-8 space-y-8 ${
+          className={`relative z-10 px-8 py-10 pb-[100px] md:pb-12 space-y-16 max-w-[1600px] mx-auto ${
             isMobile && !isMobilePlayer ? "pt-24" : ""
           }`}
         >
+          {/* システムステータスバー的な装飾 */}
+          <div className="flex items-center justify-between text-[10px] text-theme-500/40 tracking-[0.5em] uppercase border-b border-theme-500/10 pb-2 mb-8">
+            <span>[ SYSTEM_READY ]</span>
+            <div className="flex gap-4">
+              <span className="animate-pulse">STREAM_LOG: ONLINE</span>
+              <span>v.2.0.4-BETA</span>
+            </div>
+          </div>
           {/* トレンドボードセクション */}
           <TrendSection
             selectedPeriod={selectedPeriod}

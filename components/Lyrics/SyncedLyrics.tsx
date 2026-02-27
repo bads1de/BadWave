@@ -116,33 +116,48 @@ const SyncedLyrics: React.FC<SyncedLyricsProps> = ({ lyrics }) => {
 
   // LRC形式の場合は同期表示
   return (
-    <div ref={containerRef} className="flex flex-col items-center gap-4 py-8">
+    <div ref={containerRef} className="flex flex-col items-center gap-6 py-12 relative">
+      {/* 歌詞エリア専用のスキャンライン */}
+      <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+      
       {lrcLines.map((line, index) => {
         const isActive = index === currentLineIndex;
         const isPast = index < currentLineIndex;
 
         return (
-          <p
+          <div
             key={index}
-            ref={isActive ? activeLineRef : null}
-            className={`
-              text-center transition-all duration-300 ease-out px-4
-              ${
-                isActive
-                  ? "text-white text-2xl font-bold scale-105"
-                  : isPast
-                    ? "text-neutral-500 text-lg"
-                    : "text-neutral-400 text-lg"
-              }
-            `}
-            style={{
-              textShadow: isActive ? "0 0 20px rgba(255,255,255,0.5)" : "none",
-            }}
+            className="flex items-center gap-x-4 w-full px-6 transition-all duration-500"
           >
-            {line.text}
-          </p>
+            {/* タイムスタンプ装飾 */}
+            <span className={`font-mono text-[10px] tracking-tighter transition-colors duration-500 ${isActive ? "text-theme-500" : "text-theme-900/40"}`}>
+              [{Math.floor(line.time / 60).toString().padStart(2, '0')}:{Math.floor(line.time % 60).toString().padStart(2, '0')}]
+            </span>
+            
+            <p
+              ref={isActive ? activeLineRef : null}
+              className={`
+                flex-1 text-left font-mono uppercase tracking-widest transition-all duration-500 ease-out
+                ${
+                  isActive
+                    ? "text-white text-xl md:text-2xl font-bold drop-shadow-[0_0_15px_rgba(var(--theme-500),0.8)] cyber-glitch"
+                    : isPast
+                      ? "text-theme-500/30 text-base md:text-lg italic"
+                      : "text-theme-900/60 text-base md:text-lg"
+                }
+              `}
+            >
+              {isActive && <span className="mr-2 text-theme-500 animate-pulse">{">"}</span>}
+              {line.text}
+            </p>
+          </div>
         );
       })}
+      
+      {/* 終端インジケーター */}
+      <div className="mt-8 text-[10px] font-mono text-theme-500/20 uppercase tracking-[0.5em]">
+        --- END_OF_STREAM ---
+      </div>
     </div>
   );
 };

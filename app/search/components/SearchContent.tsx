@@ -60,8 +60,8 @@ const PlaylistSection = memo(({ playlists }: PlaylistSectionProps) => {
 
   if (playlists.length === 0) {
     return (
-      <div className="flex flex-col gap-y-2 w-full px-6 text-neutral-400">
-        <h1>Playlistが見つかりませんでした</h1>
+      <div className="flex flex-col gap-y-2 w-full px-6 text-theme-500 font-mono">
+        <h1>[ ! ] PLAYLIST_NOT_FOUND</h1>
       </div>
     );
   }
@@ -74,7 +74,7 @@ const PlaylistSection = memo(({ playlists }: PlaylistSectionProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: i * 0.1 }}
-          className="group relative cursor-pointer"
+          className="group relative cursor-pointer cyber-glitch"
           onClick={() =>
             router.push(
               `/playlists/${playlist.id}?title=${encodeURIComponent(
@@ -83,23 +83,31 @@ const PlaylistSection = memo(({ playlists }: PlaylistSectionProps) => {
             )
           }
         >
-          <div className="absolute -top-2 -left-2 w-full h-full bg-purple-900/50 transform rotate-3 rounded-xl" />
-          <div className="absolute -top-1 -left-1 w-full h-full bg-purple-800/50 transform rotate-2 rounded-xl" />
-          <div className="relative bg-neutral-900 rounded-xl p-4 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:shadow-purple-900/20">
-            <div className="relative aspect-square w-full overflow-hidden rounded-lg mb-4">
+          {/* HUD装飾背後 */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-theme-500/20 via-theme-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity blur-sm rounded-xl" />
+          
+          <div className="relative bg-[#0a0a0f] border border-theme-500/20 rounded-xl p-4 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:border-theme-500/60 group-hover:shadow-[0_10px_30px_rgba(var(--theme-500),0.15)] overflow-hidden">
+            {/* 角のアクセント */}
+            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/0 group-hover:border-theme-500/40 transition-colors pointer-events-none rounded-tr-xl" />
+            
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg mb-4 border border-theme-500/10">
               <Image
                 src={playlist.image_path || "/images/playlist.png"}
                 alt={playlist.title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                className="object-cover transition-transform duration-700 group-hover:scale-125 group-hover:opacity-80"
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-theme-900/80" />
             </div>
-            <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white truncate">
+            
+            <div className="space-y-1">
+              <h3 className="text-sm font-mono font-bold text-theme-300 truncate uppercase tracking-widest group-hover:text-white transition-colors group-hover:drop-shadow-[0_0_8px_rgba(var(--theme-500),0.8)]">
                 {playlist.title}
               </h3>
+              <p className="text-[10px] font-mono text-theme-500/60 uppercase">
+                // PLAYLIST_DATA
+              </p>
             </div>
           </div>
         </motion.div>

@@ -64,7 +64,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
     };
 
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 h-full bg-[#121212] border-t border-[#303030] rounded-t-xl">
+      <div className="grid grid-cols-2 md:grid-cols-3 h-full bg-[#0a0a0f] border-t border-theme-500/30 rounded-t-xl neon-border overflow-hidden">
         <div className="flex w-full justify-start px-4">
           <div className="flex items-center gap-x-4">
             <MediaItem data={song} onClick={handleMediaClick} />

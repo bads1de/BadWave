@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import { Figtree, Syncopate, Space_Mono } from "next/font/google";
 
 import getPlaylists from "@/actions/getPlaylists";
 
@@ -17,6 +17,16 @@ import TanStackProvider from "@/providers/TanStackProvider";
 import "./globals.css";
 
 const font = Figtree({ subsets: ["latin"] });
+const syncopate = Syncopate({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-syncopate",
+});
+const spaceMono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-space-mono",
+});
 
 export const metadata: Metadata = {
   title: "BadWave",
@@ -31,7 +41,10 @@ export default async function RootLayout({
   const playlists = await getPlaylists();
 
   return (
-    <html lang="en">
+    <html
+      lang="ja"
+      className={`${syncopate.variable} ${spaceMono.variable}`}
+    >
       <body className={font.className}>
         <ToasterProvider />
         <TanStackProvider>

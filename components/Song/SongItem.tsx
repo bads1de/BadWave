@@ -28,21 +28,23 @@ const SongItem: React.FC<SongItemProps> = memo(({ onClick, data }) => {
         justify-center
         rounded-xl
         overflow-hidden
-        bg-gradient-to-b
-        from-gray-900/10
-        to-gray-900/20
+        bg-theme-900/40
         cursor-pointer
-        hover:from-gray-800/20
-        hover:to-gray-800/30
+        hover:bg-theme-500/20
         transition-all
         duration-300
         aspect-[9/16]
+        border
+        border-theme-500/20
+        hover:border-theme-500/50
+        hover:shadow-[0_0_20px_rgba(var(--theme-500),0.3)]
+        cyber-glitch
       "
     >
       <div className="relative w-full h-full">
         {data.image_path && (
           <Image
-            className="object-cover w-full h-full transition-all duration-500 group-hover:scale-110"
+            className="object-cover w-full h-full transition-all duration-500 group-hover:scale-110 group-hover:opacity-80"
             src={data.image_path}
             fill
             alt="Image"
@@ -50,24 +52,24 @@ const SongItem: React.FC<SongItemProps> = memo(({ onClick, data }) => {
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
           />
         )}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#0a0a0f] to-transparent">
           <Link href={`/songs/${data.id}`} className="w-full block">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="font-medium text-gray-100 truncate text-sm hover:text-gray-300 transition-colors group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
+            <div className="font-medium text-theme-300 truncate text-sm hover:text-white transition-colors group-hover:drop-shadow-[0_0_8px_rgba(var(--theme-500),0.8)]">
               <ScrollingText text={data.title} />
             </div>
           </Link>
 
-          <p className="text-gray-400 text-xs mt-1 truncate hover:text-gray-300 transition-colors group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+          <p className="text-neutral-400 text-xs mt-1 truncate group-hover:text-theme-300 transition-colors">
             {data.author}
           </p>
 
           <div className="flex items-center justify-start mt-2 space-x-4">
-            <div className="flex items-center text-gray-400 hover:text-gray-300 transition-colors group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+            <div className="flex items-center text-neutral-400 group-hover:text-theme-400 transition-colors">
               <CiPlay1 size={14} />
               <span className="ml-1 text-xs">{data.count}</span>
             </div>
-            <div className="flex items-center text-gray-400 hover:text-gray-300 transition-colors group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+            <div className="flex items-center text-neutral-400 group-hover:text-theme-400 transition-colors">
               <CiHeart size={14} />
               <span className="ml-1 text-xs">{data.like_count}</span>
             </div>
