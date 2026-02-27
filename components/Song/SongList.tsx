@@ -59,7 +59,7 @@ const SongList: React.FC<SongListProps> = memo(
         overflow-hidden
         cyber-glitch
         `,
-          className
+          className,
         )}
       >
         {/* HUD装飾コーナー */}
@@ -80,7 +80,11 @@ const SongList: React.FC<SongListProps> = memo(
             />
           )}
           <div className="absolute inset-0 bg-theme-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <Play size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" fill="currentColor" />
+            <Play
+              size={20}
+              className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              fill="currentColor"
+            />
           </div>
         </div>
         <div className="flex flex-col py-1 truncate flex-grow min-w-0 font-mono uppercase tracking-tight">
@@ -103,22 +107,18 @@ const SongList: React.FC<SongListProps> = memo(
         </div>
         <div className="flex items-center gap-x-1 sm:gap-x-4 pr-1 sm:pr-4 ml-auto font-mono text-[10px] text-theme-500">
           <div className="flex items-center group-hover:text-theme-300 transition-colors">
-            <PlayIcon size={14} className="sm:size-16" />
-            <span className="font-bold ml-1">
-              {data?.count}
-            </span>
+            <PlayIcon size={14} className="sm:size-5" />
+            <span className="font-bold ml-1">{data?.count}</span>
           </div>
 
           <div className="flex items-center ml-2 sm:ml-0 group-hover:text-theme-300 transition-colors">
-            <Heart size={14} className="sm:size-16" />
-            <span className="font-bold ml-1">
-              {data?.like_count}
-            </span>
+            <Heart size={14} className="sm:size-5" />
+            <span className="font-bold ml-1">{data?.like_count}</span>
           </div>
         </div>
       </motion.div>
     );
-  }
+  },
 );
 
 // 表示名を設定

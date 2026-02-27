@@ -1,18 +1,12 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import useVolumeStore from "@/hooks/stores/useVolumeStore";
 import Slider from "./Slider";
 
 const VolumeControl: React.FC = () => {
-  // モバイルは固定値1を使用、デスクトップはストアから取得
-  const [mobileVolume, setMobileVolume] = useState(1);
-  const { volume: storedVolume, setVolume: setStoredVolume } = useVolumeStore();
-
-  const volume = isMobile ? mobileVolume : storedVolume;
-  const setVolume = isMobile ? setMobileVolume : setStoredVolume;
+  const { volume, setVolume } = useVolumeStore();
 
   const [showSlider, setShowSlider] = useState(false);
 
@@ -33,9 +27,6 @@ const VolumeControl: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [showSlider]);
 
-  // モバイルでは非表示
-  if (isMobile) return null;
-
   return (
     <div className="relative">
       <VolumeIcon
@@ -53,7 +44,7 @@ const VolumeControl: React.FC = () => {
         {/* HUD装飾コーナー */}
         <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-theme-500/60" />
         <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-theme-500/60" />
-        
+
         <div className="flex flex-col items-center gap-y-3">
           <Slider value={volume} onChange={(value) => setVolume(value)} />
           <div className="h-px w-full bg-theme-500/20 my-1" />
