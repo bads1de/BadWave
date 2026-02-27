@@ -18,7 +18,7 @@ const AlertDialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-40 bg-black/90 backdrop-blur-md duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-40 bg-[#0a0a0f]/90 backdrop-blur-md duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
     )}
     {...props}
@@ -36,11 +36,20 @@ const AlertDialogContent = React.forwardRef<
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
-        " fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 p-6 duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl border border-zinc-700/50 bg-black backdrop-blur-sm shadow-2xl",
+        " fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-6 p-10 duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 rounded-none border-2 border-theme-500/40 bg-[#0a0a0f] shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_20px_rgba(var(--theme-500),0.1)] font-mono cyber-glitch",
         className
       )}
       {...props}
-    />
+    >
+      {/* HUDコーナー */}
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-theme-500/60" />
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-theme-500/60" />
+      
+      {/* 背景装飾 */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
+      
+      {props.children}
+    </AlertDialogPrimitive.Content>
   </AlertDialogPortal>
 ));
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
@@ -51,7 +60,7 @@ const AlertDialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col space-y-2 text-center sm:text-left",
+      "flex flex-col space-y-3 text-center sm:text-left relative z-10 border-l-4 border-red-500 pl-4",
       className
     )}
     {...props}
@@ -65,7 +74,7 @@ const AlertDialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-4 relative z-10",
       className
     )}
     {...props}
@@ -79,7 +88,7 @@ const AlertDialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Title
     ref={ref}
-    className={cn("text-lg font-semibold", className)}
+    className={cn("text-2xl font-black uppercase tracking-tighter text-white drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]", className)}
     {...props}
   />
 ));
@@ -91,7 +100,7 @@ const AlertDialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Description
     ref={ref}
-    className={cn("text-base text-zinc-300", className)}
+    className={cn("text-[10px] text-theme-500 font-bold uppercase tracking-widest leading-relaxed", className)}
     {...props}
   />
 ));
@@ -105,8 +114,7 @@ const AlertDialogAction = React.forwardRef<
   <AlertDialogPrimitive.Action
     ref={ref}
     className={cn(
-      buttonVariants(),
-      "bg-red-700 hover:bg-red-800 text-white rounded-xl px-4 py-2",
+      "bg-red-500 text-white hover:bg-red-600 rounded-none px-6 py-3 font-black uppercase tracking-[0.3em] text-xs transition-all duration-300 shadow-[0_0_15px_rgba(239,68,68,0.4)] cyber-glitch",
       className
     )}
     {...props}
@@ -121,8 +129,7 @@ const AlertDialogCancel = React.forwardRef<
   <AlertDialogPrimitive.Cancel
     ref={ref}
     className={cn(
-      buttonVariants({ variant: "outline" }),
-      "mt-2 sm:mt-0 bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700 rounded-xl px-4 py-2",
+      "bg-theme-500/10 border border-theme-500/40 text-theme-500 hover:text-white hover:bg-theme-500/30 rounded-none px-6 py-3 font-black uppercase tracking-[0.3em] text-xs transition-all duration-300",
       className
     )}
     {...props}

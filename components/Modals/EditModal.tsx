@@ -95,138 +95,176 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
 
   return (
     <Modal
-      title="曲を編集"
-      description="曲の情報を編集します。"
+      title="ASSET_MODIFICATION"
+      description="EXECUTE_DATA_OVERRIDE_ON_TARGET_NODE"
       isOpen={isOpen}
       onChange={() => onClose()}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-y-4"
+        className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono"
         aria-label="曲の編集"
       >
-        <Input
-          disabled={isLoading}
-          {...register("title", { required: true })}
-          placeholder="曲のタイトル"
-        />
-        <Input
-          disabled={isLoading}
-          {...register("author", { required: true })}
-          placeholder="曲の作者"
-        />
-        <div className="relative">
-          <Textarea
-            disabled={isLoading}
-            {...register("lyrics")}
-            placeholder="歌詞 (LRC形式も可)"
-            className="bg-neutral-700 min-h-[150px]"
-          />
-          <div className="absolute top-2 right-2">
-            <label
-              htmlFor="lrc-upload"
-              className="cursor-pointer bg-neutral-600 hover:bg-neutral-500 text-white text-xs px-2 py-1 rounded transition"
-            >
-              LRC読込
-            </label>
-            <input
-              id="lrc-upload"
-              type="file"
-              accept=".lrc,.txt"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                  const text = ev.target?.result as string;
-                  if (text) {
-                    setValue("lyrics", text);
-                  }
-                };
-                reader.readAsText(file);
-                // Reset input value to allow selecting the same file again
-                e.target.value = "";
-              }}
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">[ DATA_IDENTIFIER ]</label>
+              <Input
+                disabled={isLoading}
+                {...register("title", { required: true })}
+                placeholder="TRACK_NAME"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">[ ORIGIN_AUTH ]</label>
+              <Input
+                disabled={isLoading}
+                {...register("author", { required: true })}
+                placeholder="OPERATOR_ID"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1 relative">
+            <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">[ TEXTUAL_LOG ]</label>
+            <Textarea
+              disabled={isLoading}
+              {...register("lyrics")}
+              placeholder="LYRICS_DATA_STREAM"
+              className="min-h-[180px]"
+            />
+            <div className="absolute top-8 right-2">
+              <label
+                htmlFor="lrc-upload"
+                className="cursor-pointer bg-theme-500/10 border border-theme-500/40 hover:bg-theme-500 hover:text-[#0a0a0f] text-[8px] font-black px-2 py-1 transition-all uppercase tracking-widest"
+              >
+                // LOAD_LRC
+              </label>
+              <input
+                id="lrc-upload"
+                type="file"
+                accept=".lrc,.txt"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (ev) => {
+                    const text = ev.target?.result as string;
+                    if (text) {
+                      setValue("lyrics", text);
+                    }
+                  };
+                  reader.readAsText(file);
+                  e.target.value = "";
+                }}
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-1">
+            <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">[ SECTOR_LINK ]</label>
+            <GenreSelect
+              onGenreChange={(genres: string) => setSelectedGenres([genres])}
             />
           </div>
         </div>
-        <GenreSelect
-          onGenreChange={(genres: string) => setSelectedGenres([genres])}
-        />
 
-        <div>
-          <label htmlFor="song" className="pb-1 block">
-            曲を選択（50MB以下）
-          </label>
-          <Input
-            id="song"
-            disabled={isLoading}
-            type="file"
-            accept="audio/*"
-            {...register("song")}
-          />
-          {song.song_path && (
-            <div className="mt-2">
-              <audio controls className="w-full mt-2">
-                <source src={song.song_path} type="audio/mpeg" />
-              </audio>
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="image" className="pb-1 block">
-            画像を選択（5MB以下）
-          </label>
-          <Input
-            id="image"
-            disabled={isLoading}
-            type="file"
-            accept="image/*"
-            {...register("image")}
-          />
-          {song.image_path && (
-            <div className="mt-2 relative w-32 h-32">
-              <Image
-                src={song.image_path}
-                alt="現在の画像"
-                fill
-                className="object-cover rounded-md"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <label htmlFor="song" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ AUDIO_BINARY_SWAP ]
+              </label>
+              <Input
+                id="song"
+                disabled={isLoading}
+                type="file"
+                accept="audio/*"
+                {...register("song")}
+                className="text-[10px]"
               />
+              {song.song_path && (
+                <div className="mt-2 p-4 bg-theme-500/5 border border-theme-500/10">
+                  <div className="flex justify-between items-center text-[8px] text-theme-500/40 uppercase mb-2">
+                     <span>CURRENT_SIGNAL_PATH</span>
+                     <span className="text-green-500">READY</span>
+                  </div>
+                  <audio controls className="w-full h-8 opacity-60 hover:opacity-100 transition-opacity">
+                    <source src={song.song_path} type="audio/mpeg" />
+                  </audio>
+                </div>
+              )}
             </div>
-          )}
+
+            <div className="space-y-1">
+              <label htmlFor="image" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ VISUAL_BUFFER_SWAP ]
+              </label>
+              <Input
+                id="image"
+                disabled={isLoading}
+                type="file"
+                accept="image/*"
+                {...register("image")}
+                className="text-[10px]"
+              />
+              {song.image_path && (
+                <div className="mt-2 relative w-full aspect-video border border-theme-500/20 group/img">
+                  <Image
+                    src={song.image_path}
+                    alt="Current Image"
+                    fill
+                    className="object-cover opacity-60 group-hover/img:opacity-100 transition-opacity"
+                    sizes="(max-width: 640px) 100vw, 300px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] to-transparent opacity-40" />
+                  <div className="absolute bottom-2 left-2 text-[8px] text-white font-bold bg-theme-500/40 px-2 py-0.5 border border-theme-500/60">
+                     EXISTING_TEXTURE
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="video" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ MOTION_DATA_LINK ]
+              </label>
+              <Input
+                id="video"
+                disabled={isLoading}
+                type="file"
+                accept="video/*"
+                {...register("video")}
+                className="text-[10px]"
+              />
+              {song.video_path && (
+                <div className="mt-2 flex items-center justify-between p-3 bg-theme-500/5 border border-theme-500/10">
+                  <span className="text-[8px] text-theme-500/60 uppercase tracking-widest">SIGNAL_DETECTED: .MP4</span>
+                  <a
+                    href={song.video_path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[8px] font-black text-theme-500 hover:text-white underline tracking-widest"
+                  >
+                    [ VERIFY_STREAM ]
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="video" className="pb-1 block">
-            ビデオを選択（5MB以下）
-          </label>
-          <Input
-            id="video"
-            disabled={isLoading}
-            type="file"
-            accept="video/*"
-            {...register("video")}
-          />
-          {song.video_path && (
-            <div className="mt-2">
-              <a
-                href={song.video_path}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-              >
-                既存のビデオを確認
-              </a>
-            </div>
-          )}
-        </div>
-
-        <Button disabled={isLoading} type="submit">
-          {isLoading ? "編集中..." : "編集"}
-        </Button>
+        <button 
+          disabled={isLoading} 
+          type="submit"
+          className="col-span-full relative group overflow-hidden bg-theme-500 text-[#0a0a0f] font-black py-4 uppercase tracking-[0.5em] transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] disabled:opacity-50 cyber-glitch"
+        >
+          <div className="relative z-10 flex items-center justify-center gap-3">
+            {isLoading ? "[ OVERWRITING_NODE... ]" : "// COMMIT_MODIFICATIONS"}
+          </div>
+          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
+        </button>
       </form>
     </Modal>
   );

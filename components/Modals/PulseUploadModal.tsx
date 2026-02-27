@@ -93,127 +93,122 @@ const PulseUploadModal: React.FC = memo(() => {
 
   return (
     <Modal
-      title="Pulseを投稿"
-      description="レトロな雰囲気の音声をPulseで共有しましょう！"
+      title="PULSE_TRANSMISSION"
+      description="BROADCAST_RETRO_SIGNAL_TO_THE_NETWORK"
       isOpen={pulseUploadModal.isOpen}
       onChange={onChange}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-y-4"
+        className="flex flex-col gap-y-6 font-mono"
         aria-label="Pulse投稿"
       >
-        {/* ヘッダーアイコン */}
-        <div className="flex items-center justify-center mb-2">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-theme-500/20 to-theme-600/10 border border-theme-500/20">
-            <RiPulseLine className="w-10 h-10 text-theme-400" />
-          </div>
-        </div>
-
-        {/* タイトル入力 */}
-        <div className="space-y-1">
-          <label htmlFor="title" className="text-sm text-zinc-400">
-            タイトル
-          </label>
-          <Input
-            id="title"
-            disabled={isLoading}
-            {...register("title", { required: true })}
-            placeholder="Pulseのタイトル"
-            className="h-10 bg-zinc-800/50 border-zinc-700/50 focus:border-theme-500/50"
-          />
-        </div>
-
-        {/* ジャンル入力 */}
-        <div className="space-y-1">
-          <label htmlFor="genre" className="text-sm text-zinc-400">
-            ジャンル
-          </label>
-          <Input
-            id="genre"
-            disabled={isLoading}
-            {...register("genre", { required: true })}
-            placeholder="例: Synthwave, Vaporwave, Retro"
-            className="h-10 bg-zinc-800/50 border-zinc-700/50 focus:border-theme-500/50"
-          />
-        </div>
-
-        {/* 音声ファイル選択 */}
-        <div className="space-y-1">
-          <label htmlFor="music" className="text-sm text-zinc-400">
-            音声ファイル
-          </label>
-          <div className="relative p-4 border-2 border-dashed rounded-xl bg-zinc-800/30 border-zinc-700/50 hover:border-theme-500/30 transition-colors">
-            <Input
-              type="file"
-              accept="audio/*"
-              id="music"
-              disabled={isLoading}
-              onChange={onFileChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <div className="text-center py-2">
-              <p className="text-sm text-zinc-400">
-                クリックまたはドラッグ&ドロップ
-              </p>
-              <p className="text-xs text-zinc-500 mt-1">
-                MP3, WAV, OGG などの音声ファイル
-              </p>
+        {/* ヘッダーアイコン (HUD Style) */}
+        <div className="flex items-center justify-center py-4">
+          <div className="relative group/pulse-icon">
+            <div className="absolute -inset-4 bg-theme-500/20 rounded-full blur-xl animate-pulse" />
+            <div className="relative p-6 border border-theme-500/40 bg-theme-500/5 shadow-[inset_0_0_20px_rgba(var(--theme-500),0.1)]">
+              <RiPulseLine className="w-12 h-12 text-theme-500 group-hover/pulse-icon:text-white transition-colors duration-500 drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)]" />
             </div>
           </div>
         </div>
 
-        {/* 音声プレビュー */}
-        {audioPreview && (
-          <div className="p-3 rounded-xl bg-zinc-800/50 border border-zinc-700/30">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-theme-500/10">
-                <RiPulseLine className="w-5 h-5 text-theme-400" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <label htmlFor="title" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ SIGNAL_IDENTIFIER ]
+              </label>
+              <Input
+                id="title"
+                disabled={isLoading}
+                {...register("title", { required: true })}
+                placeholder="INPUT_PULSE_NAME"
+                className="bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] rounded-none h-10"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="genre" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+                [ FREQUENCY_SECTOR ]
+              </label>
+              <Input
+                id="genre"
+                disabled={isLoading}
+                {...register("genre", { required: true })}
+                placeholder="SYNTH / VAPOR / RETRO"
+                className="bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] rounded-none h-10"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label htmlFor="music" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+              [ RAW_AUDIO_SOURCE ]
+            </label>
+            <div className="relative p-6 border-2 border-dashed border-theme-500/20 bg-[#0a0a0f] hover:border-theme-500/50 hover:bg-theme-500/5 transition-all duration-500 group rounded-none cursor-pointer h-[108px] flex items-center justify-center">
+              <Input
+                type="file"
+                accept="audio/*"
+                id="music"
+                disabled={isLoading}
+                onChange={onFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="text-center">
+                <p className="text-[10px] text-theme-300 font-black tracking-widest group-hover:text-white transition-colors">
+                  INITIATE_SIGNAL_SCAN
+                </p>
+                <p className="text-[8px] text-theme-500/40 mt-1 uppercase">
+                  MP3 // WAV // OGG
+                </p>
               </div>
-              <audio ref={audioRef} controls className="flex-1 h-8">
+            </div>
+          </div>
+        </div>
+
+        {/* 音声プレビュー (HUD Style) */}
+        {audioPreview && (
+          <div className="p-4 bg-[#0a0a0f] border border-theme-500/30 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.1)] relative overflow-hidden group">
+            <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="p-2 bg-theme-500/20 border border-theme-500/40">
+                <RiPulseLine className="w-5 h-5 text-theme-500 animate-pulse" />
+              </div>
+              <audio ref={audioRef} controls className="flex-1 h-8 opacity-80 hover:opacity-100 transition-opacity">
                 <source src={audioPreview} type="audio/mpeg" />
               </audio>
+            </div>
+            <div className="mt-2 text-[8px] text-theme-500/40 uppercase tracking-widest text-right italic">
+               signal_detected: authentic // status: stable
             </div>
           </div>
         )}
 
         {/* 送信ボタン */}
-        <Button
+        <button
           disabled={isLoading}
           type="submit"
-          className="mt-2 bg-gradient-to-r from-theme-500 to-theme-600 hover:from-theme-600 hover:to-theme-700 text-white font-medium py-3 rounded-xl transition-all duration-300 shadow-lg shadow-theme-500/20 hover:shadow-theme-500/40"
+          className="relative group overflow-hidden bg-theme-500 text-[#0a0a0f] font-black py-4 uppercase tracking-[0.5em] transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] disabled:opacity-50 cyber-glitch"
         >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <svg
-                className="animate-spin h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              アップロード中...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <RiPulseLine className="w-5 h-5" />
-              Pulseを投稿
-            </span>
-          )}
-        </Button>
+          <div className="relative z-10 flex items-center justify-center gap-3">
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                BROADCASTING...
+              </>
+            ) : (
+              <>
+                <RiPulseLine className="w-6 h-6" />
+                EXECUTE_BROADCAST
+              </>
+            )}
+          </div>
+          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
+        </button>
       </form>
     </Modal>
   );

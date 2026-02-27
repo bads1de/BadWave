@@ -51,25 +51,39 @@ const PlaylistModal = () => {
 
   return (
     <Modal
-      title="プレイリストを作成"
-      description="プレイリストのタイトルを入力してください"
+      title="COLLECTION_INITIATION"
+      description="ESTABLISH_NEW_DATA_CLUSTER_IDENTIFIER"
       isOpen={playlistModal.isOpen}
       onChange={onChange}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-y-4"
+        className="flex flex-col gap-y-6 font-mono"
         aria-label="プレイリスト作成"
       >
-        <Input
-          id="title"
+        <div className="space-y-2">
+          <label htmlFor="title" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+            [ COLLECTION_IDENTIFIER ]
+          </label>
+          <Input
+            id="title"
+            disabled={isLoading}
+            {...register("title", { required: true })}
+            placeholder="INPUT_CLUSTER_NAME"
+            className="bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] rounded-none h-12"
+          />
+        </div>
+        
+        <button
           disabled={isLoading}
-          {...register("title", { required: true })}
-          placeholder="プレイリスト名"
-        />
-        <Button disabled={isLoading} type="submit">
-          {isLoading ? "作成中" : "作成"}
-        </Button>
+          type="submit"
+          className="relative group overflow-hidden bg-theme-500 text-[#0a0a0f] font-black py-4 uppercase tracking-[0.5em] transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] disabled:opacity-50 cyber-glitch"
+        >
+          <div className="relative z-10 flex items-center justify-center gap-2">
+            {isLoading ? "[ CLUSTERING... ]" : "// EXECUTE_INITIATION"}
+          </div>
+          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
+        </button>
       </form>
     </Modal>
   );
