@@ -40,7 +40,7 @@ const PlaylistPageContent: React.FC<PlaylistPageContentProps> = memo(
               />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 border border-dashed border-theme-500/20 rounded-xl bg-theme-500/5">
+            <div className="flex flex-col items-center justify-center py-20 border border-dashed border-theme-500/20 rounded-none bg-theme-500/5">
               <p className="text-theme-500 font-mono tracking-widest uppercase animate-pulse">
                 [ ! ] NO_DATA_DETECTED_IN_SECTOR_PLAYLIST
               </p>

@@ -44,7 +44,7 @@ const SongList: React.FC<SongListProps> = memo(
         cursor-pointer
         w-full
         bg-[#0a0a0f]/60
-        rounded-xl
+        rounded-none
         p-2
         group
         hover:bg-theme-500/10
@@ -63,12 +63,12 @@ const SongList: React.FC<SongListProps> = memo(
         )}
       >
         {/* HUD装飾コーナー */}
-        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-theme-500/0 group-hover:border-theme-500/30 transition-colors pointer-events-none rounded-tr-xl" />
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-theme-500/0 group-hover:border-theme-500/30 transition-colors pointer-events-none rounded-bl-xl" />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-theme-500/0 group-hover:border-theme-500/30 transition-colors pointer-events-none rounded-none" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-theme-500/0 group-hover:border-theme-500/30 transition-colors pointer-events-none rounded-none" />
 
         <div
           onClick={handleClick}
-          className="relative w-12 h-12 sm:w-16 sm:h-16 min-w-12 sm:min-w-16 rounded-lg overflow-hidden group-hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-300 border border-theme-500/10"
+          className="relative w-12 h-12 sm:w-16 sm:h-16 min-w-12 sm:min-w-16 rounded-none overflow-hidden group-hover:shadow-[0_0_15px_rgba(var(--theme-500),0.4)] transition-all duration-300 border border-theme-500/10"
         >
           {data.image_path && (
             <Image

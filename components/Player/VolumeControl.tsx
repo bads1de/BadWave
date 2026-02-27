@@ -40,24 +40,25 @@ const VolumeControl: React.FC = () => {
     <div className="relative">
       <VolumeIcon
         onClick={handleClick}
-        className="cursor-pointer text-theme-500 hover:text-white transition-all duration-300 drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]"
+        className="cursor-pointer text-theme-500 hover:text-white transition-all duration-300 drop-shadow-[0_0_8px_rgba(var(--theme-500),0.6)]"
         size={20}
       />
       <div
-        className={`absolute bottom-full rounded-none mb-4 right-0 transition-all duration-500 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.8),0_0_15px_rgba(var(--theme-500),0.1)] border border-theme-500/30 ${
+        className={`absolute bottom-full rounded-none mb-6 right-[-8px] transition-all duration-500 z-[100] bg-[#0a0a0f]/95 backdrop-blur-xl p-5 shadow-[0_0_40px_rgba(0,0,0,0.9),0_0_20px_rgba(var(--theme-500),0.15)] border border-theme-500/40 ${
           showSlider
-            ? "opacity-100 transform translate-y-0"
-            : "opacity-0 pointer-events-none transform translate-y-4"
+            ? "opacity-100 transform translate-y-0 scale-100"
+            : "opacity-0 pointer-events-none transform translate-y-4 scale-95"
         }`}
       >
         {/* HUD装飾コーナー */}
-        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-theme-500/60" />
-        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-theme-500/60" />
+        <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-theme-500/60" />
+        <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-theme-500/60" />
         
-        <div className="flex flex-col items-center gap-y-2">
+        <div className="flex flex-col items-center gap-y-3">
           <Slider value={volume} onChange={(value) => setVolume(value)} />
-          <span className="text-[8px] font-mono text-theme-500 font-bold uppercase tracking-tighter">
-            VOL_{Math.round(volume * 100)}%
+          <div className="h-px w-full bg-theme-500/20 my-1" />
+          <span className="text-[9px] font-mono text-white font-black uppercase tracking-widest drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]">
+            {Math.round(volume * 100)}%
           </span>
         </div>
       </div>

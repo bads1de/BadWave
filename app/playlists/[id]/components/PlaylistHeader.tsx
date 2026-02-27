@@ -66,10 +66,10 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = memo(
               className="relative h-32 w-32 md:h-64 md:w-64 group mx-auto md:mx-0 cyber-glitch"
             >
               {/* HUDコーナー */}
-              <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-theme-500/60 pointer-events-none rounded-tl-xl shadow-[-5px_-5px_15px_rgba(var(--theme-500),0.2)]" />
-              <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-theme-500/60 pointer-events-none rounded-br-xl shadow-[5px_5px_15px_rgba(var(--theme-500),0.2)]" />
+              <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-theme-500/60 pointer-events-none rounded-none shadow-[-5px_-5px_15px_rgba(var(--theme-500),0.2)]" />
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-theme-500/60 pointer-events-none rounded-none shadow-[5px_5px_15px_rgba(var(--theme-500),0.2)]" />
               
-              <div className="relative h-full w-full overflow-hidden rounded-xl border border-theme-500/40 shadow-[0_0_30px_rgba(var(--theme-500),0.2)]">
+              <div className="relative h-full w-full overflow-hidden rounded-none border border-theme-500/40 shadow-[0_0_30px_rgba(var(--theme-500),0.2)]">
                 <Image
                   src={imageUrl}
                   alt="Playlist"

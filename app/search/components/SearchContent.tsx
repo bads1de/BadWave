@@ -31,8 +31,13 @@ const SongListSection = memo(
 
     if (songs.length === 0) {
       return (
-        <div className="flex flex-col gap-y-2 w-full text-neutral-400 p-6">
-          <h1>該当の曲が見つかりませんでした</h1>
+        <div className="flex flex-col gap-y-4 w-full p-12 border border-dashed border-theme-500/20 bg-theme-500/5 items-center justify-center font-mono">
+          <h1 className="text-theme-500/60 uppercase tracking-[0.4em] text-sm animate-pulse">
+            [ ! ] NO_BINARY_STREAMS_FOUND_IN_SECTOR
+          </h1>
+          <p className="text-[8px] text-theme-500/20 uppercase tracking-widest">
+            broadcasting_scan_signal: negative
+          </p>
         </div>
       );
     }
@@ -84,13 +89,13 @@ const PlaylistSection = memo(({ playlists }: PlaylistSectionProps) => {
           }
         >
           {/* HUD装飾背後 */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-theme-500/20 via-theme-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity blur-sm rounded-xl" />
+          <div className="absolute -inset-1 bg-gradient-to-r from-theme-500/20 via-theme-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity blur-sm rounded-none" />
           
-          <div className="relative bg-[#0a0a0f] border border-theme-500/20 rounded-xl p-4 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:border-theme-500/60 group-hover:shadow-[0_10px_30px_rgba(var(--theme-500),0.15)] overflow-hidden">
+          <div className="relative bg-[#0a0a0f] border border-theme-500/20 rounded-none p-4 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:border-theme-500/60 group-hover:shadow-[0_10px_30px_rgba(var(--theme-500),0.15)] overflow-hidden">
             {/* 角のアクセント */}
-            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/0 group-hover:border-theme-500/40 transition-colors pointer-events-none rounded-tr-xl" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/0 group-hover:border-theme-500/40 transition-colors pointer-events-none rounded-none" />
             
-            <div className="relative aspect-square w-full overflow-hidden rounded-lg mb-4 border border-theme-500/10">
+            <div className="relative aspect-square w-full overflow-hidden rounded-none mb-4 border border-theme-500/10">
               <Image
                 src={playlist.image_path || "/images/playlist.png"}
                 alt={playlist.title}

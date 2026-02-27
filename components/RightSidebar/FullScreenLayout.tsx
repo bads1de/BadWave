@@ -20,7 +20,7 @@ const FullScreenLayout: React.FC<FullScreenLayoutProps> = React.memo(
 
     if (showLyrics) {
       return (
-        <div className="relative w-full h-full bg-black/20 backdrop-blur-sm custom-scrollbar rounded-xl border border-white/5">
+        <div className="relative w-full h-full bg-black/20 backdrop-blur-sm custom-scrollbar rounded-none border border-theme-500/10">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40 pointer-events-none" />
           <div className="flex items-center justify-center h-full py-8 px-6">
             <div className="w-full max-h-full overflow-y-auto custom-scrollbar pr-2">
@@ -32,7 +32,7 @@ const FullScreenLayout: React.FC<FullScreenLayoutProps> = React.memo(
     }
 
     return (
-      <div className="relative w-full h-full overflow-hidden rounded-xl shadow-2xl ring-1 ring-white/5 bg-neutral-900 group">
+      <div className="relative w-full h-full overflow-hidden rounded-none shadow-2xl border-l border-theme-500/10 bg-[#0a0a0f] group">
         <CurrentSongDisplay
           song={song}
           videoPath={videoPath}

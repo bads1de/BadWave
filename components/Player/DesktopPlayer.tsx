@@ -64,7 +64,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
     };
 
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 h-full bg-[#0a0a0f] border-t border-theme-500/30 rounded-t-xl neon-border overflow-hidden">
+      <div className="grid grid-cols-2 md:grid-cols-3 h-full bg-[#0a0a0f] border-t border-theme-500/10 relative">
         <div className="flex w-full justify-start px-4">
           <div className="flex items-center gap-x-4">
             <MediaItem data={song} onClick={handleMediaClick} />
@@ -74,11 +74,11 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
         <div className="flex md:hidden col-auto w-full justify-end items-center pr-6">
           <div
             onClick={handlePlay}
-            className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#08101f] to-[#0d0d0d] p-1 cursor-pointer group"
+            className="h-12 w-12 flex items-center justify-center border border-theme-500/40 bg-theme-500/10 cursor-pointer group hover:bg-theme-500 transition-all duration-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
           >
             <Icon
-              size={30}
-              className="text-[#f0f0f0] group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              size={32}
+              className="text-white group-hover:text-[#0a0a0f] transition-colors"
             />
           </div>
         </div>
