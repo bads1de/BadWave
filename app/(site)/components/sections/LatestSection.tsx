@@ -16,7 +16,7 @@ interface LatestSectionProps {
 const LatestSection: React.FC<LatestSectionProps> = ({ songs }) => {
   return (
     <section className="relative">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6 group/header">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6 group/header px-1 sm:px-2">
         <div className="flex items-center gap-x-4">
           <div className="h-10 w-1 bg-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.8)] animate-pulse" />
           <div>
