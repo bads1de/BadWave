@@ -105,11 +105,12 @@ const MobilePlayerContent = React.memo(
           )}
           {/* Cyberpunk Overlay Effects */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-transparent to-[#0a0a0f]" />
-          <div className="absolute inset-0 opacity-10 pointer-events-none" 
-               style={{ 
-                 backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-                 backgroundSize: '30px 30px'
-               }} 
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
+              backgroundSize: "30px 30px",
+            }}
           />
           <div className="absolute inset-0 pointer-events-none opacity-5 bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
         </div>
@@ -121,10 +122,10 @@ const MobilePlayerContent = React.memo(
         <div className="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-theme-500/40 pointer-events-none z-20" />
 
         {/* Top Bar */}
-        <div className="relative z-10 flex items-center justify-between px-8 pt-14 pb-4">
+        <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-10 sm:pt-14 pb-2 sm:pb-4">
           <button
             onClick={toggleMobilePlayer}
-            className="p-3 bg-theme-500/10 border border-theme-500/30 text-theme-500 hover:text-white transition-all cyber-glitch"
+            className="p-2 sm:p-3 bg-theme-500/10 border border-theme-500/30 text-theme-500 hover:text-white transition-all cyber-glitch"
           >
             <BsChevronDown size={24} />
           </button>
@@ -133,52 +134,54 @@ const MobilePlayerContent = React.memo(
               [ STREAM_MONITORING ]
             </span>
             <div className="flex gap-2 items-center mt-1">
-               <div className="w-1 h-1 bg-red-500 rounded-full animate-ping" />
-               <span className="text-[8px] text-theme-500/60 font-mono">LIVE_DECRYPTING...</span>
+              <div className="w-1 h-1 bg-red-500 rounded-full animate-ping" />
+              <span className="text-[8px] text-theme-500/60 font-mono">
+                LIVE_DECRYPTING...
+              </span>
             </div>
           </div>
           <div className="w-12" /> {/* Spacer for balance */}
         </div>
 
         {/* Middle Area: Artwork / Visualizer */}
-        <div className="flex-1 flex flex-col items-center justify-center px-10 relative">
-           <div className="relative w-full aspect-square max-w-[280px] group">
-              {/* 装飾用サークル */}
-              <div className="absolute -inset-4 border border-theme-500/20 rounded-full animate-[spin_10s_linear_infinite]" />
-              <div className="absolute -inset-8 border border-theme-500/10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
-              
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-theme-500/60 shadow-[0_0_30px_rgba(var(--theme-500),0.3)] cyber-glitch">
-                 <Image
-                   src={imageUrl}
-                   alt="artwork"
-                   fill
-                   className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                 />
-                 {/* シグナルオーバーレイ */}
-                 <div className="absolute inset-0 bg-theme-500/10 mix-blend-overlay animate-pulse" />
-              </div>
-           </div>
+        <div className="flex-1 flex flex-col items-center justify-center px-10 relative min-h-0">
+          <div className="relative w-full aspect-square max-w-[240px] sm:max-w-[280px] group">
+            {/* 装飾用サークル */}
+            <div className="absolute -inset-4 border border-theme-500/20 rounded-full animate-[spin_10s_linear_infinite]" />
+            <div className="absolute -inset-8 border border-theme-500/10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+
+            <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-theme-500/60 shadow-[0_0_30px_rgba(var(--theme-500),0.3)] cyber-glitch">
+              <Image
+                src={imageUrl}
+                alt="artwork"
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-1000"
+              />
+              {/* シグナルオーバーレイ */}
+              <div className="absolute inset-0 bg-theme-500/10 mix-blend-overlay animate-pulse" />
+            </div>
+          </div>
         </div>
 
         {/* Bottom Controls Area */}
-        <div className="relative z-10 px-8 pb-16 w-full flex flex-col gap-8 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent pt-10">
+        <div className="relative z-10 px-4 sm:px-8 pb-8 sm:pb-12 w-full flex flex-col gap-4 sm:gap-6 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent pt-6 sm:pt-10">
           {/* Title, Artist */}
-          <div className="space-y-2 text-center">
-            <div className="inline-block px-2 py-0.5 bg-theme-500/20 border border-theme-500/40 text-[8px] text-theme-300 mb-2 uppercase tracking-widest">
-               Track_ID: {String(song.id).slice(0, 8)}
+          <div className="space-y-1 sm:space-y-2 text-center">
+            <div className="inline-block px-2 py-0.5 bg-theme-500/20 border border-theme-500/40 text-[8px] text-theme-300 mb-1 sm:mb-2 uppercase tracking-widest">
+              Track_ID: {String(song.id).slice(0, 8)}
             </div>
             <Link href={`/songs/${song.id}`}>
-              <h1 className="text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)] hover:text-theme-300 transition-colors">
+              <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)] hover:text-theme-300 transition-colors hover:truncate">
                 <ScrollingText text={song.title} limitCharacters={15} />
               </h1>
             </Link>
-            <p className="text-sm text-theme-500 uppercase tracking-[0.3em]">
+            <p className="text-xs sm:text-sm text-theme-500 uppercase tracking-[0.3em]">
               // AUTH: {song.author}
             </p>
           </div>
 
           {/* Seekbar Section */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <SeekBar
               currentTime={currentTime}
               duration={duration}
@@ -222,19 +225,22 @@ const MobilePlayerContent = React.memo(
             </button>
 
             <div className="flex gap-4">
-               <PlaybackSpeedButton />
-               <EqualizerButton />
+              <PlaybackSpeedButton />
+              <EqualizerButton />
             </div>
 
             <div className="flex gap-4 items-center">
-               <LikeButton songId={song.id} size={22} songType="regular" />
-               <AddPlaylist
-                 playlists={playlists}
-                 songId={song.id}
-                 songType="regular"
-               >
-                 <RiPlayListAddFill size={22} className="text-theme-500/60 hover:text-theme-300" />
-               </AddPlaylist>
+              <LikeButton songId={song.id} size={22} songType="regular" />
+              <AddPlaylist
+                playlists={playlists}
+                songId={song.id}
+                songType="regular"
+              >
+                <RiPlayListAddFill
+                  size={22}
+                  className="text-theme-500/60 hover:text-theme-300"
+                />
+              </AddPlaylist>
             </div>
           </div>
         </div>
@@ -246,7 +252,7 @@ const MobilePlayerContent = React.memo(
         />
       </motion.div>
     );
-  }
+  },
 );
 
 MobilePlayerContent.displayName = "MobilePlayerContent";
