@@ -56,7 +56,7 @@ const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
     }
 
     return (
-      <Card className="mx-2 overflow-hidden rounded-none bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/20 hover:border-theme-500/50 transition-all duration-500 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.05)] group/card cyber-glitch">
+      <Card className="overflow-hidden rounded-none bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/20 hover:border-theme-500/50 transition-all duration-500 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.05)] group/card cyber-glitch">
         <button
           onClick={authModal.onOpen}
           className="w-full p-4 relative hover:bg-theme-500/10 transition-all duration-300"
@@ -111,17 +111,17 @@ const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
 
   return (
     <Card
-      className="mx-3 overflow-hidden rounded-none bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/30 hover:border-theme-500/60 transition-all duration-500 shadow-[inset_0_0_20px_rgba(var(--theme-500),0.05)] group/card cyber-glitch"
+      className="overflow-hidden rounded-none bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/30 hover:border-theme-500/60 transition-all duration-500 shadow-[inset_0_0_20px_rgba(var(--theme-500),0.05)] group/card cyber-glitch"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative">
         {/* 背景装飾 */}
         <div className="absolute inset-0 bg-gradient-to-br from-theme-500/10 via-transparent to-transparent opacity-40 group-hover/card:opacity-100 transition-all duration-500" />
-        
-        <div className="p-4 relative">
-          <div className="flex items-center gap-4">
-            <div className="relative w-14 h-14 rounded-none overflow-hidden border-2 border-theme-500/40 flex-shrink-0 shadow-[0_0_15px_rgba(var(--theme-500),0.2)] group-hover/card:border-theme-500 transition-all duration-500">
+
+        <div className="p-3 relative">
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10 rounded-none overflow-hidden border-2 border-theme-500/40 flex-shrink-0 shadow-[0_0_15px_rgba(var(--theme-500),0.2)] group-hover/card:border-theme-500 transition-all duration-500">
               {userDetails?.avatar_url ? (
                 <Image
                   src={userDetails.avatar_url}
@@ -132,40 +132,40 @@ const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-theme-900">
-                  <User className="w-6 h-6 text-theme-500" />
+                  <User className="w-5 h-5 text-theme-500" />
                 </div>
               )}
             </div>
 
-            <div className="flex-1 min-w-0 font-mono">
-              <p className="text-[10px] text-theme-500/60 uppercase tracking-widest mb-1 animate-pulse">
-                [ OPERATOR_ID ]
+            <div className="flex-1 min-w-0 font-mono flex flex-col justify-center">
+              <p className="text-[8px] text-theme-500/60 uppercase tracking-widest mb-0.5 animate-pulse truncate">
+                [ OP_ID ]
               </p>
-              <p className="text-sm font-bold text-white truncate uppercase tracking-tighter drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]">
+              <p className="text-xs font-bold text-white truncate uppercase tracking-widest drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]">
                 {userDetails?.full_name || "UNKNOWN"}
               </p>
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1">
               <button
                 onClick={() => router.push("/account")}
-                className="p-2 bg-theme-500/10 hover:bg-theme-500/30 border border-theme-500/30 text-theme-400 hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(var(--theme-500),0.1)]"
+                className="p-1.5 bg-theme-500/10 hover:bg-theme-500/30 border border-theme-500/30 text-theme-400 hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(var(--theme-500),0.1)]"
               >
-                <Settings size={16} />
+                <Settings size={14} />
               </button>
               <button
                 onClick={handleLogout}
-                className="p-2 bg-red-500/10 hover:bg-red-500/30 border border-red-500/30 text-red-400 hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
+                className="p-1.5 bg-red-500/10 hover:bg-red-500/30 border border-red-500/30 text-red-400 hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
               >
-                <LogOut size={16} />
+                <LogOut size={14} />
               </button>
             </div>
           </div>
         </div>
-        
+
         {/* 下部のプログレスバー的な装飾 */}
         <div className="h-0.5 w-full bg-theme-500/10 relative overflow-hidden">
-           <div className="absolute top-0 left-0 h-full bg-theme-500/40 w-1/3 animate-slide-in" />
+          <div className="absolute top-0 left-0 h-full bg-theme-500/40 w-1/3 animate-slide-in" />
         </div>
       </div>
     </Card>

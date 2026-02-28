@@ -123,7 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
       <div
         className={twMerge(
           "flex flex-col gap-y-3 bg-[#0a0a0f]/95 h-full p-3 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] backdrop-blur-3xl border-r border-theme-500/20 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative z-50",
-          isCollapsed ? "w-[100px]" : "w-[320px]",
+          isCollapsed ? "w-[100px]" : "w-[240px]",
           "hidden md:flex font-mono shrink-0",
         )}
       >
@@ -136,8 +136,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           }}
         />
 
-        <div className="flex items-center justify-between px-3 py-4 relative z-10">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-2 py-3 relative z-10">
+          <div className="flex items-center gap-2">
             <div className="relative group cyber-glitch">
               <div className="absolute -inset-2 bg-theme-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
               <Image
@@ -166,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         </div>
 
         <Box className="flex-1 bg-[#0a0a0f]/40 border-theme-500/20 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)]">
-          <div className="flex flex-col gap-y-4 px-4 py-4 uppercase text-xs tracking-widest">
+          <div className="flex flex-col gap-y-3 px-2 py-3 uppercase text-xs tracking-widest">
             {routes.map((item) => (
               <SidebarItem
                 key={item.label}
@@ -180,21 +180,38 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   <PopoverTrigger asChild>
                     <div
                       className={twMerge(
-                        "cursor-pointer transition-all duration-500 cyber-glitch relative group",
+                        "cursor-pointer transition-all duration-500 cyber-glitch relative group/item",
                         isCollapsed
                           ? "w-full flex items-center justify-center border-b border-transparent"
-                          : "flex h-auto w-full items-center gap-x-4 py-3.5 px-4 rounded-xl",
+                          : "flex h-auto w-full items-center gap-x-3 py-3 px-3 rounded-none",
                         isLibraryActive
                           ? isCollapsed
                             ? "border-theme-500/30 text-theme-300"
-                            : "bg-theme-500/20 text-white border border-theme-500/50 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
+                            : "bg-[#0a0a0f] text-white border border-theme-500/50 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.15)]"
                           : `border border-transparent ${
                               isCollapsed
                                 ? "border-white/5"
-                                : "text-theme-500/60 hover:text-white hover:bg-theme-500/10 hover:border-theme-500/30"
+                                : "text-theme-500/60 hover:text-white hover:bg-theme-500/5 hover:border-theme-500/30"
                             }`,
                       )}
                     >
+                      {/* HUD装飾コーナー */}
+                      <div
+                        className={twMerge(
+                          "absolute top-0 right-0 w-2 h-2 border-t border-r transition-colors z-10",
+                          isLibraryActive
+                            ? "border-theme-500"
+                            : "border-theme-500/0 group-hover/item:border-theme-500/40",
+                        )}
+                      />
+                      <div
+                        className={twMerge(
+                          "absolute bottom-0 left-0 w-2 h-2 border-b border-l transition-colors z-10",
+                          isLibraryActive
+                            ? "border-theme-500"
+                            : "border-theme-500/0 group-hover/item:border-theme-500/40",
+                        )}
+                      />
                       {isCollapsed ? (
                         <Hover
                           description="[ LIBRARY ]"
@@ -266,13 +283,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   <PopoverTrigger asChild>
                     <div
                       className={twMerge(
-                        "cursor-pointer transition-all duration-500 cyber-glitch relative group",
+                        "cursor-pointer transition-all duration-500 cyber-glitch relative group/item",
                         isCollapsed
                           ? "w-full flex items-center justify-center border-b border-transparent"
-                          : "flex h-auto w-full items-center gap-x-4 py-3.5 px-4 rounded-xl",
-                        "border border-transparent text-theme-500/60 hover:text-white hover:bg-theme-500/10 hover:border-theme-500/30",
+                          : "flex h-auto w-full items-center gap-x-3 py-3 px-3 rounded-none",
+                        "border border-transparent text-theme-500/60 hover:text-white hover:bg-theme-500/5 hover:border-theme-500/30",
                       )}
                     >
+                      {/* HUD装飾コーナー */}
+                      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-theme-500/0 group-hover/item:border-theme-500/40 transition-colors z-10" />
+                      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-theme-500/0 group-hover/item:border-theme-500/40 transition-colors z-10" />
                       {isCollapsed ? (
                         <Hover
                           description="[ STUDIO ]"
@@ -326,7 +346,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           </div>
         </Box>
 
-        <div className="mt-auto pt-4 mb-6 px-1 relative z-10">
+        <div className="mt-auto pt-4 mb-6 relative z-10">
           <UserCard userDetails={userDetails} isCollapsed={isCollapsed} />
         </div>
       </div>
