@@ -71,7 +71,7 @@ const DesktopPlayer: React.FC<DesktopPlayerProps> = React.memo(
           </div>
         </div>
 
-        <div className="flex md:hidden col-auto w-full justify-end items-center pr-6">
+        <div className="flex md:hidden col-auto w-full justify-end items-center pr-4 pb-2">
           <div
             onClick={handlePlay}
             className="h-12 w-12 flex items-center justify-center border border-theme-500/40 bg-theme-500/10 cursor-pointer group hover:bg-theme-500 transition-all duration-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"

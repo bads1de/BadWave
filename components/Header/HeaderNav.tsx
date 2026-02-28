@@ -47,33 +47,41 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   };
 
   return (
-    <div className={`flex items-center gap-x-4 font-mono ${className}`}>
+    <div
+      className={`flex items-center justify-between gap-x-2 md:gap-x-4 font-mono w-full ${className}`}
+    >
       <button
         onClick={() => handleTabChange("songs")}
-        className={`flex items-center gap-2 px-6 py-2.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch ${
+        className={`flex-1 flex justify-center items-center gap-1 md:gap-2 px-2 md:px-6 py-2.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch whitespace-nowrap ${
           activeTab === "songs"
             ? "bg-theme-500/20 text-white border border-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
             : "bg-theme-500/5 border border-theme-500/10 text-theme-500/60 hover:text-white hover:border-theme-500/40"
         }`}
       >
         {activeTab === "songs" && (
-           <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white" />
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white" />
         )}
-        <MdLibraryMusic size={14} className={activeTab === "songs" ? "text-theme-500" : ""} />
+        <MdLibraryMusic
+          size={14}
+          className={activeTab === "songs" ? "text-theme-500" : ""}
+        />
         <span>[ AUDIO_NODES ]</span>
       </button>
       <button
         onClick={() => handleTabChange("playlists")}
-        className={`flex items-center gap-2 px-6 py-2.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch ${
+        className={`flex-1 flex justify-center items-center gap-1 md:gap-2 px-2 md:px-6 py-2.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden cyber-glitch whitespace-nowrap ${
           activeTab === "playlists"
             ? "bg-theme-500/20 text-white border border-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
             : "bg-theme-500/5 border border-theme-500/10 text-theme-500/60 hover:text-white hover:border-theme-500/40"
         }`}
       >
         {activeTab === "playlists" && (
-           <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white" />
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white" />
         )}
-        <RiPlayListFill size={14} className={activeTab === "playlists" ? "text-theme-500" : ""} />
+        <RiPlayListFill
+          size={14}
+          className={activeTab === "playlists" ? "text-theme-500" : ""}
+        />
         <span>[ COLLECTION_DATA ]</span>
       </button>
     </div>
