@@ -22,6 +22,7 @@ const useGetTrendSongs = (
   const {
     data: trends = [],
     isLoading,
+    error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.trendSongs, period],
     queryFn: () => getTrendSongs(period),
@@ -35,7 +36,7 @@ const useGetTrendSongs = (
   });
 
 
-  return { trends, isLoading };
+  return { trends, isLoading, error };
 };
 
 export default useGetTrendSongs;
