@@ -1,7 +1,6 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 
 /**
@@ -18,7 +17,6 @@ const useGetSongById = (id?: string) => {
   const {
     isLoading,
     data: song,
-    error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.songById, id],
     queryFn: async () => {
@@ -46,10 +44,6 @@ const useGetSongById = (id?: string) => {
     placeholderData: keepPreviousData,
   });
 
-  // useQuery の外でエラーハンドリングを行う
-  if (error) {
-    toast.error(error.message);
-  }
 
   return { isLoading, song };
 };

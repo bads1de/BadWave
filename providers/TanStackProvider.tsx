@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, QueryCache } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CACHE_CONFIG } from "@/constants";
 
@@ -13,6 +15,12 @@ const TanStackProvider = ({ children }: Props) => {
   const [client] = useState(
     () =>
       new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error) => {
+            console.error(error);
+            toast.error(error.message);
+          },
+        }),
         defaultOptions: {
           queries: {
             staleTime: CACHE_CONFIG.staleTime,
@@ -22,6 +30,7 @@ const TanStackProvider = ({ children }: Props) => {
           },
         },
       })
+
   );
 
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;

@@ -22,7 +22,6 @@ const useGetTrendSongs = (
   const {
     data: trends = [],
     isLoading,
-    error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.trendSongs, period],
     queryFn: () => getTrendSongs(period),
@@ -35,11 +34,8 @@ const useGetTrendSongs = (
     enabled: !(period === "all" && initialData.length > 0),
   });
 
-  if (error) {
-    console.error("トレンドデータの取得に失敗しました。", error);
-  }
 
-  return { trends, isLoading, error };
+  return { trends, isLoading };
 };
 
 export default useGetTrendSongs;

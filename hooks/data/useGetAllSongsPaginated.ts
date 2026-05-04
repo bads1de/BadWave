@@ -24,7 +24,7 @@ interface PaginatedSongsResult {
  * @param pageSize - 1ページあたりの曲数
  */
 const useGetAllSongsPaginated = (page: number = 0, pageSize: number = 24) => {
-  const { data, isLoading, error, isFetching } = useQuery<PaginatedSongsResult>(
+  const { data, isLoading, isFetching } = useQuery<PaginatedSongsResult>(
     {
       queryKey: [CACHED_QUERIES.media, "allSongs", "paginated", page, pageSize],
       queryFn: () => getSongsPaginated(page, pageSize),
@@ -33,9 +33,6 @@ const useGetAllSongsPaginated = (page: number = 0, pageSize: number = 24) => {
     },
   );
 
-  if (error) {
-    console.error("曲データの取得に失敗しました。", error);
-  }
 
   return {
     songs: data?.songs || [],
@@ -44,7 +41,6 @@ const useGetAllSongsPaginated = (page: number = 0, pageSize: number = 24) => {
     currentPage: data?.currentPage || 0,
     isLoading,
     isFetching,
-    error,
   };
 };
 
