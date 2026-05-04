@@ -7,7 +7,7 @@
  */
 
 import { UserDetails } from "@/types";
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useRef, useState, createContext, useContext } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -51,7 +51,10 @@ export interface Props {
  * @param {Props} props - コンポーネントのプロパティ
  */
 export const MyUserContextProvider = (props: Props) => {
-  const supabase = createClient();
+  // useRefでクライアントを固定し、毎レンダリングで新インスタンスが生成されないようにする
+  // （createClient()が再実行されると、useEffectの依存配列が変化して無限ループが発生する恐れがある）
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
@@ -78,7 +81,9 @@ export const MyUserContextProvider = (props: Props) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  // supabaseは useRef で固定済みなので依存配列に含めない
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * ユーザー詳細情報をデータベースから取得するクエリ
