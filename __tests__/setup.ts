@@ -57,6 +57,17 @@ jest.mock("next/image", () => ({
   },
 }));
 
+// AWS SDK mock
+jest.mock("@aws-sdk/client-s3", () => {
+  return {
+    S3Client: jest.fn(() => ({
+      send: jest.fn(),
+    })),
+    PutObjectCommand: jest.fn(),
+    DeleteObjectCommand: jest.fn(),
+  };
+});
+
 afterEach(() => {
   jest.clearAllMocks();
 });

@@ -8,6 +8,10 @@ jest.mock("@/libs/supabase/client", () => ({
   createClient: jest.fn(() => ({
     auth: {
       signOut: jest.fn(),
+      getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
+      onAuthStateChange: jest.fn(() => ({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      })),
     },
   })),
 }));
@@ -30,20 +34,23 @@ jest.mock("@/hooks/auth/useUser", () => ({
 
 // Components inside AccountContent that might need mocking
 jest.mock("@/app/account/components/ColorSchemeSelector", () => {
+  const React = require("react");
   return function DummyColorSchemeSelector() {
-    return <div data-testid="color-scheme-selector">ColorSchemeSelector</div>;
+    return React.createElement("div", { "data-testid": "color-scheme-selector" }, "ColorSchemeSelector");
   };
 });
 
 jest.mock("@/app/account/components/TopPlayedSongs", () => {
+  const React = require("react");
   return function DummyTopPlayedSongs() {
-    return <div data-testid="top-played-songs">TopPlayedSongs</div>;
+    return React.createElement("div", { "data-testid": "top-played-songs" }, "TopPlayedSongs");
   };
 });
 
 jest.mock("@/app/account/components/StatsOverview", () => {
+  const React = require("react");
   return function DummyStatsOverview() {
-    return <div data-testid="stats-overview">StatsOverview</div>;
+    return React.createElement("div", { "data-testid": "stats-overview" }, "StatsOverview");
   };
 });
 
@@ -67,13 +74,13 @@ describe("AccountContent", () => {
   it("ユーザー情報が正しく表示されること", () => {
     renderComponent();
     expect(screen.getByText("Test User")).toBeInTheDocument();
-    expect(screen.getByText("[ AUTHENTICATED_OPERATOR ]")).toBeInTheDocument();
+    expect(screen.getByText("[ AUTH_OPERATOR ]")).toBeInTheDocument();
   });
 
   it("タブメニューに全ての項目が存在すること", () => {
     renderComponent();
-    expect(screen.getByText("[ Visuals ]")).toBeInTheDocument();
-    expect(screen.getByText("[ Stream_Log ]")).toBeInTheDocument();
-    expect(screen.getByText("[ Analytics ]")).toBeInTheDocument();
+    expect(screen.getByText("[ VISUALS ]")).toBeInTheDocument();
+    expect(screen.getByText("[ STREAM_LOG ]")).toBeInTheDocument();
+    expect(screen.getByText("[ ANALYTICS ]")).toBeInTheDocument();
   });
 });
