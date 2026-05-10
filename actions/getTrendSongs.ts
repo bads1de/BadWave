@@ -19,25 +19,13 @@ const getTrendSongs = async (
   // 指定された期間に基づいてデータをフィルタリング
   switch (period) {
     case "month":
-      query = query.filter(
-        "created_at",
-        "gte",
-        subMonths(new Date(), 1).toISOString()
-      );
+      query = query.gte("created_at", subMonths(new Date(), 1).toISOString());
       break;
     case "week":
-      query = query.filter(
-        "created_at",
-        "gte",
-        subWeeks(new Date(), 1).toISOString()
-      );
+      query = query.gte("created_at", subWeeks(new Date(), 1).toISOString());
       break;
     case "day":
-      query = query.filter(
-        "created_at",
-        "gte",
-        subDays(new Date(), 1).toISOString()
-      );
+      query = query.gte("created_at", subDays(new Date(), 1).toISOString());
       break;
     default:
       break;

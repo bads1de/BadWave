@@ -10,15 +10,15 @@ describe("actions/getTrendSongs", () => {
   let mockSupabase: any;
   let mockLimit: jest.Mock;
   let mockOrder: jest.Mock;
-  let mockFilter: jest.Mock;
+  let mockGte: jest.Mock;
 
   beforeEach(() => {
     mockLimit = jest.fn();
     mockOrder = jest.fn(() => ({ limit: mockLimit }));
-    mockFilter = jest.fn(() => ({ order: mockOrder }));
-    const mockSelect = jest.fn(() => ({ 
+    mockGte = jest.fn(() => ({ order: mockOrder }));
+    const mockSelect = jest.fn(() => ({
       order: mockOrder,
-      filter: mockFilter 
+      gte: mockGte,
     }));
     const mockFrom = jest.fn(() => ({ select: mockSelect }));
 
@@ -27,10 +27,7 @@ describe("actions/getTrendSongs", () => {
     };
 
     (createClient as jest.Mock).mockResolvedValue(mockSupabase);
-    
-    // Use fake timers to stabilize date calculations if necessary,
-    // but subMonths etc are deterministic relative to 'now'.
-    // Jest timer mocks affect Date.now()
+
     jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:00:00Z"));
   });
 
@@ -44,7 +41,7 @@ describe("actions/getTrendSongs", () => {
     await getTrendSongs();
 
     expect(mockSupabase.from).toHaveBeenCalledWith("songs");
-    expect(mockFilter).not.toHaveBeenCalled();
+    expect(mockGte).not.toHaveBeenCalled();
     expect(mockOrder).toHaveBeenCalledWith("count", { ascending: false });
     expect(mockLimit).toHaveBeenCalledWith(10);
   });
@@ -54,9 +51,8 @@ describe("actions/getTrendSongs", () => {
 
     await getTrendSongs("month");
 
-    expect(mockFilter).toHaveBeenCalledWith(
-      "created_at", 
-      "gte", 
+    expect(mockGte).toHaveBeenCalledWith(
+      "created_at",
       subMonths(new Date(), 1).toISOString()
     );
   });
@@ -66,9 +62,8 @@ describe("actions/getTrendSongs", () => {
 
     await getTrendSongs("week");
 
-    expect(mockFilter).toHaveBeenCalledWith(
-      "created_at", 
-      "gte", 
+    expect(mockGte).toHaveBeenCalledWith(
+      "created_at",
       subWeeks(new Date(), 1).toISOString()
     );
   });
@@ -78,9 +73,8 @@ describe("actions/getTrendSongs", () => {
 
     await getTrendSongs("day");
 
-    expect(mockFilter).toHaveBeenCalledWith(
-      "created_at", 
-      "gte", 
+    expect(mockGte).toHaveBeenCalledWith(
+      "created_at",
       subDays(new Date(), 1).toISOString()
     );
   });
