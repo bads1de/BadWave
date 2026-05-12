@@ -34,7 +34,7 @@ describe("components/Song/MediaItem", () => {
   it("renders song info", () => {
     render(<MediaItem data={mockSong} />);
     expect(screen.getByText("Test Song")).toBeInTheDocument();
-    expect(screen.getByText("Test Author")).toBeInTheDocument();
+    expect(screen.getByText(/\/\/ AUTH: Test Author/)).toBeInTheDocument();
     const image = screen.getByRole("img", { name: "MediaItem" });
     expect(image).toHaveAttribute("src", expect.stringContaining("image.jpg"));
   });

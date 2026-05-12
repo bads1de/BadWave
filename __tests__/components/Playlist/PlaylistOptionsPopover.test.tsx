@@ -80,9 +80,9 @@ describe("components/Playlist/PlaylistOptionsPopover", () => {
       />
     );
     
-    expect(screen.getByText("名前を変更")).toBeInTheDocument();
-    expect(screen.getByText("公開する")).toBeInTheDocument();
-    expect(screen.getByText("削除")).toBeInTheDocument();
+    expect(screen.getByText("// MODIFY_NAME")).toBeInTheDocument();
+    expect(screen.getByText("// STATUS: PUBLIC")).toBeInTheDocument();
+    expect(screen.getByText("// TERMINATE_DATA")).toBeInTheDocument();
   });
 
   it("switches to edit mode", () => {
@@ -94,10 +94,10 @@ describe("components/Playlist/PlaylistOptionsPopover", () => {
       />
     );
 
-    fireEvent.click(screen.getByText("名前を変更"));
+    fireEvent.click(screen.getByText("// MODIFY_NAME"));
     
-    expect(screen.getByPlaceholderText("プレイリスト名")).toHaveValue("My Playlist");
-    expect(screen.getByText("保存")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("NEW_IDENTIFIER")).toHaveValue("My Playlist");
+    expect(screen.getByText("[ COMMIT ]")).toBeInTheDocument();
   });
 
   it("triggers delete mutation", () => {
@@ -109,7 +109,7 @@ describe("components/Playlist/PlaylistOptionsPopover", () => {
       />
     );
 
-    fireEvent.click(screen.getByText("削除"));
+    fireEvent.click(screen.getByText("// TERMINATE_DATA"));
     expect(mockMutate).toHaveBeenCalled();
   });
 });

@@ -75,9 +75,9 @@ describe("SpotlightUploadModal", () => {
   it("モーダルが正しく表示されること", () => {
     renderComponent();
 
-    expect(screen.getByText("Spotlightに動画を投稿")).toBeInTheDocument();
+    expect(screen.getByText("SPOTLIGHT_SYNC")).toBeInTheDocument();
     expect(
-      screen.getByText("動画をアップロードしてSpotlightで共有しましょう！")
+      screen.getByText("TRANSMIT_PRIORITY_VISUAL_ASSET_TO_HUD")
     ).toBeInTheDocument();
   });
 
@@ -85,21 +85,21 @@ describe("SpotlightUploadModal", () => {
     renderComponent();
 
     // フォーム入力
-    fireEvent.change(screen.getByPlaceholderText("動画のタイトル"), {
+    fireEvent.change(screen.getByPlaceholderText("INPUT_NODE_NAME"), {
       target: { value: "Test Video" },
     });
-    fireEvent.change(screen.getByPlaceholderText("あなたの名前"), {
+    fireEvent.change(screen.getByPlaceholderText("INPUT_ID_CODE"), {
       target: { value: "Test Author" },
     });
-    fireEvent.change(screen.getByPlaceholderText("例: Music Video"), {
+    fireEvent.change(screen.getByPlaceholderText("MV // LIVE // PROMO"), {
       target: { value: "Test Genre" },
     });
-    fireEvent.change(screen.getByPlaceholderText("動画の説明"), {
+    fireEvent.change(screen.getByPlaceholderText("INPUT_METADATA"), {
       target: { value: "Test Description" },
     });
 
     // ファイルアップロード
-    const fileInput = screen.getByLabelText(/動画ファイル/i);
+    const fileInput = screen.getByLabelText(/MOTION_BINARY_SOURCE/i);
     const videoFile = new File(["video content"], "video.mp4", {
       type: "video/mp4",
     });
@@ -134,7 +134,7 @@ describe("SpotlightUploadModal", () => {
     renderComponent();
 
     const submitButton = screen.getByRole("button", {
-      name: "アップロード中...",
+      name: /TRANSMITTING.../i,
     });
     expect(submitButton).toBeDisabled();
   });
@@ -143,7 +143,7 @@ describe("SpotlightUploadModal", () => {
     const { rerender } = renderComponent();
 
     // フォーム入力
-    const titleInput = screen.getByPlaceholderText("動画のタイトル");
+    const titleInput = screen.getByPlaceholderText("INPUT_NODE_NAME");
     fireEvent.change(titleInput, {
       target: { value: "Test Video" },
     });
@@ -168,7 +168,7 @@ describe("SpotlightUploadModal", () => {
 
     // フォームがリセットされていることを確認
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("動画のタイトル")).toHaveValue("");
+      expect(screen.getByPlaceholderText("INPUT_NODE_NAME")).toHaveValue("");
     });
   });
 });

@@ -33,7 +33,7 @@ describe("components/Playlist/DeletePlaylistSongsBtn", () => {
         showText={true} 
       />
     );
-    expect(screen.getByText("削除")).toBeInTheDocument();
+    expect(screen.getByText("// PURGE_ENTRY")).toBeInTheDocument();
   });
 
   it("triggers deletion on click", () => {

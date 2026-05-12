@@ -3,26 +3,32 @@ import { render } from "@testing-library/react";
 import StatsOverview from "@/app/account/components/StatsOverview";
 
 // Mock dependencies
-jest.mock("recharts", () => ({
-  ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
-  BarChart: ({ children }: any) => <div>{children}</div>,
-  Bar: () => <div>Bar</div>,
-  XAxis: () => <div>XAxis</div>,
-  YAxis: () => <div>YAxis</div>,
-  CartesianGrid: () => <div>CartesianGrid</div>,
-  Tooltip: () => <div>Tooltip</div>,
-  PieChart: ({ children }: any) => <div>{children}</div>,
-  Pie: ({ children }: any) => <div>{children}</div>,
-  Cell: () => <div>Cell</div>,
-}));
+jest.mock("recharts", () => {
+  const React = require("react");
+  return {
+    ResponsiveContainer: ({ children }: any) => React.createElement("div", null, children),
+    BarChart: ({ children }: any) => React.createElement("div", null, children),
+    Bar: () => React.createElement("div", null, "Bar"),
+    XAxis: () => React.createElement("div", null, "XAxis"),
+    YAxis: () => React.createElement("div", null, "YAxis"),
+    CartesianGrid: () => React.createElement("div", null, "CartesianGrid"),
+    Tooltip: () => React.createElement("div", null, "Tooltip"),
+    PieChart: ({ children }: any) => React.createElement("div", null, children),
+    Pie: ({ children }: any) => React.createElement("div", null, children),
+    Cell: () => React.createElement("div", null, "Cell"),
+  };
+});
 
-jest.mock("lucide-react", () => ({
-  Flame: () => <div data-testid="flame-icon" />,
-  Clock: () => <div data-testid="clock-icon" />,
-  Music: () => <div data-testid="music-icon" />,
-  TrendingUp: () => <div data-testid="trending-up-icon" />,
-  Calendar: () => <div data-testid="calendar-icon" />,
-}));
+jest.mock("lucide-react", () => {
+  const React = require("react");
+  return {
+    Flame: () => React.createElement("div", { "data-testid": "flame-icon" }),
+    Clock: () => React.createElement("div", { "data-testid": "clock-icon" }),
+    Music: () => React.createElement("div", { "data-testid": "music-icon" }),
+    TrendingUp: () => React.createElement("div", { "data-testid": "trending-up-icon" }),
+    Calendar: () => React.createElement("div", { "data-testid": "calendar-icon" }),
+  };
+});
 
 jest.mock("@/hooks/data/useStats", () => ({
   __esModule: true,
@@ -50,10 +56,13 @@ jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
   }),
 }));
 
-jest.mock("./ContributionHeatmap", () => ({
-  __esModule: true,
-  default: () => <div data-testid="contribution-heatmap" />,
-}));
+jest.mock("@/app/account/components/ContributionHeatmap", () => {
+  const React = require("react");
+  return {
+    __esModule: true,
+    default: () => React.createElement("div", { "data-testid": "contribution-heatmap" }),
+  };
+});
 
 describe("StatsOverview", () => {
   it("should render without crashing", () => {

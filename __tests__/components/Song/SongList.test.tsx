@@ -46,10 +46,10 @@ describe("components/Song/SongList", () => {
 
   it("renders song information", () => {
     render(<SongList data={mockSong} />);
-    
+
     expect(screen.getByText("Test Song")).toBeInTheDocument();
-    expect(screen.getByText("Test Author")).toBeInTheDocument();
-    expect(screen.getByText("Pop")).toBeInTheDocument();
+    expect(screen.getByText(/AUTH:\s*Test Author/)).toBeInTheDocument();
+    expect(screen.getByText(/\/\/\s*Pop/)).toBeInTheDocument();
     expect(screen.getByText("100")).toBeInTheDocument();
     expect(screen.getByText("50")).toBeInTheDocument();
   });

@@ -76,7 +76,7 @@ describe("useGetSongById", () => {
     expect(result.current.song).toEqual({ id: "song-1", title: "Test Song" });
   });
 
-  it("should show toast error when fetch fails", async () => {
+  it("should return error when fetch fails", async () => {
     const mockMaybeSingle = jest.fn().mockResolvedValue({
       data: null,
       error: { message: "Database Error" },
@@ -94,10 +94,9 @@ describe("useGetSongById", () => {
       ),
     });
 
-    await waitFor(() =>
-      expect(toast.error).toHaveBeenCalledWith(
-        "Failed to load song: Database Error"
-      )
-    );
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(result.current.error).toBeDefined();
+    expect(result.current.error?.message).toContain("Database Error");
   });
 });

@@ -6,8 +6,8 @@ describe("SectionSkeleton", () => {
   it("renders default skeleton with title and description", () => {
     render(<SectionSkeleton />);
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-    expect(screen.getByText("Please wait")).toBeInTheDocument();
+    expect(screen.getByText("LOADING...")).toBeInTheDocument();
+    expect(screen.getByText(/INITIALIZING_STREAM/)).toBeInTheDocument();
   });
 
   it("renders with custom title and description", () => {
@@ -16,7 +16,7 @@ describe("SectionSkeleton", () => {
     );
 
     expect(screen.getByText("Custom Title")).toBeInTheDocument();
-    expect(screen.getByText("Custom Description")).toBeInTheDocument();
+    expect(screen.getByText(/Custom Description/)).toBeInTheDocument();
   });
 
   it("renders trend section skeleton when type is trend", () => {

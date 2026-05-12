@@ -66,21 +66,21 @@ describe("components/Modals/EditModal", () => {
   it("renders with initial values", () => {
     render(<EditModal song={mockSong} isOpen={true} onClose={mockOnClose} />);
     
-    expect(screen.getByPlaceholderText("曲のタイトル")).toHaveValue("Old Title");
-    expect(screen.getByPlaceholderText("曲の作者")).toHaveValue("Old Author");
-    expect(screen.getByPlaceholderText("歌詞")).toHaveValue("Old Lyrics");
+    expect(screen.getByPlaceholderText("TRACK_NAME")).toHaveValue("Old Title");
+    expect(screen.getByPlaceholderText("OPERATOR_ID")).toHaveValue("Old Author");
+    expect(screen.getByPlaceholderText("LYRICS_DATA_STREAM")).toHaveValue("Old Lyrics");
   });
 
   it("submits updated values", async () => {
     render(<EditModal song={mockSong} isOpen={true} onClose={mockOnClose} />);
 
-    const titleInput = screen.getByPlaceholderText("曲のタイトル");
+    const titleInput = screen.getByPlaceholderText("TRACK_NAME");
     fireEvent.change(titleInput, { target: { value: "New Title" } });
 
     // Select new genre
     fireEvent.click(screen.getByTestId("genre-select"));
 
-    const submitBtn = screen.getByRole("button", { name: "編集" });
+    const submitBtn = screen.getByRole("button", { name: /\/\/ COMMIT_MODIFICATIONS/ });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {

@@ -66,7 +66,7 @@ describe("components/Song/SongOptionsPopover", () => {
     render(<SongOptionsPopover song={mockSong} />);
     
     expect(screen.getByText("LikeButton")).toBeInTheDocument();
-    expect(screen.getByText("ダウンロード")).toBeInTheDocument();
+    expect(screen.getByText("// EXTRACT_ASSET")).toBeInTheDocument();
   });
 
   it("renders delete button if playlist creator", () => {
@@ -93,7 +93,7 @@ describe("components/Song/SongOptionsPopover", () => {
     // PopoverContent is rendered below it in our simple mock.
     
     // Click download button inside content
-    fireEvent.click(screen.getByText("ダウンロード"));
+    fireEvent.click(screen.getByText("// EXTRACT_ASSET"));
     
     expect(screen.getByTestId("download-modal")).toBeInTheDocument();
   });

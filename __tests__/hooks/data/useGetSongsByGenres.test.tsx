@@ -83,7 +83,6 @@ describe("useGetSongsByGenres", () => {
 
   it("APIエラーを処理するべき", async () => {
     const mockError = new Error("APIエラー");
-    const consoleSpy = jest.spyOn(console, "error").mockImplementation();
 
     (createClient as jest.Mock).mockImplementation(() => ({
       from: () => ({
@@ -104,9 +103,8 @@ describe("useGetSongsByGenres", () => {
 
     await waitFor(() => {
       expect(result.current.songGenres).toEqual([]);
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(result.current.error).toBeDefined();
+      expect(result.current.error?.message).toContain("APIエラー");
     });
-
-    consoleSpy.mockRestore();
   });
 });

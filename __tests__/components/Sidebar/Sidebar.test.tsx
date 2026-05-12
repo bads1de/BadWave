@@ -28,16 +28,6 @@ jest.mock("@/components/Sidebar/SidebarItem", () => {
   };
 });
 
-jest.mock("@/components/Sidebar/Studio", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      const React = require("react");
-      return React.createElement("div", { "data-testid": "library-component" }, "Library Component");
-    },
-  };
-});
-
 jest.mock("@/components/Sidebar/UserCard", () => {
   return {
     __esModule: true,
@@ -109,8 +99,8 @@ describe("components/Sidebar/Sidebar", () => {
       </Sidebar>
     );
 
-    // Check for library popover trigger content (text "Library")
-    expect(screen.getByText("Library")).toBeInTheDocument();
+    // Check for library popover trigger content (text "[ LIBRARY ]")
+    expect(screen.getByText("[ LIBRARY ]")).toBeInTheDocument();
   });
 
   it("adjusts height when player is active", () => {

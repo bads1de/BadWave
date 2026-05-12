@@ -81,8 +81,8 @@ describe("PlaylistOptionsPopover", () => {
     fireEvent.click(optionsButton);
 
     // メニュー項目の確認
-    expect(screen.getByText("名前を変更")).toBeInTheDocument();
-    expect(screen.getByText("削除")).toBeInTheDocument();
+    expect(screen.getByText("// MODIFY_NAME")).toBeInTheDocument();
+    expect(screen.getByText("// TERMINATE_DATA")).toBeInTheDocument();
   });
 
   it("プレイリスト名の更新が正しく動作すること", async () => {
@@ -91,15 +91,15 @@ describe("PlaylistOptionsPopover", () => {
     // 編集モードを開始
     const optionsButton = screen.getByLabelText("More Options");
     fireEvent.click(optionsButton);
-    const editButton = screen.getByText("名前を変更");
+    const editButton = screen.getByText("// MODIFY_NAME");
     fireEvent.click(editButton);
 
     // 新しい名前を入力
-    const input = screen.getByPlaceholderText("プレイリスト名");
+    const input = screen.getByPlaceholderText("NEW_IDENTIFIER");
     fireEvent.change(input, { target: { value: "新しいプレイリスト名" } });
 
     // 保存ボタンをクリック
-    const saveButton = screen.getByText("保存");
+    const saveButton = screen.getByText("[ COMMIT ]");
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -115,7 +115,7 @@ describe("PlaylistOptionsPopover", () => {
     // 削除ボタンをクリック
     const optionsButton = screen.getByLabelText("More Options");
     fireEvent.click(optionsButton);
-    const deleteButton = screen.getByText("削除");
+    const deleteButton = screen.getByText("// TERMINATE_DATA");
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
@@ -129,16 +129,16 @@ describe("PlaylistOptionsPopover", () => {
     // 編集モードを開始
     const optionsButton = screen.getByLabelText("More Options");
     fireEvent.click(optionsButton);
-    const editButton = screen.getByText("名前を変更");
+    const editButton = screen.getByText("// MODIFY_NAME");
     fireEvent.click(editButton);
 
     // キャンセルボタンをクリック
-    const cancelButton = screen.getByText("キャンセル");
+    const cancelButton = screen.getByText("[ ABORT ]");
     fireEvent.click(cancelButton);
 
     // 編集モードが終了していることを確認
     expect(
-      screen.queryByPlaceholderText("プレイリスト名")
+      screen.queryByPlaceholderText("NEW_IDENTIFIER")
     ).not.toBeInTheDocument();
   });
 
@@ -162,9 +162,9 @@ describe("PlaylistOptionsPopover", () => {
     // 編集モードを開始して保存
     const optionsButton = screen.getByLabelText("More Options");
     fireEvent.click(optionsButton);
-    const editButton = screen.getByText("名前を変更");
+    const editButton = screen.getByText("// MODIFY_NAME");
     fireEvent.click(editButton);
-    const saveButton = screen.getByText("保存");
+    const saveButton = screen.getByText("[ COMMIT ]");
     fireEvent.click(saveButton);
 
     await waitFor(() => {

@@ -17,6 +17,7 @@ const useGetSongById = (id?: string) => {
   const {
     isLoading,
     data: song,
+    error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.songById, id],
     queryFn: async () => {
@@ -45,7 +46,7 @@ const useGetSongById = (id?: string) => {
   });
 
 
-  return { isLoading, song };
+  return { isLoading, song, error };
 };
 
 export default useGetSongById;

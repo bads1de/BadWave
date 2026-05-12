@@ -231,7 +231,7 @@ describe("AddPlaylist", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("プレイリストを作成しましょう！")
+        screen.getByText("[ ! ] NO_PLAYLISTS_FOUND")
       ).toBeInTheDocument();
     });
   });

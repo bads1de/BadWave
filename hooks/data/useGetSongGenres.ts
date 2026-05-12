@@ -16,6 +16,7 @@ const useGetSongsByGenres = (genres: string[], excludeId?: string) => {
   const {
     data: songGenres = [],
     isLoading,
+    error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.songsByGenres, genres, excludeId],
     queryFn: async () => {
@@ -54,6 +55,7 @@ const useGetSongsByGenres = (genres: string[], excludeId?: string) => {
   return {
     isLoading,
     songGenres,
+    error,
   };
 };
 

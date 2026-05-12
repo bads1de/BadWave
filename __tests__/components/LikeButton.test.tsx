@@ -82,6 +82,6 @@ describe("components/LikeButton", () => {
 
     render(<LikeButton songId="song-1" songType="regular" showText={true} />);
     
-    expect(screen.getByText("いいね済み")).toBeInTheDocument();
+    expect(screen.getByText("// AFFINITY_SYNCED")).toBeInTheDocument();
   });
 });

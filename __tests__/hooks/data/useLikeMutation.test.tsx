@@ -29,8 +29,10 @@ const createTestQueryClient = () =>
   });
 
 describe("useLikeMutation", () => {
+  const mockRpc = jest.fn().mockResolvedValue({ error: null });
   const mockSupabase = {
     from: jest.fn(),
+    rpc: mockRpc,
   };
 
   beforeEach(() => {
@@ -48,24 +50,9 @@ describe("useLikeMutation", () => {
     // Mock liked_songs_regular insert
     const mockInsert = jest.fn().mockResolvedValue({ error: null });
 
-    // Mock songs fetch for updateLikeCount
-    const mockSingle = jest
-      .fn()
-      .mockResolvedValue({ data: { like_count: 10 }, error: null });
-    const mockEqFetch = jest.fn().mockReturnValue({ single: mockSingle });
-    const mockSelect = jest.fn().mockReturnValue({ eq: mockEqFetch });
-
-    // Mock songs update
-    const mockUpdate = jest
-      .fn()
-      .mockReturnValue({ eq: jest.fn().mockResolvedValue({ error: null }) });
-
     mockSupabase.from.mockImplementation((table) => {
       if (table === "liked_songs_regular") {
         return { insert: mockInsert };
-      }
-      if (table === "songs") {
-        return { select: mockSelect, update: mockUpdate };
       }
       return {};
     });
@@ -82,7 +69,10 @@ describe("useLikeMutation", () => {
       song_id: "song-1",
       user_id: "user-1",
     });
-    expect(mockUpdate).toHaveBeenCalledWith({ like_count: 11 });
+    expect(mockRpc).toHaveBeenCalledWith("increment_like_count", {
+      song_id: "song-1",
+      increment_value: 1,
+    });
     expect(toast.success).toHaveBeenCalledWith("いいねしました！");
   });
 
@@ -92,24 +82,9 @@ describe("useLikeMutation", () => {
     const mockEqDelete1 = jest.fn().mockReturnValue({ eq: mockEqDelete2 });
     const mockDelete = jest.fn().mockReturnValue({ eq: mockEqDelete1 });
 
-    // Mock songs fetch for updateLikeCount
-    const mockSingle = jest
-      .fn()
-      .mockResolvedValue({ data: { like_count: 10 }, error: null });
-    const mockEqFetch = jest.fn().mockReturnValue({ single: mockSingle });
-    const mockSelect = jest.fn().mockReturnValue({ eq: mockEqFetch });
-
-    // Mock songs update
-    const mockUpdate = jest
-      .fn()
-      .mockReturnValue({ eq: jest.fn().mockResolvedValue({ error: null }) });
-
     mockSupabase.from.mockImplementation((table) => {
       if (table === "liked_songs_regular") {
         return { delete: mockDelete };
-      }
-      if (table === "songs") {
-        return { select: mockSelect, update: mockUpdate };
       }
       return {};
     });
@@ -123,7 +98,10 @@ describe("useLikeMutation", () => {
     });
 
     expect(mockDelete).toHaveBeenCalled();
-    expect(mockUpdate).toHaveBeenCalledWith({ like_count: 9 });
+    expect(mockRpc).toHaveBeenCalledWith("increment_like_count", {
+      song_id: "song-1",
+      increment_value: -1,
+    });
   });
 
   it("should show error toast on failure", async () => {

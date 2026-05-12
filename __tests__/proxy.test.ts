@@ -10,7 +10,11 @@ jest.mock("@/libs/supabase/middleware", () => ({
 jest.mock("next/server", () => ({
   NextResponse: {
     next: jest.fn(),
-    redirect: jest.fn(),
+    redirect: jest.fn((url) => ({
+      cookies: {
+        set: jest.fn(),
+      },
+    })),
   },
 }));
 
@@ -29,7 +33,12 @@ describe("Proxy", () => {
 
   it("認証済みユーザーが保護されたルートにアクセスした場合、レスポンスをそのまま返すこと", async () => {
     mockRequest.nextUrl.pathname = "/account";
-    const mockResponse = { type: "response" };
+    const mockResponse = { 
+      type: "response",
+      cookies: {
+        getAll: jest.fn().mockReturnValue([]),
+      }
+    };
     (updateSession as jest.Mock).mockResolvedValue({
       response: mockResponse,
       user: { id: "user-123" },
@@ -43,7 +52,14 @@ describe("Proxy", () => {
 
   it("未認証ユーザーが保護されたルートにアクセスした場合、ホームページにリダイレクトすること", async () => {
     mockRequest.nextUrl.pathname = "/liked";
-    const mockResponse = { type: "response" };
+    const mockResponse = { 
+      type: "response",
+      cookies: {
+        getAll: jest.fn().mockReturnValue([
+          { name: "test-cookie", value: "test-value" }
+        ]),
+      }
+    };
     (updateSession as jest.Mock).mockResolvedValue({
       response: mockResponse,
       user: null,

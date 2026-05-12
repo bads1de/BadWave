@@ -105,8 +105,8 @@ describe("AccountModal", () => {
   it("モーダルが正しく表示されること", () => {
     renderComponent();
 
-    expect(screen.getByText("プロフィール編集")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("ユーザー名を入力")).toHaveValue(
+    expect(screen.getByText("OPERATOR_CONFIGURATION")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("INPUT_NEW_NAME")).toHaveValue(
       "Test User"
     );
   });
@@ -114,10 +114,10 @@ describe("AccountModal", () => {
   it("プロフィール名の更新が正しく動作すること", async () => {
     renderComponent();
 
-    const input = screen.getByPlaceholderText("ユーザー名を入力");
+    const input = screen.getByPlaceholderText("INPUT_NEW_NAME");
     fireEvent.change(input, { target: { value: "New Name" } });
 
-    const form = screen.getByRole("form");
+    const form = screen.getByRole("form", { name: "profile-form" });
     fireEvent.submit(form);
 
     await waitFor(() => {
@@ -131,7 +131,7 @@ describe("AccountModal", () => {
   it("アバター画像の更新が正しく動作すること", async () => {
     renderComponent();
 
-    const fileInput = screen.getByLabelText("画像を変更");
+    const fileInput = screen.getByLabelText(/UPDATE_BIO_SCAN/);
     const file = new File(["dummy content"], "avatar.png", {
       type: "image/png",
     });
@@ -156,13 +156,13 @@ describe("AccountModal", () => {
     // パスワード入力フィールドが表示されるまで待機
     await waitFor(() => {
       expect(
-        screen.getByPlaceholderText("新しいパスワード")
+        screen.getByPlaceholderText("NEW_SECURITY_PHRASE")
       ).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByPlaceholderText("新しいパスワード");
+    const newPasswordInput = screen.getByPlaceholderText("NEW_SECURITY_PHRASE");
     const confirmPasswordInput =
-      screen.getByPlaceholderText("パスワードの確認");
+      screen.getByPlaceholderText("VERIFY_SECURITY_PHRASE");
 
     fireEvent.change(newPasswordInput, { target: { value: "newPassword123" } });
     fireEvent.change(confirmPasswordInput, {
@@ -187,13 +187,13 @@ describe("AccountModal", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByPlaceholderText("新しいパスワード")
+        screen.getByPlaceholderText("NEW_SECURITY_PHRASE")
       ).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByPlaceholderText("新しいパスワード");
+    const newPasswordInput = screen.getByPlaceholderText("NEW_SECURITY_PHRASE");
     const confirmPasswordInput =
-      screen.getByPlaceholderText("パスワードの確認");
+      screen.getByPlaceholderText("VERIFY_SECURITY_PHRASE");
 
     fireEvent.change(newPasswordInput, { target: { value: "password123" } });
     fireEvent.change(confirmPasswordInput, {
@@ -213,13 +213,13 @@ describe("AccountModal", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByPlaceholderText("新しいパスワード")
+        screen.getByPlaceholderText("NEW_SECURITY_PHRASE")
       ).toBeInTheDocument();
     });
 
-    const newPasswordInput = screen.getByPlaceholderText("新しいパスワード");
+    const newPasswordInput = screen.getByPlaceholderText("NEW_SECURITY_PHRASE");
     const confirmPasswordInput =
-      screen.getByPlaceholderText("パスワードの確認");
+      screen.getByPlaceholderText("VERIFY_SECURITY_PHRASE");
 
     fireEvent.change(newPasswordInput, { target: { value: "short" } });
     fireEvent.change(confirmPasswordInput, { target: { value: "short" } });

@@ -40,7 +40,7 @@ describe("components/Mobile/LyricsDrawer", () => {
         lyrics="Test Lyrics content" 
       />
     );
-    expect(screen.getByText("歌詞")).toBeInTheDocument();
+    expect(screen.getByText("SIGNAL_LYRICS")).toBeInTheDocument();
     expect(screen.getByText("Test Lyrics content")).toBeInTheDocument();
   });
 

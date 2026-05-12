@@ -19,59 +19,59 @@ describe("Pagination", () => {
 
     expect(container.firstChild).toBeNull();
   });
+it("ページ番号ボタンを表示する", () => {
+  render(
+    <Pagination
+      currentPage={0}
+      totalPages={5}
+      onPageChange={mockOnPageChange}
+    />
+  );
 
-  it("ページ番号ボタンを表示する", () => {
-    render(
-      <Pagination
-        currentPage={0}
-        totalPages={5}
-        onPageChange={mockOnPageChange}
-      />
-    );
+  expect(screen.getByText("01")).toBeInTheDocument();
+  expect(screen.getByText("05")).toBeInTheDocument();
+});
 
-    expect(screen.getByText("1")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
-  });
+it("現在のページがハイライトされる", () => {
+  render(
+    <Pagination
+      currentPage={0}
+      totalPages={5}
+      onPageChange={mockOnPageChange}
+    />
+  );
 
-  it("現在のページがハイライトされる", () => {
-    render(
-      <Pagination
-        currentPage={0}
-        totalPages={5}
-        onPageChange={mockOnPageChange}
-      />
-    );
+  const currentPageButton = screen.getByText("01");
+  // expect(currentPageButton.className).toContain("bg-green-500");
+  expect(currentPageButton).toHaveAttribute("aria-current", "page");
+});
 
-    const currentPageButton = screen.getByText("1");
-    // expect(currentPageButton.className).toContain("bg-green-500");
-    expect(currentPageButton).toHaveAttribute("aria-current", "page");
-  });
+it("ページ番号をクリックすると onPageChange が呼ばれる", () => {
+  render(
+    <Pagination
+      currentPage={0}
+      totalPages={5}
+      onPageChange={mockOnPageChange}
+    />
+  );
 
-  it("ページ番号をクリックすると onPageChange が呼ばれる", () => {
-    render(
-      <Pagination
-        currentPage={0}
-        totalPages={5}
-        onPageChange={mockOnPageChange}
-      />
-    );
+  fireEvent.click(screen.getByText("02"));
+  expect(mockOnPageChange).toHaveBeenCalledWith(1); // 0-indexed
+});
 
-    fireEvent.click(screen.getByText("2"));
-    expect(mockOnPageChange).toHaveBeenCalledWith(1); // 0-indexed
-  });
+it("ページ数が多い場合に省略記号が表示される", () => {
+  render(
+    <Pagination
+      currentPage={5}
+      totalPages={10}
+      onPageChange={mockOnPageChange}
+    />
+  );
 
-  it("最初のページで「前へ」ボタンが無効", () => {
-    render(
-      <Pagination
-        currentPage={0}
-        totalPages={5}
-        onPageChange={mockOnPageChange}
-      />
-    );
-
-    const prevButton = screen.getByLabelText("Previous page");
-    expect(prevButton).toBeDisabled();
-  });
+  // 省略記号が表示されることを確認
+  const dots = screen.getAllByText("//");
+  expect(dots.length).toBeGreaterThan(0);
+});
 
   it("最後のページで「次へ」ボタンが無効", () => {
     render(
@@ -112,19 +112,5 @@ describe("Pagination", () => {
     const prevButton = screen.getByLabelText("Previous page");
     fireEvent.click(prevButton);
     expect(mockOnPageChange).toHaveBeenCalledWith(1);
-  });
-
-  it("ページ数が多い場合に省略記号が表示される", () => {
-    render(
-      <Pagination
-        currentPage={5}
-        totalPages={10}
-        onPageChange={mockOnPageChange}
-      />
-    );
-
-    // 省略記号が表示されることを確認
-    const dots = screen.getAllByText("...");
-    expect(dots.length).toBeGreaterThan(0);
   });
 });

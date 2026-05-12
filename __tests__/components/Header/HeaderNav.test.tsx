@@ -37,8 +37,8 @@ describe("components/Header/HeaderNav", () => {
 
   it("renders buttons", () => {
     render(<HeaderNav />);
-    expect(screen.getByText("曲")).toBeInTheDocument();
-    expect(screen.getByText("プレイリスト")).toBeInTheDocument();
+    expect(screen.getByText("[ AUDIO_NODES ]")).toBeInTheDocument();
+    expect(screen.getByText("[ COLLECTION_DATA ]")).toBeInTheDocument();
   });
 
   it("initializes active tab from URL", () => {
@@ -48,17 +48,17 @@ describe("components/Header/HeaderNav", () => {
 
     render(<HeaderNav />);
     
-    const playlistBtn = screen.getByText("プレイリスト").closest("button");
-    const songsBtn = screen.getByText("曲").closest("button");
+    const playlistBtn = screen.getByText("[ COLLECTION_DATA ]").closest("button");
+    const songsBtn = screen.getByText("[ AUDIO_NODES ]").closest("button");
 
-    expect(playlistBtn).toHaveClass("bg-theme-600/90");
-    expect(songsBtn).not.toHaveClass("bg-theme-600/90");
+    expect(playlistBtn).toHaveClass("text-white");
+    expect(songsBtn).not.toHaveClass("text-white");
   });
 
   it("navigates on tab click", () => {
     render(<HeaderNav />);
     
-    const playlistBtn = screen.getByText("プレイリスト");
+    const playlistBtn = screen.getByText("[ COLLECTION_DATA ]");
     fireEvent.click(playlistBtn);
 
     expect(mockPush).toHaveBeenCalledWith("/search?tab=playlists");
@@ -71,13 +71,10 @@ describe("components/Header/HeaderNav", () => {
 
     render(<HeaderNav />);
     
-    const playlistBtn = screen.getByText("プレイリスト");
+    const playlistBtn = screen.getByText("[ COLLECTION_DATA ]");
     fireEvent.click(playlistBtn);
 
     // Should include both title and new tab param
-    // The order depends on how URLSearchParams stringifies, 
-    // but our mock implementation is simple.
-    // The mock puts tab last because we spread ...currentQuery then tab: value.
     expect(mockPush).toHaveBeenCalledWith(expect.stringContaining("title=search+query"));
     expect(mockPush).toHaveBeenCalledWith(expect.stringContaining("tab=playlists"));
   });

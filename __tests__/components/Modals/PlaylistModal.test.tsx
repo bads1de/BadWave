@@ -46,10 +46,10 @@ describe("components/Modals/PlaylistModal", () => {
   it("submits form with title", async () => {
     render(<PlaylistModal />);
     
-    const input = screen.getByPlaceholderText("プレイリスト名");
+    const input = screen.getByPlaceholderText("INPUT_CLUSTER_NAME");
     fireEvent.change(input, { target: { value: "My Playlist" } });
 
-    const submitBtn = screen.getByRole("button", { name: "作成" });
+    const submitBtn = screen.getByRole("button", { name: /\/\/ EXECUTE_INITIATION/ });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -60,7 +60,7 @@ describe("components/Modals/PlaylistModal", () => {
   it("does not submit empty title", async () => {
     render(<PlaylistModal />);
     
-    const submitBtn = screen.getByRole("button", { name: "作成" });
+    const submitBtn = screen.getByRole("button", { name: /\/\/ EXECUTE_INITIATION/ });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {

@@ -33,10 +33,10 @@ describe("components/Song/SongItem", () => {
     render(<SongItem data={mockSong} onClick={mockOnClick} />);
 
     expect(screen.getByText("Test Song")).toBeInTheDocument();
-    expect(screen.getByText("Test Author")).toBeInTheDocument();
-    expect(screen.getByText("100")).toBeInTheDocument(); // Play count
-    expect(screen.getByText("50")).toBeInTheDocument(); // Like count
-    
+    expect(screen.getByText(/\/\/ AUTH:\s*Test Author/)).toBeInTheDocument();
+    expect(screen.getByText(/100_PLAYS/)).toBeInTheDocument(); // Play count
+    expect(screen.getByText(/50_VAL/)).toBeInTheDocument(); // Like count
+
     // Check for image
     const image = screen.getByRole("img", { name: "Image" });
     expect(image).toHaveAttribute("src", expect.stringContaining("path/to/image.jpg"));

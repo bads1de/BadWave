@@ -65,7 +65,7 @@ describe("components/Latest/LatestBoard", () => {
 
   it("renders empty message when no songs", () => {
     render(<LatestBoard songs={[]} />);
-    expect(screen.getByText("曲が見つかりませんでした")).toBeInTheDocument();
+    expect(screen.getByText(/NO_DATA_STREAMS_IN_BUFFER/)).toBeInTheDocument();
   });
 
   it("renders songs list", () => {

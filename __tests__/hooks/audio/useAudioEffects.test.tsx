@@ -14,6 +14,7 @@ const mockSetSlowedReverbMode = jest.fn();
 const mockSetSpatialMode = jest.fn();
 const mockSet8DAudioMode = jest.fn();
 const mockSetRetroMode = jest.fn();
+const mockSetBassBoostMode = jest.fn();
 const mockEngineState = { isInitialized: true };
 
 jest.mock("@/libs/audio/AudioEngine", () => ({
@@ -27,6 +28,7 @@ jest.mock("@/libs/audio/AudioEngine", () => ({
       setSpatialMode: mockSetSpatialMode,
       set8DAudioMode: mockSet8DAudioMode,
       setRetroMode: mockSetRetroMode,
+      setBassBoostMode: mockSetBassBoostMode,
     })),
   },
 }));

@@ -56,7 +56,7 @@ describe("useColorSchemeStore", () => {
   });
 
   it("すべてのカラースキームを取得できること", () => {
-    expect(colorSchemes).toHaveLength(6);
+    expect(colorSchemes).toHaveLength(7);
     expect(colorSchemes.map((s) => s.id)).toEqual([
       "violet",
       "emerald",
@@ -64,6 +64,7 @@ describe("useColorSchemeStore", () => {
       "amber",
       "sky",
       "monochrome",
+      "cyberpunk",
     ]);
   });
 

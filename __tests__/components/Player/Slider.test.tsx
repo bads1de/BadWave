@@ -33,6 +33,10 @@ jest.mock("@radix-ui/react-slider", () => {
         const elementProps = Object.assign({ "data-testid": "radix-range" }, props);
         return React.createElement("div", elementProps);
     },
+    Thumb: (props: any) => {
+        const elementProps = Object.assign({ "data-testid": "radix-thumb" }, props);
+        return React.createElement("div", elementProps);
+    },
   };
 });
 

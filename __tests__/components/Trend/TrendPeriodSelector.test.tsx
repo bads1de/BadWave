@@ -22,7 +22,7 @@ describe("components/Trend/TrendPeriodSelector", () => {
     expect(weekButton).toHaveClass("text-white");
     
     const allButton = screen.getByText("All Time");
-    expect(allButton).toHaveClass("text-neutral-400");
+    expect(allButton).toHaveClass("text-theme-500/60");
   });
 
   it("calls onChange when clicked", () => {

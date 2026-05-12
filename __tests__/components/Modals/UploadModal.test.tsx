@@ -67,13 +67,13 @@ describe("components/Modals/UploadModal", () => {
   it("renders upload form when open", () => {
     render(<UploadModal />);
     expect(screen.getByTestId("upload-modal")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("曲のタイトル")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("INPUT_TRACK_NAME")).toBeInTheDocument();
   });
 
   it("validates required fields on submit", async () => {
     render(<UploadModal />);
     
-    const submitBtn = screen.getByRole("button", { name: "アップロード" });
+    const submitBtn = screen.getByRole("button", { name: /EXECUTE_INGESTION/ });
     fireEvent.click(submitBtn);
 
     // Form validation prevents submission, so mutation should not be called
@@ -89,15 +89,15 @@ describe("components/Modals/UploadModal", () => {
     render(<UploadModal />);
 
     // Fill text inputs
-    fireEvent.change(screen.getByPlaceholderText("曲のタイトル"), { target: { value: "My Song" } });
-    fireEvent.change(screen.getByPlaceholderText("アーティスト名"), { target: { value: "Me" } });
+    fireEvent.change(screen.getByPlaceholderText("INPUT_TRACK_NAME"), { target: { value: "My Song" } });
+    fireEvent.change(screen.getByPlaceholderText("INPUT_OPERATOR_ID"), { target: { value: "Me" } });
     
     // Select genre (mock component)
     fireEvent.click(screen.getByTestId("genre-select"));
 
     // File inputs
     // getByLabelText returns the input element because of htmlFor/id association
-    const fileInput = screen.getByLabelText("ファイルを選択"); 
+    const fileInput = screen.getByLabelText(/BINARY_SOURCE/i); 
     const songFile = new File(["song"], "song.mp3", { type: "audio/mpeg" });
     const imageFile = new File(["image"], "image.jpg", { type: "image/jpeg" });
 
@@ -105,7 +105,7 @@ describe("components/Modals/UploadModal", () => {
     fireEvent.change(fileInput, { target: { files: [songFile, imageFile] } });
 
     // Submit
-    const submitBtn = screen.getByRole("button", { name: "アップロード" });
+    const submitBtn = screen.getByRole("button", { name: /EXECUTE_INGESTION/ });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
