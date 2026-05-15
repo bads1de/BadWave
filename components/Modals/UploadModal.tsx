@@ -115,10 +115,12 @@ const UploadModal: React.FC = memo(() => {
   useEffect(() => {
     if (!uploadModal.isOpen) {
       reset();
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+      if (audioPreview) URL.revokeObjectURL(audioPreview);
       setImagePreview(null);
       setAudioPreview(null);
     }
-  }, [uploadModal.isOpen, reset]);
+  }, [uploadModal.isOpen, reset, imagePreview, audioPreview]);
 
   const onChange = useCallback(
     (open: boolean) => {

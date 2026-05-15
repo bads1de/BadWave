@@ -91,7 +91,8 @@ const usePlayer = create<PlayerStore>((set, get) => ({
     let nextIndex: number;
 
     if (isShuffling) {
-      nextIndex = (currentIndex + 1) % shuffledIds.length;
+      const shuffleIndex = shuffledIds.findIndex((id) => id === activeId);
+      nextIndex = (shuffleIndex + 1) % shuffledIds.length;
       return shuffledIds[nextIndex];
     } else {
       nextIndex = (currentIndex + 1) % ids.length;

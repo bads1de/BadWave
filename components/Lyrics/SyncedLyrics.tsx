@@ -129,11 +129,6 @@ const SyncedLyrics: React.FC<SyncedLyricsProps> = ({ lyrics }) => {
             key={index}
             className="flex items-center gap-x-4 w-full px-6 transition-all duration-500"
           >
-            {/* タイムスタンプ装飾 */}
-            <span className={`font-mono text-[10px] tracking-tighter transition-colors duration-500 ${isActive ? "text-theme-500" : "text-theme-900/40"}`}>
-              [{Math.floor(line.time / 60).toString().padStart(2, '0')}:{Math.floor(line.time % 60).toString().padStart(2, '0')}]
-            </span>
-            
             <p
               ref={isActive ? activeLineRef : null}
               className={`
