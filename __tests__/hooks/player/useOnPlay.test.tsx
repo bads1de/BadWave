@@ -3,7 +3,6 @@ import useOnPlay from "@/hooks/player/useOnPlay";
 import usePlayer from "@/hooks/player/usePlayer";
 import { createClient } from "@/libs/supabase/client";
 import { Song } from "@/types";
-import React from "react";
 
 // Mock Dependencies
 jest.mock("@/hooks/player/usePlayer", () => ({
@@ -51,11 +50,11 @@ describe("useOnPlay", () => {
   const mockPlayer = {
     setId: jest.fn(),
     setIds: jest.fn(),
+    play: jest.fn(),
   };
 
   const mockSupabase = {
-    from: jest.fn(),
-    rpc: jest.fn(),
+    rpc: jest.fn().mockResolvedValue({ error: null }),
   };
 
   beforeEach(() => {
@@ -69,62 +68,39 @@ describe("useOnPlay", () => {
     jest.useRealTimers();
   });
 
-  it("should handle cooldown and pending play", async () => {
-    mockSupabase.from.mockImplementation(() => ({
-      select: jest
-        .fn()
-        .mockReturnThis()
-        .mockReturnValue({
-          eq: jest
-            .fn()
-            .mockReturnThis()
-            .mockReturnValue({
-              single: jest
-                .fn()
-                .mockResolvedValue({ data: { count: "10" }, error: null }),
-            }),
-        }),
-      update: jest
-        .fn()
-        .mockReturnThis()
-        .mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ error: null }),
-        }),
-    }));
-    mockSupabase.rpc.mockResolvedValue({ data: "11", error: null });
-
+  it("should call play, setId and setIds on first call", () => {
     const { result } = renderHook(() => useOnPlay(mockSongs));
 
-    // 1. Call result.current("1")
+    act(() => {
+      result.current("1");
+    });
+
+    expect(mockPlayer.play).toHaveBeenCalled();
+    expect(mockPlayer.setIds).toHaveBeenCalledWith(["1", "2"]);
+    expect(mockPlayer.setId).toHaveBeenCalledWith("1");
+  });
+
+  it("should debounce rapid calls — first call wins, rapid calls dropped", async () => {
+    const { result } = renderHook(() => useOnPlay(mockSongs));
+
+    // First call executes immediately (leading)
     act(() => {
       result.current("1");
     });
     expect(mockPlayer.setId).toHaveBeenCalledWith("1");
     mockPlayer.setId.mockClear();
 
-    // 2. Wait for processPlayAsync("1") to finish (flush microtasks)
-    await act(async () => {
-      await Promise.resolve();
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-
-    // 3. Call result.current("2"). (returns early because cooldownRef is true)
+    // Second call within debounce period — dropped (trailing: false)
     act(() => {
       result.current("2");
     });
     expect(mockPlayer.setId).not.toHaveBeenCalled();
 
-    // 4. Advance timers by 300ms
-    act(() => {
-      jest.advanceTimersByTime(300);
-    });
-
-    // 5. processPendingPlay runs. We might need another microtask tick.
+    // Advance past debounce period — still not called
     await act(async () => {
-      await Promise.resolve();
+      jest.advanceTimersByTime(1000);
     });
 
-    expect(mockPlayer.setId).toHaveBeenCalledWith("2");
+    expect(mockPlayer.setId).not.toHaveBeenCalled();
   });
 });

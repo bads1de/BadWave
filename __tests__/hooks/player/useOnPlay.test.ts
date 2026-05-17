@@ -15,6 +15,7 @@ jest.mock("@/libs/supabase/client", () => ({
 describe("hooks/player/useOnPlay", () => {
   let mockSetId: jest.Mock;
   let mockSetIds: jest.Mock;
+  let mockPlay: jest.Mock;
   let mockSupabase: any;
   let mockRpc: jest.Mock;
   let mockRecordPlay: jest.Mock;
@@ -30,12 +31,14 @@ describe("hooks/player/useOnPlay", () => {
 
     mockSetId = jest.fn();
     mockSetIds = jest.fn();
-    mockRecordPlay = jest.fn();
+    mockPlay = jest.fn();
+    mockRecordPlay = jest.fn().mockResolvedValue(undefined);
     mockRpc = jest.fn().mockResolvedValue({ error: null });
 
     (usePlayer as unknown as jest.Mock).mockReturnValue({
       setId: mockSetId,
       setIds: mockSetIds,
+      play: mockPlay,
     });
 
     (usePlayHistory as jest.Mock).mockReturnValue({
@@ -52,13 +55,14 @@ describe("hooks/player/useOnPlay", () => {
     jest.useRealTimers();
   });
 
-  it("should play song immediately and update player state", () => {
+  it("should play song immediately on first call", () => {
     const { result } = renderHook(() => useOnPlay(mockSongs));
 
     act(() => {
       result.current("song-1");
     });
 
+    expect(mockPlay).toHaveBeenCalled();
     expect(mockSetIds).toHaveBeenCalledWith(["song-1", "song-2"]);
     expect(mockSetId).toHaveBeenCalledWith("song-1");
   });
@@ -70,45 +74,58 @@ describe("hooks/player/useOnPlay", () => {
       result.current("song-1");
     });
 
-    // Wait for async operations (processPlayAsync)
-    // We cannot wait on the hook result directly as onPlay is void/async fire-and-forget.
-    // But we can check if mocks are eventually called.
-    // Since processPlayAsync is not awaited in onPlay, we need to allow promises to resolve.
-    
-    // Fast-forward timers might not affect promises, but setTimeout in the hook does.
-    
     await waitFor(() => {
-      expect(mockRpc).toHaveBeenCalledWith("increment_song_play_count", { song_id: "song-1" });
+      expect(mockRpc).toHaveBeenCalledWith("increment_song_play_count", {
+        song_id: "song-1",
+      });
       expect(mockRecordPlay).toHaveBeenCalledWith("song-1");
     });
   });
 
-  it("should handle cooldown (debounce) for rapid clicks", async () => {
+  it("should debounce rapid clicks — first call wins, rapid calls dropped", async () => {
     const { result } = renderHook(() => useOnPlay(mockSongs));
 
-    // First click
-    await act(async () => {
+    // First click — executes immediately (leading)
+    act(() => {
       result.current("song-1");
     });
-
     expect(mockSetId).toHaveBeenCalledWith("song-1");
     mockSetId.mockClear();
 
-    // Rapid second click (within cooldown)
-    await act(async () => {
+    // Rapid second click within debounce period — dropped (trailing: false)
+    act(() => {
       result.current("song-2");
     });
-
     expect(mockSetId).not.toHaveBeenCalled();
 
-    // Fast-forward cooldown
-    // We need to ensure microtasks (promises) are processed so isProcessingRef becomes false
-    // before the timer fires.
+    // Advance past debounce period
     await act(async () => {
-      jest.advanceTimersByTime(350); 
+      jest.advanceTimersByTime(1000);
     });
 
-    // Should trigger pending play
+    // Still not called — trailing is disabled
+    expect(mockSetId).not.toHaveBeenCalled();
+  });
+
+  it("should allow new play after debounce period expires", async () => {
+    const { result } = renderHook(() => useOnPlay(mockSongs));
+
+    // First click
+    act(() => {
+      result.current("song-1");
+    });
+    expect(mockSetId).toHaveBeenCalledWith("song-1");
+    mockSetId.mockClear();
+
+    // Advance past debounce period
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    // New click after debounce — should execute
+    act(() => {
+      result.current("song-2");
+    });
     expect(mockSetId).toHaveBeenCalledWith("song-2");
   });
 });
