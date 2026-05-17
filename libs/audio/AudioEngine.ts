@@ -45,7 +45,6 @@ class AudioEngine {
     // ブラウザ環境でのみ audio 要素を作成
     if (typeof window !== "undefined") {
       this.audio = new Audio();
-      this.audio.crossOrigin = "anonymous";
     }
   }
 
@@ -165,7 +164,7 @@ class AudioEngine {
 
       // Retro Filters 接続
       currentNode.connect(this.retroHighPass);
-      currentNode.connect(this.retroLowPass);
+      this.retroHighPass.connect(this.retroLowPass);
       currentNode = this.retroLowPass;
 
       // Distortion 接続

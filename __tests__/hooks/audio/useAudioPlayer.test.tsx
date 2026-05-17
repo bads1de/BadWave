@@ -15,6 +15,7 @@ const mockAudio = {
   removeEventListener: jest.fn(),
   src: "",
   volume: 1,
+  crossOrigin: null as string | null,
 } as unknown as HTMLAudioElement;
 
 const mockEngine = {
@@ -134,5 +135,48 @@ describe("useAudioPlayer", () => {
     });
 
     expect(result.current.formattedCurrentTime).toBe("1:05");
+  });
+
+  it("should register error event listener", () => {
+    renderHook(() => useAudioPlayer(songUrl));
+
+    const addEventListenerCalls = (mockAudio.addEventListener as jest.Mock).mock.calls;
+    const errorListener = addEventListenerCalls.find(([event]) => event === "error");
+    expect(errorListener).toBeDefined();
+  });
+
+  it("should remove error event listener on cleanup", () => {
+    const { unmount } = renderHook(() => useAudioPlayer(songUrl));
+    unmount();
+
+    const removeEventListenerCalls = (mockAudio.removeEventListener as jest.Mock).mock.calls;
+    const errorListener = removeEventListenerCalls.find(([event]) => event === "error");
+    expect(errorListener).toBeDefined();
+  });
+
+  it("should set crossOrigin to anonymous for remote URLs", () => {
+    renderHook(() => useAudioPlayer("https://example.com/song.mp3"));
+
+    expect(mockAudio.crossOrigin).toBe("anonymous");
+  });
+
+  it("should set crossOrigin to null for blob URLs", () => {
+    renderHook(() => useAudioPlayer("blob:http://localhost/some-id"));
+
+    expect(mockAudio.crossOrigin).toBeNull();
+  });
+
+  it("should set crossOrigin to null for file URLs", () => {
+    renderHook(() => useAudioPlayer("file:///path/to/song.mp3"));
+
+    expect(mockAudio.crossOrigin).toBeNull();
+  });
+
+  it("should reset error count on canplaythrough", () => {
+    renderHook(() => useAudioPlayer(songUrl));
+
+    const addEventListenerCalls = (mockAudio.addEventListener as jest.Mock).mock.calls;
+    const canplaythroughCall = addEventListenerCalls.find(([event]) => event === "canplaythrough");
+    expect(canplaythroughCall).toBeDefined();
   });
 });

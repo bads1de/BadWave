@@ -10,6 +10,7 @@ import usePlaybackStateStore, {
 } from "@/hooks/stores/usePlaybackStateStore";
 import useLatestRef from "@/hooks/utils/useLatestRef";
 import { AudioEngine } from "@/libs/audio/AudioEngine";
+import { createAudioErrorHandler } from "@/hooks/audio/audioErrorHandler";
 
 /**
  * オーディオプレイヤーの状態と操作を管理するカスタムフック
@@ -49,6 +50,14 @@ const useAudioPlayer = (songUrl: string) => {
   } = usePlaybackStateStore();
   const lastSaveTimeRef = useRef<number>(0);
   const hasRestoredRef = useRef<boolean>(false);
+
+  // エラーハンドラ
+  const errorHandlerRef = useRef(createAudioErrorHandler({
+    maxConsecutiveErrors: 3,
+    skipDelayMs: 500,
+    setIsPlaying,
+    onPlayNext: () => onPlayNextRef.current(),
+  }));
 
   // --- useLatestRef: イベントリスナー内から最新の状態を参照するため ---
   const isRestoringRef = useLatestRef(isRestoring);
@@ -162,9 +171,21 @@ const useAudioPlayer = (songUrl: string) => {
     };
 
     const handleCanPlayThrough = () => {
+      errorHandlerRef.current.resetErrors();
       if (!isRestoringRef.current) {
         audio.play().catch((e) => console.error("Auto-play failed:", e));
       }
+    };
+
+    const handleError = (e: Event) => {
+      const mediaError = audio.error;
+      console.error("Audio error:", {
+        code: mediaError?.code,
+        message: mediaError?.message,
+        src: audio.src,
+        event: e,
+      });
+      errorHandlerRef.current.handleError();
     };
 
     const handlePlayEvent = () => {
@@ -186,6 +207,7 @@ const useAudioPlayer = (songUrl: string) => {
     audio.addEventListener("canplaythrough", handleCanPlayThrough);
     audio.addEventListener("play", handlePlayEvent);
     audio.addEventListener("pause", handlePause);
+    audio.addEventListener("error", handleError);
 
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
@@ -194,6 +216,7 @@ const useAudioPlayer = (songUrl: string) => {
       audio.removeEventListener("canplaythrough", handleCanPlayThrough);
       audio.removeEventListener("play", handlePlayEvent);
       audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("error", handleError);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songUrl, audio]);
@@ -220,6 +243,9 @@ const useAudioPlayer = (songUrl: string) => {
     audio.pause();
     setCurrentTime(0);
     setDuration(0);
+
+    // crossOriginをURLに応じて動的に設定
+    audio.crossOrigin = songUrl.startsWith("blob:") || songUrl.startsWith("file:") ? null : "anonymous";
 
     // 新しいソースを設定
     audio.src = songUrl;

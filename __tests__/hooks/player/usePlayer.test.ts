@@ -90,7 +90,7 @@ describe("hooks/player/usePlayer", () => {
   it("should get previous song ID correctly", () => {
     const { result } = renderHook(() => usePlayer());
     const ids = ["1", "2", "3"];
-    
+
     act(() => {
       result.current.setIds(ids);
       result.current.setId("2");
@@ -104,5 +104,112 @@ describe("hooks/player/usePlayer", () => {
     });
     // Loop back to end
     expect(result.current.getPreviousSongId()).toBe("3");
+  });
+
+  it("should get next song ID in shuffle mode using shuffledIds order", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3", "4", "5"];
+
+    act(() => {
+      result.current.setIds(ids);
+      result.current.setId("1");
+      result.current.toggleShuffle();
+    });
+
+    const { shuffledIds } = result.current;
+    const currentShuffleIndex = shuffledIds.indexOf("1");
+    const expectedNext = shuffledIds[(currentShuffleIndex + 1) % shuffledIds.length];
+
+    expect(result.current.getNextSongId()).toBe(expectedNext);
+  });
+
+  it("should get previous song ID in shuffle mode using shuffledIds order", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3", "4", "5"];
+
+    act(() => {
+      result.current.setIds(ids);
+      result.current.setId("1");
+      result.current.toggleShuffle();
+    });
+
+    const { shuffledIds } = result.current;
+    const currentShuffleIndex = shuffledIds.indexOf("1");
+    const expectedPrev = shuffledIds[(currentShuffleIndex - 1 + shuffledIds.length) % shuffledIds.length];
+
+    expect(result.current.getPreviousSongId()).toBe(expectedPrev);
+  });
+
+  it("should wrap around shuffled list correctly", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3"];
+
+    act(() => {
+      result.current.setIds(ids);
+      result.current.toggleShuffle();
+    });
+
+    const { shuffledIds } = result.current;
+
+    // Set to last item in shuffled list
+    act(() => {
+      result.current.setId(shuffledIds[shuffledIds.length - 1]);
+    });
+    // Next should wrap to first
+    expect(result.current.getNextSongId()).toBe(shuffledIds[0]);
+
+    // Set to first item in shuffled list
+    act(() => {
+      result.current.setId(shuffledIds[0]);
+    });
+    // Previous should wrap to last
+    expect(result.current.getPreviousSongId()).toBe(shuffledIds[shuffledIds.length - 1]);
+  });
+
+  it("should return undefined for next/previous when ids is empty", () => {
+    const { result } = renderHook(() => usePlayer());
+
+    expect(result.current.getNextSongId()).toBeUndefined();
+    expect(result.current.getPreviousSongId()).toBeUndefined();
+  });
+
+  it("should return undefined when activeId not found in shuffle mode", () => {
+    const { result } = renderHook(() => usePlayer());
+
+    act(() => {
+      result.current.setIds(["1", "2", "3"]);
+      result.current.toggleShuffle();
+      // activeId is still undefined after toggleShuffle
+    });
+
+    expect(result.current.getNextSongId()).toBeUndefined();
+    expect(result.current.getPreviousSongId()).toBeUndefined();
+  });
+
+  it("should persist player state to localStorage", () => {
+    const { result } = renderHook(() => usePlayer());
+    const ids = ["1", "2", "3"];
+
+    act(() => {
+      result.current.setIds(ids);
+      result.current.setId("2");
+      result.current.toggleRepeat();
+    });
+
+    const stored = JSON.parse(localStorage.getItem("badwave-player") || "{}");
+    expect(stored.state.ids).toEqual(ids);
+    expect(stored.state.activeId).toBe("2");
+    expect(stored.state.isRepeating).toBe(true);
+  });
+
+  it("should not persist isLoading", () => {
+    const { result } = renderHook(() => usePlayer());
+
+    act(() => {
+      result.current.setIsLoading(true);
+    });
+
+    const stored = JSON.parse(localStorage.getItem("badwave-player") || "{}");
+    expect(stored.state.isLoading).toBeUndefined();
   });
 });
