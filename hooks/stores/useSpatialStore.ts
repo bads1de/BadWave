@@ -1,11 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
-interface SpatialStore {
+interface SpatialStore extends HydrationState {
   isSpatialEnabled: boolean;
   toggleSpatialEnabled: () => void;
-  hasHydrated: boolean;
-  setHasHydrated: (state: boolean) => void;
 }
 
 const useSpatialStore = create<SpatialStore>()(
@@ -17,12 +16,7 @@ const useSpatialStore = create<SpatialStore>()(
       hasHydrated: false,
       setHasHydrated: (state) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-spatial-store",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    }
+    createHydrationPersistConfig<SpatialStore>("badwave-spatial-store"),
   )
 );
 

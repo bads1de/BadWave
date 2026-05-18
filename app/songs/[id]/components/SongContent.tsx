@@ -20,7 +20,8 @@ import useGetSongById from "@/hooks/data/useGetSongById";
 import { useUser } from "@/hooks/auth/useUser";
 import useGetSongsByGenres from "@/hooks/data/useGetSongGenres";
 import EditModal from "@/components/Modals/EditModal";
-import { downloadFile } from "@/libs/utils";
+import { downloadFile, formatTime } from "@/libs/utils";
+import { parseGenres } from "@/libs/songUtils";
 import { Card } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import AudioWaveform from "@/components/AudioWaveform";
@@ -42,7 +43,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const [audioWaveformKey, setAudioWaveformKey] = useState(0);
 
   const genres = useMemo(
-    () => song?.genre?.split(",").map((g) => g.trim()) || [],
+    () => parseGenres(song?.genre),
     [song?.genre]
   );
 
@@ -97,9 +98,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
     if (song?.song_path) {
       const audio = new Audio(song.song_path);
       audio.addEventListener("loadedmetadata", () => {
-        const minutes = Math.floor(audio.duration / 60);
-        const seconds = Math.floor(audio.duration % 60);
-        setDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+        setDuration(formatTime(audio.duration));
       });
     }
   }, [song?.song_path]);

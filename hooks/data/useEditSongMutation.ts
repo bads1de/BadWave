@@ -4,10 +4,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
-import { uploadFileToR2, deleteFileFromR2 } from "@/actions/r2";
+import { deleteFileFromR2 } from "@/actions/r2";
 import { sanitizeTitle } from "@/libs/utils";
+import { uploadFile } from "@/libs/upload";
+import { serializeGenres } from "@/libs/songUtils";
 import { CACHED_QUERIES } from "@/constants";
-import { Song } from "@/types";
+import type { Song, ModalHook } from "@/types";
 
 interface EditSongParams {
   id: string;
@@ -21,39 +23,13 @@ interface EditSongParams {
   currentSong: Song;
 }
 
-interface EditModalHook {
-  onClose: () => void;
-}
-
-/**
- * ファイルをFormDataに変換してアップロードする
- */
-async function uploadFile(
-  file: File,
-  bucketName: "spotlight" | "song" | "image" | "video",
-  fileNamePrefix: string
-): Promise<string | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("bucketName", bucketName);
-  formData.append("fileNamePrefix", fileNamePrefix);
-
-  const result = await uploadFileToR2(formData);
-
-  if (!result.success) {
-    throw new Error(result.error || "アップロードに失敗しました");
-  }
-
-  return result.url || null;
-}
-
 /**
  * 曲の編集処理を行うカスタムフック
  *
  * @param editModal 編集モーダルのフック
  * @returns 編集ミューテーション
  */
-const useEditSongMutation = (editModal: EditModalHook) => {
+const useEditSongMutation = (editModal: ModalHook) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -168,7 +144,7 @@ const useEditSongMutation = (editModal: EditModalHook) => {
           title,
           author,
           lyrics,
-          genre: genre.join(", "),
+          genre: serializeGenres(genre),
           video_path: updatedVideoPath,
           song_path: updatedSongPath,
           image_path: updatedImagePath,

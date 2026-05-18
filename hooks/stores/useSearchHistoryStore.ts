@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
 /** 検索履歴の最大保存件数 */
 export const MAX_HISTORY_SIZE = 20;
@@ -9,7 +10,7 @@ interface SearchHistoryState {
   history: string[];
 }
 
-interface SearchHistoryActions {
+interface SearchHistoryActions extends HydrationState {
   /**
    * 検索キーワードを履歴に追加する
    * - 空文字・空白のみは無視
@@ -28,12 +29,6 @@ interface SearchHistoryActions {
 
   /** 履歴を全て削除する */
   clearHistory: () => void;
-
-  /** ハイドレート完了フラグ */
-  hasHydrated: boolean;
-
-  /** ハイドレート状態を設定 */
-  setHasHydrated: (state: boolean) => void;
 }
 
 type SearchHistoryStore = SearchHistoryState & SearchHistoryActions;
@@ -75,12 +70,7 @@ export const useSearchHistoryStore = create<SearchHistoryStore>()(
 
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-search-history",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    },
+    createHydrationPersistConfig<SearchHistoryStore>("badwave-search-history"),
   ),
 );
 

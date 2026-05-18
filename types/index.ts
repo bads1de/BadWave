@@ -64,3 +64,30 @@ export interface Pulse {
   genre: string;
   music_path: string;
 }
+
+/**
+ * ページネーション対応の曲取得結果
+ * actions/getSongsPaginated と hooks/data/useGetAllSongsPaginated で共有
+ */
+export interface PaginatedSongsResult {
+  songs: Song[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+/**
+ * 再生回数付きの曲
+ * hooks/data/useGetTopPlayedSongs で使用
+ */
+export interface TopPlayedSong extends Song {
+  play_count: number;
+}
+
+/**
+ * モーダルHook共通インターフェース
+ * 各モーダルミューテーションHookで共通使用
+ */
+export interface ModalHook {
+  onClose: () => void;
+}

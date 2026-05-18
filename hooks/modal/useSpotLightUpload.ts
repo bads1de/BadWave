@@ -1,15 +1,8 @@
-import { create } from "zustand";
+import { createModalStore } from "./createModalStore";
 
-interface SpotLightUploadModalStore {
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
-}
-
-const useSpotLightUploadModal = create<SpotLightUploadModalStore>((set) => ({
-  isOpen: false,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false }),
-}));
+/**
+ * Spotlightアップロードモーダルの状態を管理するカスタムフック
+ */
+const useSpotLightUploadModal = createModalStore();
 
 export default useSpotLightUploadModal;

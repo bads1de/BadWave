@@ -5,8 +5,8 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
 import { deleteFileFromR2 } from "@/actions/r2";
-import { checkIsAdmin } from "@/actions/checkAdmin";
 import { useUser } from "@/hooks/auth/useUser";
+import { requireAdminPermission } from "@/libs/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
 
 interface DeleteSongParams {
@@ -30,12 +30,7 @@ const useDeleteSongMutation = () => {
         throw new Error("ログインが必要です");
       }
 
-      // 管理者権限チェック
-      const { isAdmin } = await checkIsAdmin();
-      if (!isAdmin) {
-        toast.error("管理者権限が必要です");
-        throw new Error("管理者権限が必要です");
-      }
+      await requireAdminPermission();
 
       // データベースから削除（削除されたレコードを取得）
       const { data, error: dbDeleteError } = await supabaseClient

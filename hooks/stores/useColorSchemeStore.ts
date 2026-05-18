@@ -5,13 +5,12 @@ import {
   getColorSchemeById,
   type ColorScheme,
 } from "@/constants/colorSchemes";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
-interface ColorSchemeStore {
+interface ColorSchemeStore extends HydrationState {
   colorSchemeId: string;
-  hasHydrated: boolean;
   getColorScheme: () => ColorScheme;
   setColorScheme: (id: string) => void;
-  setHasHydrated: (state: boolean) => void;
 }
 
 const useColorSchemeStore = create<ColorSchemeStore>()(
@@ -23,12 +22,7 @@ const useColorSchemeStore = create<ColorSchemeStore>()(
       setColorScheme: (id: string) => set({ colorSchemeId: id }),
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-color-scheme",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    }
+    createHydrationPersistConfig<ColorSchemeStore>("badwave-color-scheme"),
   )
 );
 

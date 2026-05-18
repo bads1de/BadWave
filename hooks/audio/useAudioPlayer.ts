@@ -11,6 +11,7 @@ import usePlaybackStateStore, {
 import useLatestRef from "@/hooks/utils/useLatestRef";
 import { AudioEngine } from "@/libs/audio/AudioEngine";
 import { createAudioErrorHandler } from "@/hooks/audio/audioErrorHandler";
+import { formatTime } from "@/libs/utils";
 
 /**
  * オーディオプレイヤーの状態と操作を管理するカスタムフック
@@ -312,22 +313,14 @@ const useAudioPlayer = (songUrl: string) => {
     }
   }, [playbackStateHydrated, savedSongId, savedPosition, player.activeId, audio]);
 
-  const formatTime = useMemo(() => {
-    return (time: number) => {
-      const minutes = Math.floor(time / 60);
-      const seconds = Math.floor(time % 60);
-      return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-    };
-  }, []);
-
   const formattedCurrentTime = useMemo(
     () => formatTime(currentTime),
-    [currentTime, formatTime]
+    [currentTime]
   );
 
   const formattedDuration = useMemo(
     () => formatTime(duration),
-    [duration, formatTime]
+    [duration]
   );
 
   return {

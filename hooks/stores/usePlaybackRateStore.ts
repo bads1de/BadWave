@@ -1,15 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
-interface PlaybackRateStore {
+interface PlaybackRateStore extends HydrationState {
   /** 再生速度 (0.5 ~ 1.5) */
   rate: number;
-  /** ストアがハイドレート済みかどうか */
-  hasHydrated: boolean;
   /** 再生速度を設定する */
   setRate: (rate: number) => void;
-  /** ハイドレート状態を設定する */
-  setHasHydrated: (state: boolean) => void;
 }
 
 const usePlaybackRateStore = create<PlaybackRateStore>()(
@@ -20,12 +17,7 @@ const usePlaybackRateStore = create<PlaybackRateStore>()(
       setRate: (rate) => set({ rate }),
       setHasHydrated: (state) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-playback-rate",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    }
+    createHydrationPersistConfig<PlaybackRateStore>("badwave-playback-rate"),
   )
 );
 

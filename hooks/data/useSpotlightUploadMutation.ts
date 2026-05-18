@@ -4,9 +4,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import { uploadFileToR2 } from "@/actions/r2";
-import { checkIsAdmin } from "@/actions/checkAdmin";
+import { uploadFile } from "@/libs/upload";
+import { requireAdminPermission } from "@/libs/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
+import type { ModalHook } from "@/types";
 
 interface SpotlightUploadParams {
   title: string;
@@ -16,32 +17,6 @@ interface SpotlightUploadParams {
   videoFile: File | null;
 }
 
-interface SpotlightUploadModalHook {
-  onClose: () => void;
-}
-
-/**
- * ファイルをFormDataに変換してアップロードする
- */
-async function uploadFile(
-  file: File,
-  bucketName: "spotlight" | "song" | "image" | "video",
-  fileNamePrefix: string
-): Promise<string | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("bucketName", bucketName);
-  formData.append("fileNamePrefix", fileNamePrefix);
-
-  const result = await uploadFileToR2(formData);
-
-  if (!result.success) {
-    throw new Error(result.error || "アップロードに失敗しました");
-  }
-
-  return result.url || null;
-}
-
 /**
  * Spotlightへの動画アップロード処理を行うカスタムフック
  *
@@ -49,7 +24,7 @@ async function uploadFile(
  * @returns アップロードミューテーション
  */
 const useSpotlightUploadMutation = (
-  spotlightUploadModal: SpotlightUploadModalHook
+  spotlightUploadModal: ModalHook
 ) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
@@ -63,13 +38,7 @@ const useSpotlightUploadMutation = (
       description,
       videoFile,
     }: SpotlightUploadParams) => {
-      // 管理者権限チェック
-      const { isAdmin } = await checkIsAdmin();
-
-      if (!isAdmin) {
-        toast.error("管理者権限が必要です");
-        throw new Error("管理者権限が必要です");
-      }
+      await requireAdminPermission();
 
       if (!videoFile || !user) {
         toast.error("動画ファイルを選択してください");

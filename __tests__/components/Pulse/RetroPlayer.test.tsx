@@ -138,9 +138,9 @@ describe("RetroPlayer", () => {
 
   it("displays formatted time correctly", () => {
     render(<RetroPlayer {...defaultProps} currentTime={65} duration={125} />);
-    // 65s = 01:05
-    // 125s = 02:05
-    expect(screen.getByText("01:05")).toBeInTheDocument();
-    expect(screen.getByText("02:05")).toBeInTheDocument();
+    // 65s = 1:05 (formatTime from libs/utils: no leading zero for minutes)
+    // 125s = 2:05
+    expect(screen.getByText("1:05")).toBeInTheDocument();
+    expect(screen.getByText("2:05")).toBeInTheDocument();
   });
 });

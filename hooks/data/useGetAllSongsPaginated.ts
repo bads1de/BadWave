@@ -1,19 +1,9 @@
 "use client";
 
-import { Song } from "@/types";
+import { type PaginatedSongsResult } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 import getSongsPaginated from "@/actions/getSongsPaginated";
-
-/**
- * ページネーション対応の曲取得結果
- */
-interface PaginatedSongsResult {
-  songs: Song[];
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
-}
 
 /**
  * ページネーション対応の曲取得フック

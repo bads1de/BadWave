@@ -1,7 +1,7 @@
-import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { extractSongsFromJoin } from "@/libs/songUtils";
 
 /**
  * プレイリストの曲を取得するカスタムフック
@@ -35,11 +35,7 @@ const useGetPlaylistSongs = (playlistId?: string) => {
       // データがなければ空の配列を返す
       if (!data) return [];
 
-      // 取得したデータから曲の情報のみを新しい配列にして返す
-      return data.map((item) => ({
-        ...item.songs,
-        songType: "regular" as const,
-      }));
+      return extractSongsFromJoin(data);
     },
     staleTime: CACHE_CONFIG.staleTime,
     gcTime: CACHE_CONFIG.gcTime,

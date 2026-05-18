@@ -11,6 +11,7 @@ import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
 import Button from "../common/Button";
 import useEditSongMutation from "@/hooks/data/useEditSongMutation";
+import { parseGenres } from "@/libs/songUtils";
 
 interface EditFormValues extends Partial<Song> {
   video?: FileList;
@@ -67,7 +68,7 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
         song: undefined,
         image: undefined,
       });
-      setSelectedGenres(song.genre ? song.genre.split(", ") : []);
+      setSelectedGenres(song.genre ? parseGenres(song.genre) : []);
     }
   }, [isOpen, song, reset]);
 

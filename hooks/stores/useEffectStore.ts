@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
 /**
  * 8D Audio の回転速度オプション
@@ -12,7 +13,7 @@ export type RotationSpeed = "slow" | "medium" | "fast";
  * - Retro Mode
  * - Bass Boost
  */
-interface EffectStore {
+interface EffectStore extends HydrationState {
   // Slowed + Reverb
   isSlowedReverb: boolean;
   toggleSlowedReverb: () => void;
@@ -30,10 +31,6 @@ interface EffectStore {
   // Bass Boost
   isBassBoostEnabled: boolean;
   toggleBassBoost: () => void;
-
-  // ハイドレート
-  hasHydrated: boolean;
-  setHasHydrated: (state: boolean) => void;
 }
 
 /**
@@ -74,12 +71,7 @@ const useEffectStore = create<EffectStore>()(
       hasHydrated: false,
       setHasHydrated: (state) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-effect-store",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    }
+    createHydrationPersistConfig<EffectStore>("badwave-effect-store"),
   )
 );
 

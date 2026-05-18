@@ -1,14 +1,7 @@
 "use server";
 
-import { Song } from "@/types";
+import { Song, type PaginatedSongsResult } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-
-interface PaginatedSongsResult {
-  songs: Song[];
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
-}
 
 /**
  * ページネーション対応の曲取得

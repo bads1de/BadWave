@@ -1,7 +1,6 @@
-import { Song } from "@/types";
+import { Song, SongType } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-
-type SongType = "regular";
+import { extractSongsFromJoin } from "@/libs/songUtils";
 
 /**
  * 現在のユーザーが「いいね」した曲一覧を取得する
@@ -38,11 +37,7 @@ const getLikedSongs = async (
   // データがなければ空の配列を返す
   if (!data) return [];
 
-  // 取得したデータから曲の情報のみを新しい配列にして返す
-  return data.map((item) => ({
-    ...item.songs,
-    songType,
-  }));
+  return extractSongsFromJoin(data);
 };
 
 export default getLikedSongs;

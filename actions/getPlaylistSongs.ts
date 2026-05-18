@@ -1,16 +1,15 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-
-type PlaylistSong = Song & { songType: "regular" };
+import { extractSongsFromJoin } from "@/libs/songUtils";
 
 /**
  * 指定されたプレイリストIDに含まれる曲を取得する
  * @param {string} playlistId プレイリストID
- * @returns {Promise<PlaylistSong[]>} プレイリストに含まれる曲の配列
+ * @returns {Promise<Song[]>} プレイリストに含まれる曲の配列
  */
 const getPlaylistSongs = async (
   playlistId: string
-): Promise<PlaylistSong[]> => {
+): Promise<Song[]> => {
   const supabase = await createClient();
 
   // まずプレイリストの情報を取得して public かどうかを確認
@@ -47,10 +46,7 @@ const getPlaylistSongs = async (
     throw new Error(error.message);
   }
 
-  return (data || []).map((item) => ({
-    ...item.songs,
-    songType: "regular",
-  }));
+  return extractSongsFromJoin(data || []);
 };
 
 export default getPlaylistSongs;

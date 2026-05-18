@@ -1,13 +1,8 @@
-import { Song } from "@/types";
+import { type TopPlayedSong } from "@/types";
+import { type Period } from "@/types/stats";
 import { createClient } from "@/libs/supabase/client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
-
-interface TopPlayedSong extends Song {
-  play_count: number;
-}
-
-type Period = "day" | "week" | "month" | "all";
 
 const useGetTopPlayedSongs = (userId?: string, period: Period = "day") => {
   const supabase = createClient();

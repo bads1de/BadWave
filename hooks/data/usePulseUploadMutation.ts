@@ -4,40 +4,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import { uploadFileToR2 } from "@/actions/r2";
-import { checkIsAdmin } from "@/actions/checkAdmin";
+import { uploadFile } from "@/libs/upload";
+import { requireAdminPermission } from "@/libs/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
+import type { ModalHook } from "@/types";
 
 interface PulseUploadParams {
   title: string;
   genre: string;
   musicFile: File | null;
-}
-
-interface PulseUploadModalHook {
-  onClose: () => void;
-}
-
-/**
- * ファイルをFormDataに変換してR2にアップロードする
- */
-async function uploadFile(
-  file: File,
-  bucketName: "pulse",
-  fileNamePrefix: string
-): Promise<string | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("bucketName", bucketName);
-  formData.append("fileNamePrefix", fileNamePrefix);
-
-  const result = await uploadFileToR2(formData);
-
-  if (!result.success) {
-    throw new Error(result.error || "アップロードに失敗しました");
-  }
-
-  return result.url || null;
 }
 
 /**
@@ -46,19 +21,14 @@ async function uploadFile(
  * @param pulseUploadModal アップロードモーダルのフック
  * @returns アップロードミューテーション
  */
-const usePulseUploadMutation = (pulseUploadModal: PulseUploadModalHook) => {
+const usePulseUploadMutation = (pulseUploadModal: ModalHook) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
   const { user } = useUser();
 
   return useMutation({
     mutationFn: async ({ title, genre, musicFile }: PulseUploadParams) => {
-      // 管理者権限チェック
-      const { isAdmin } = await checkIsAdmin();
-      if (!isAdmin) {
-        toast.error("管理者権限が必要です");
-        throw new Error("管理者権限が必要です");
-      }
+      await requireAdminPermission();
 
       if (!musicFile || !user) {
         toast.error("音声ファイルを選択してください");

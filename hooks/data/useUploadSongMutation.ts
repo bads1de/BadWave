@@ -5,11 +5,13 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import { uploadFileToR2 } from "@/actions/r2";
-import { checkIsAdmin } from "@/actions/checkAdmin";
 import { sanitizeTitle } from "@/libs/utils";
+import { uploadFile } from "@/libs/upload";
+import { requireAdminPermission } from "@/libs/requireAdmin";
+import { serializeGenres } from "@/libs/songUtils";
 import uniqid from "uniqid";
 import { CACHED_QUERIES } from "@/constants";
+import type { ModalHook } from "@/types";
 
 interface UploadSongParams {
   title: string;
@@ -20,39 +22,13 @@ interface UploadSongParams {
   imageFile: File | null;
 }
 
-interface UploadModalHook {
-  onClose: () => void;
-}
-
-/**
- * ファイルをFormDataに変換してアップロードする
- */
-async function uploadFile(
-  file: File,
-  bucketName: "spotlight" | "song" | "image" | "video",
-  fileNamePrefix: string
-): Promise<string | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("bucketName", bucketName);
-  formData.append("fileNamePrefix", fileNamePrefix);
-
-  const result = await uploadFileToR2(formData);
-
-  if (!result.success) {
-    throw new Error(result.error || "アップロードに失敗しました");
-  }
-
-  return result.url || null;
-}
-
 /**
  * 曲のアップロード処理を行うカスタムフック
  *
  * @param uploadModal アップロードモーダルのフック
  * @returns アップロードミューテーション
  */
-const useUploadSongMutation = (uploadModal: UploadModalHook) => {
+const useUploadSongMutation = (uploadModal: ModalHook) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -66,13 +42,7 @@ const useUploadSongMutation = (uploadModal: UploadModalHook) => {
       songFile,
       imageFile,
     }: UploadSongParams) => {
-      // 管理者権限チェック
-      const { isAdmin } = await checkIsAdmin();
-
-      if (!isAdmin) {
-        toast.error("管理者権限が必要です");
-        throw new Error("管理者権限が必要です");
-      }
+      await requireAdminPermission();
 
       if (!songFile || !imageFile || !user) {
         toast.error("必須フィールドが未入力です");
@@ -110,7 +80,7 @@ const useUploadSongMutation = (uploadModal: UploadModalHook) => {
           lyrics,
           image_path: imageUrl,
           song_path: songUrl,
-          genre: genre.join(", "),
+          genre: serializeGenres(genre),
           count: 0,
         });
 

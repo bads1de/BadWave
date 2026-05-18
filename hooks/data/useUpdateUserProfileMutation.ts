@@ -4,8 +4,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
-import { uploadFileToR2, deleteFileFromR2 } from "@/actions/r2";
+import { deleteFileFromR2 } from "@/actions/r2";
+import { uploadFile } from "@/libs/upload";
 import { CACHED_QUERIES } from "@/constants";
+import type { ModalHook } from "@/types";
 
 interface UpdateProfileParams {
   userId: string;
@@ -22,39 +24,13 @@ interface UpdatePasswordParams {
   newPassword: string;
 }
 
-interface AccountModalHook {
-  onClose: () => void;
-}
-
-/**
- * ファイルをFormDataに変換してアップロードする
- */
-async function uploadFile(
-  file: File,
-  bucketName: "spotlight" | "song" | "image" | "video",
-  fileNamePrefix: string
-): Promise<string | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("bucketName", bucketName);
-  formData.append("fileNamePrefix", fileNamePrefix);
-
-  const result = await uploadFileToR2(formData);
-
-  if (!result.success) {
-    throw new Error(result.error || "アップロードに失敗しました");
-  }
-
-  return result.url || null;
-}
-
 /**
  * ユーザープロフィールの更新処理を行うカスタムフック
  *
  * @param accountModal アカウントモーダルのフック
  * @returns 更新ミューテーション
  */
-const useUpdateUserProfileMutation = (accountModal: AccountModalHook) => {
+const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
   const router = useRouter();

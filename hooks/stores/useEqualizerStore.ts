@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
 // バンド構成: Spotify風 6バンド
 export const EQ_BANDS = [
@@ -61,17 +62,15 @@ const DEFAULT_BANDS: EqBand[] = EQ_BANDS.map((band) => ({
   gain: 0,
 }));
 
-interface EqualizerStore {
+interface EqualizerStore extends HydrationState {
   isEnabled: boolean;
   bands: EqBand[];
   activePresetId: string;
   presets: EqPreset[];
-  hasHydrated: boolean;
   setGain: (freq: number, gain: number) => void;
   setPreset: (presetId: string) => void;
   toggleEnabled: () => void;
   reset: () => void;
-  setHasHydrated: (state: boolean) => void;
 }
 
 // ゲインを-12 ~ +12の範囲に制限
@@ -125,12 +124,7 @@ const useEqualizerStore = create<EqualizerStore>()(
 
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-equalizer",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    }
+    createHydrationPersistConfig<EqualizerStore>("badwave-equalizer"),
   )
 );
 

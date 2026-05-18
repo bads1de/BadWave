@@ -1,19 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { type HydrationState, createHydrationPersistConfig } from "./withHydration";
 
 /**
  * デスクトップ用ボリューム設定を管理するストア
  * ローカルストレージに永続化される
  */
-interface VolumeStore {
+interface VolumeStore extends HydrationState {
   /** 現在のボリューム値 (0-1) */
   volume: number;
-  /** ストアがハイドレート完了したかどうか */
-  hasHydrated: boolean;
   /** ボリュームを設定する */
   setVolume: (volume: number) => void;
-  /** ハイドレート状態を設定する */
-  setHasHydrated: (state: boolean) => void;
 }
 
 /** デスクトップのデフォルトボリューム */
@@ -28,12 +25,7 @@ const useVolumeStore = create<VolumeStore>()(
         set({ volume: Math.max(0, Math.min(1, volume)) }),
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
     }),
-    {
-      name: "badwave-volume",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
-      },
-    }
+    createHydrationPersistConfig<VolumeStore>("badwave-volume"),
   )
 );
 
