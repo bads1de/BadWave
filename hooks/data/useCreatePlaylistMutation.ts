@@ -6,13 +6,10 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 import { CACHED_QUERIES } from "@/constants";
+import type { ModalHook } from "@/types";
 
 interface CreatePlaylistParams {
   title: string;
-}
-
-interface PlaylistModalHook {
-  onClose: () => void;
 }
 
 /**
@@ -21,7 +18,7 @@ interface PlaylistModalHook {
  * @param playlistModal プレイリストモーダルのフック
  * @returns 作成ミューテーション
  */
-const useCreatePlaylistMutation = (playlistModal: PlaylistModalHook) => {
+const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
   const supabaseClient = createClient();
   const queryClient = useQueryClient();
   const router = useRouter();

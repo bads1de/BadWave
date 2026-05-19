@@ -1,0 +1,132 @@
+"use client";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/auth/useUser";
+import { createClient } from "@/libs/supabase/client";
+import { CACHED_QUERIES } from "@/constants";
+
+interface UpdatePlaylistTitleParams {
+  playlistId: string;
+  newTitle: string;
+}
+
+interface TogglePlaylistPublicParams {
+  playlistId: string;
+  isPublic: boolean;
+}
+
+interface DeletePlaylistParams {
+  playlistId: string;
+}
+
+/**
+ * プレイリストのタイトルを更新するミューテーション
+ */
+export const useUpdatePlaylistTitle = () => {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { user } = useUser();
+
+  return useMutation({
+    mutationFn: async ({ playlistId, newTitle }: UpdatePlaylistTitleParams) => {
+      if (!user) throw new Error("Unauthorized");
+
+      const { error } = await supabase
+        .from("playlists")
+        .update({ title: newTitle })
+        .eq("id", playlistId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      return { playlistId, newTitle };
+    },
+    onSuccess: ({ playlistId, newTitle }) => {
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      toast.success("プレイリスト名を更新しました");
+      router.push(
+        `/playlists/${playlistId}?title=${encodeURIComponent(newTitle)}`
+      );
+    },
+    onError: () => {
+      toast.error("プレイリスト名の更新に失敗しました");
+    },
+  });
+};
+
+/**
+ * プレイリストの公開/非公開を切り替えるミューテーション
+ */
+export const useTogglePlaylistPublic = () => {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { user } = useUser();
+
+  return useMutation({
+    mutationFn: async ({ playlistId, isPublic }: TogglePlaylistPublicParams) => {
+      if (!user) throw new Error("Unauthorized");
+
+      const { error } = await supabase
+        .from("playlists")
+        .update({ is_public: !isPublic })
+        .eq("id", playlistId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      return { isPublic: !isPublic };
+    },
+    onSuccess: ({ isPublic }) => {
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      toast.success(
+        isPublic
+          ? "プレイリストを公開しました"
+          : "プレイリストを非公開にしました"
+      );
+      router.refresh();
+    },
+    onError: () => {
+      toast.error("プレイリストの公開設定の更新に失敗しました");
+    },
+  });
+};
+
+/**
+ * プレイリストを削除するミューテーション
+ */
+export const useDeletePlaylist = () => {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { user } = useUser();
+
+  return useMutation({
+    mutationFn: async ({ playlistId }: DeletePlaylistParams) => {
+      if (!user) throw new Error("Unauthorized");
+
+      await supabase
+        .from("playlist_songs")
+        .delete()
+        .eq("playlist_id", playlistId)
+        .eq("user_id", user.id);
+
+      await supabase
+        .from("playlists")
+        .delete()
+        .eq("id", playlistId)
+        .eq("user_id", user.id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      toast.success("プレイリストを削除しました");
+      router.push("/playlists");
+      router.refresh();
+    },
+    onError: () => {
+      toast.error("プレイリストの削除に失敗しました");
+    },
+  });
+};

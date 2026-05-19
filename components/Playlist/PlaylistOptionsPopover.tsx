@@ -1,20 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { Edit2, Trash2, Globe2, Lock } from "lucide-react";
-import { createClient } from "@/libs/supabase/client";
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useUser } from "@/hooks/auth/useUser";
-import { CACHED_QUERIES } from "@/constants";
+import {
+  useUpdatePlaylistTitle,
+  useTogglePlaylistPublic,
+  useDeletePlaylist,
+} from "@/hooks/data/usePlaylistMutations";
 
 interface PlaylistOptionsPopoverProps {
   playlistId: string;
@@ -29,102 +28,24 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
 }) => {
   const [newTitle, setNewTitle] = useState(currentTitle);
   const [isEditing, setIsEditing] = useState(false);
-  const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
-  const { user } = useUser();
-  const queryClient = useQueryClient();
 
-  const updatePlaylistMutation = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error("Unauthorized");
-
-      const { error } = await supabase
-        .from("playlists")
-        .update({ title: newTitle })
-        .eq("id", playlistId)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      return { newTitle };
-    },
-    onSuccess: ({ newTitle }) => {
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
-      toast.success("プレイリスト名を更新しました");
-      router.push(
-        `/playlists/${playlistId}?title=${encodeURIComponent(newTitle)}`
-      );
-      setIsEditing(false);
-    },
-    onError: () => {
-      toast.error("プレイリスト名の更新に失敗しました");
-    },
-  });
-
-  const togglePublicMutation = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error("Unauthorized");
-
-      const { error } = await supabase
-        .from("playlists")
-        .update({ is_public: !isPublic })
-        .eq("id", playlistId)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-      return { isPublic: !isPublic };
-    },
-    onSuccess: ({ isPublic }) => {
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
-      toast.success(
-        isPublic
-          ? "プレイリストを公開しました"
-          : "プレイリストを非公開にしました"
-      );
-      router.refresh();
-    },
-    onError: () => {
-      toast.error("プレイリストの公開設定の更新に失敗しました");
-    },
-  });
-
-  const deletePlaylistMutation = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error("Unauthorized");
-
-      await supabase
-        .from("playlist_songs")
-        .delete()
-        .eq("playlist_id", playlistId)
-        .eq("user_id", user.id);
-
-      await supabase
-        .from("playlists")
-        .delete()
-        .eq("id", playlistId)
-        .eq("user_id", user.id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
-      toast.success("プレイリストを削除しました");
-      router.push("/playlists");
-      router.refresh();
-    },
-    onError: () => {
-      toast.error("プレイリストの削除に失敗しました");
-    },
-  });
+  const updateTitleMutation = useUpdatePlaylistTitle();
+  const togglePublicMutation = useTogglePlaylistPublic();
+  const deletePlaylistMutation = useDeletePlaylist();
 
   const handleTitleUpdate = () => {
-    updatePlaylistMutation.mutate();
+    updateTitleMutation.mutate(
+      { playlistId, newTitle },
+      { onSuccess: () => setIsEditing(false) }
+    );
   };
 
   const handleTogglePublic = () => {
-    togglePublicMutation.mutate();
+    togglePublicMutation.mutate({ playlistId, isPublic });
   };
 
   const handleDeletePlaylist = () => {
-    deletePlaylistMutation.mutate();
+    deletePlaylistMutation.mutate({ playlistId });
   };
 
   return (
@@ -151,20 +72,20 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full px-2 py-2 bg-[#0a0a0f] border border-theme-500/40 text-theme-300 focus:outline-none focus:border-theme-500 focus:shadow-[0_0_10px_rgba(var(--theme-500),0.3)] font-mono text-[10px]"
                   placeholder="NEW_IDENTIFIER"
-                  disabled={updatePlaylistMutation.isPending}
+                  disabled={updateTitleMutation.isPending}
                 />
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => setIsEditing(false)}
                     className="px-2 py-1 text-[8px] text-theme-900 hover:text-theme-500 transition"
-                    disabled={updatePlaylistMutation.isPending}
+                    disabled={updateTitleMutation.isPending}
                   >
                     [ ABORT ]
                   </button>
                   <button
                     onClick={handleTitleUpdate}
                     className="px-2 py-1 text-[8px] bg-theme-500/20 border border-theme-500/60 text-theme-300 hover:bg-theme-500/40 transition"
-                    disabled={updatePlaylistMutation.isPending}
+                    disabled={updateTitleMutation.isPending}
                   >
                     [ COMMIT ]
                   </button>
