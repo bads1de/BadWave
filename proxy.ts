@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
     
     // updateSessionで設定されたCookie（セッションクリア等）をリダイレクトレスポンスに引き継ぐ
     response.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie.name, cookie.value);
+      redirectResponse.cookies.set(cookie);
     });
     
     return redirectResponse;

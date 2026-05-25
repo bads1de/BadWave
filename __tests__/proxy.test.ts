@@ -52,11 +52,19 @@ describe("Proxy", () => {
 
   it("未認証ユーザーが保護されたルートにアクセスした場合、ホームページにリダイレクトすること", async () => {
     mockRequest.nextUrl.pathname = "/liked";
+    const mockSet = jest.fn();
+    const mockRedirectResponse = {
+      cookies: {
+        set: mockSet,
+      },
+    };
+    (NextResponse.redirect as jest.Mock).mockReturnValue(mockRedirectResponse);
+
     const mockResponse = { 
       type: "response",
       cookies: {
         getAll: jest.fn().mockReturnValue([
-          { name: "test-cookie", value: "test-value" }
+          { name: "test-cookie", value: "test-value", httpOnly: true, path: "/" }
         ]),
       }
     };
@@ -69,6 +77,14 @@ describe("Proxy", () => {
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: "/" })
+    );
+    expect(mockSet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "test-cookie",
+        value: "test-value",
+        httpOnly: true,
+        path: "/"
+      })
     );
   });
 
