@@ -1,9 +1,9 @@
-import { renderHook, waitFor } from "@testing-library/react";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
 import { createClient } from "@/libs/supabase/client";
 import { renderHookWithQueryClient } from "../../test-utils";
 import { checkIsAdmin } from "@/actions/checkAdmin";
 import { uploadFileToR2 } from "@/actions/r2";
+import toast from "react-hot-toast";
 
 // Mock dependencies
 jest.mock("@/libs/supabase/client", () => ({
@@ -12,20 +12,15 @@ jest.mock("@/libs/supabase/client", () => ({
 
 jest.mock("@/actions/checkAdmin");
 jest.mock("@/actions/r2");
+
+const mockUseUser = jest.fn(() => ({ user: { id: "user-1" } }));
 jest.mock("@/hooks/auth/useUser", () => ({
-  useUser: () => ({ user: { id: "user-1" } }),
+  useUser: () => mockUseUser(),
 }));
 
 jest.mock("react-hot-toast", () => ({
   success: jest.fn(),
   error: jest.fn(),
-}));
-
-// Mock AWS SDK
-jest.mock("@aws-sdk/client-s3", () => ({
-  PutObjectCommand: jest.fn(),
-  DeleteObjectCommand: jest.fn(),
-  S3Client: jest.fn(() => ({ send: jest.fn() })),
 }));
 
 describe("hooks/data/useSpotlightUploadMutation", () => {
@@ -42,44 +37,45 @@ describe("hooks/data/useSpotlightUploadMutation", () => {
       })),
     };
     (createClient as jest.Mock).mockReturnValue(mockSupabase);
-    
+    (checkIsAdmin as jest.Mock).mockResolvedValue({ isAdmin: true });
     (uploadFileToR2 as jest.Mock).mockResolvedValue({ success: true, url: "video-url" });
+    mockUseUser.mockReturnValue({ user: { id: "user-1" } });
   });
+
+  const setupHook = () =>
+    renderHookWithQueryClient(() =>
+      useSpotlightUploadMutation({ onClose: mockOnClose })
+    );
 
   it("should fail if not admin", async () => {
     (checkIsAdmin as jest.Mock).mockResolvedValue({ isAdmin: false });
 
-    const { result } = renderHookWithQueryClient(() => 
-      useSpotlightUploadMutation({ onClose: mockOnClose })
-    );
-
+    const { result } = setupHook();
     const file = new File([""], "video.mp4", { type: "video/mp4" });
-    await expect(result.current.mutateAsync({ 
-      title: "Title", 
-      author: "Author",
-      genre: "Genre", 
-      description: "Desc",
-      videoFile: file 
-    })).rejects.toThrow("管理者権限が必要です");
-    
+    await expect(
+      result.current.mutateAsync({
+        title: "Title",
+        author: "Author",
+        genre: "Genre",
+        description: "Desc",
+        videoFile: file,
+      })
+    ).rejects.toThrow("管理者権限が必要です");
+
     expect(mockInsert).not.toHaveBeenCalled();
   });
 
   it("should upload spotlight if admin", async () => {
-    (checkIsAdmin as jest.Mock).mockResolvedValue({ isAdmin: true });
     mockInsert.mockResolvedValue({ error: null });
 
-    const { result } = renderHookWithQueryClient(() => 
-      useSpotlightUploadMutation({ onClose: mockOnClose })
-    );
-
+    const { result } = setupHook();
     const file = new File([""], "video.mp4", { type: "video/mp4" });
-    await result.current.mutateAsync({ 
-      title: "Title", 
+    await result.current.mutateAsync({
+      title: "Title",
       author: "Author",
-      genre: "Genre", 
+      genre: "Genre",
       description: "Desc",
-      videoFile: file 
+      videoFile: file,
     });
 
     expect(uploadFileToR2).toHaveBeenCalled();
@@ -92,5 +88,87 @@ describe("hooks/data/useSpotlightUploadMutation", () => {
       user_id: "user-1",
     });
     expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it("should fail if videoFile is null", async () => {
+    const { result } = setupHook();
+    await expect(
+      result.current.mutateAsync({
+        title: "Title",
+        author: "Author",
+        genre: "Genre",
+        description: "Desc",
+        videoFile: null,
+      })
+    ).rejects.toThrow("動画ファイルを選択してください");
+    expect(toast.error).toHaveBeenCalledWith("動画ファイルを選択してください");
+  });
+
+  it("should fail if user is null", async () => {
+    mockUseUser.mockReturnValue({ user: null });
+
+    const { result } = setupHook();
+    const file = new File([""], "video.mp4", { type: "video/mp4" });
+    await expect(
+      result.current.mutateAsync({
+        title: "Title",
+        author: "Author",
+        genre: "Genre",
+        description: "Desc",
+        videoFile: file,
+      })
+    ).rejects.toThrow("動画ファイルを選択してください");
+    expect(toast.error).toHaveBeenCalledWith("動画ファイルを選択してください");
+  });
+
+  it("should fail if uploadFile throws (R2 error)", async () => {
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({ success: false, error: "R2 error" });
+
+    const { result } = setupHook();
+    const file = new File([""], "video.mp4", { type: "video/mp4" });
+    await expect(
+      result.current.mutateAsync({
+        title: "Title",
+        author: "Author",
+        genre: "Genre",
+        description: "Desc",
+        videoFile: file,
+      })
+    ).rejects.toThrow("動画のアップロードに失敗しました");
+    expect(toast.error).toHaveBeenCalledWith("動画のアップロードに失敗しました");
+  });
+
+  it("should fail if uploadFile returns null URL", async () => {
+    (uploadFileToR2 as jest.Mock).mockResolvedValue({ success: true, url: null });
+
+    const { result } = setupHook();
+    const file = new File([""], "video.mp4", { type: "video/mp4" });
+    await expect(
+      result.current.mutateAsync({
+        title: "Title",
+        author: "Author",
+        genre: "Genre",
+        description: "Desc",
+        videoFile: file,
+      })
+    ).rejects.toThrow("動画のアップロードに失敗しました");
+    expect(toast.error).toHaveBeenCalledWith("動画のアップロードに失敗しました");
+  });
+
+  it("should fail if supabase insert returns error", async () => {
+    mockInsert.mockResolvedValue({ error: { message: "Database error" } });
+
+    const { result } = setupHook();
+    const file = new File([""], "video.mp4", { type: "video/mp4" });
+    await expect(
+      result.current.mutateAsync({
+        title: "Title",
+        author: "Author",
+        genre: "Genre",
+        description: "Desc",
+        videoFile: file,
+      })
+    ).rejects.toThrow("Database error");
+    expect(toast.error).toHaveBeenCalledWith("Database error");
   });
 });
