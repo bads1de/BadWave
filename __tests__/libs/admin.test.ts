@@ -1,4 +1,4 @@
-import { getAdminUserIds, isAdmin, isCurrentUserAdmin, requireAdmin } from "@/libs/admin";
+import { getAdminUserIds, isAdmin, isCurrentUserAdmin, requireAdmin } from "@/libs/auth/admin";
 
 // Mock supabase server
 const mockGetUser = jest.fn<Promise<{ data: { user: { id: string } | null }; error: Error | null }>, []>();

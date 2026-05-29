@@ -6,7 +6,7 @@ import {
   generateRandomString,
   formatTime,
   downloadFile,
-} from "@/libs/utils";
+} from "@/libs/utils/utils";
 
 describe("libs/utils", () => {
   describe("cn", () => {

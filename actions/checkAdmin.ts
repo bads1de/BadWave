@@ -1,6 +1,6 @@
 "use server";
 
-import { isCurrentUserAdmin } from "@/libs/admin";
+import { isCurrentUserAdmin } from "@/libs/auth/admin";
 
 /**
  * 現在のユーザーが管理者かどうかをチェックするServer Action

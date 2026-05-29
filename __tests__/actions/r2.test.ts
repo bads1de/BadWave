@@ -1,6 +1,6 @@
 import { uploadFileToR2, deleteFileFromR2 } from "@/actions/r2";
-import s3Client from "@/libs/s3";
-import { requireAdmin } from "@/libs/admin";
+import s3Client from "@/libs/storage/s3";
+import { requireAdmin } from "@/libs/auth/admin";
 
 // Mock dependencies
 jest.mock("@/libs/s3", () => ({

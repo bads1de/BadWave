@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/libs/utils";
+import { cn } from "@/libs/utils/utils";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 
 interface PaginationProps {

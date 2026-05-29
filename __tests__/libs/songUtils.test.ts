@@ -2,7 +2,7 @@ import {
   extractSongsFromJoin,
   parseGenres,
   serializeGenres,
-} from "@/libs/songUtils";
+} from "@/libs/song/songUtils";
 
 describe("libs/songUtils", () => {
   describe("extractSongsFromJoin", () => {

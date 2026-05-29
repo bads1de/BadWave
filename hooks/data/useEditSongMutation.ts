@@ -5,9 +5,9 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
 import { deleteFileFromR2 } from "@/actions/r2";
-import { sanitizeTitle } from "@/libs/utils";
-import { uploadFile } from "@/libs/upload";
-import { serializeGenres } from "@/libs/songUtils";
+import { sanitizeTitle } from "@/libs/utils/utils";
+import { uploadFile } from "@/libs/storage/upload";
+import { serializeGenres } from "@/libs/song/songUtils";
 import { CACHED_QUERIES } from "@/constants";
 import type { Song, ModalHook } from "@/types";
 

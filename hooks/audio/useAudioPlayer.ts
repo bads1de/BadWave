@@ -11,7 +11,7 @@ import usePlaybackStateStore, {
 import useLatestRef from "@/hooks/utils/useLatestRef";
 import { AudioEngine } from "@/libs/audio/AudioEngine";
 import { createAudioErrorHandler } from "@/hooks/audio/audioErrorHandler";
-import { formatTime } from "@/libs/utils";
+import { formatTime } from "@/libs/utils/utils";
 
 /**
  * オーディオプレイヤーの状態と操作を管理するカスタムフック

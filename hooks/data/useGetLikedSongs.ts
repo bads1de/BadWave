@@ -1,7 +1,7 @@
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
-import { extractSongsFromJoin } from "@/libs/songUtils";
+import { extractSongsFromJoin } from "@/libs/song/songUtils";
 
 /**
  * ユーザーがいいねした曲を取得するカスタムフック

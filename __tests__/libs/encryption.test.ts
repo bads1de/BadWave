@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { Encryption } from "@/libs/encryption";
+import { Encryption } from "@/libs/utils/encryption";
 
 describe("libs/encryption", () => {
   const originalEnv = process.env;

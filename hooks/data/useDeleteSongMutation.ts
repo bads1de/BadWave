@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
 import { deleteFileFromR2 } from "@/actions/r2";
 import { useUser } from "@/hooks/auth/useUser";
-import { requireAdminPermission } from "@/libs/requireAdmin";
+import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
 
 interface DeleteSongParams {

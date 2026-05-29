@@ -1,6 +1,6 @@
 import { Song, SongType } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-import { extractSongsFromJoin } from "@/libs/songUtils";
+import { extractSongsFromJoin } from "@/libs/song/songUtils";
 
 /**
  * 現在のユーザーが「いいね」した曲一覧を取得する

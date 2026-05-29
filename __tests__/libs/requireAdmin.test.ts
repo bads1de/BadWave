@@ -1,4 +1,4 @@
-import { requireAdminPermission } from "@/libs/requireAdmin";
+import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { checkIsAdmin } from "@/actions/checkAdmin";
 
 // Mock checkIsAdmin action

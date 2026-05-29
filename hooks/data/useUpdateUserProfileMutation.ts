@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
 import { deleteFileFromR2 } from "@/actions/r2";
-import { uploadFile } from "@/libs/upload";
+import { uploadFile } from "@/libs/storage/upload";
 import { CACHED_QUERIES } from "@/constants";
 import type { ModalHook } from "@/types";
 

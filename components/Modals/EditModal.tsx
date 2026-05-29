@@ -11,7 +11,7 @@ import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
 import Button from "../common/Button";
 import useEditSongMutation from "@/hooks/data/useEditSongMutation";
-import { parseGenres } from "@/libs/songUtils";
+import { parseGenres } from "@/libs/song/songUtils";
 
 interface EditFormValues extends Partial<Song> {
   video?: FileList;

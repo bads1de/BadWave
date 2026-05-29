@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import { uploadFile } from "@/libs/upload";
-import { requireAdminPermission } from "@/libs/requireAdmin";
+import { uploadFile } from "@/libs/storage/upload";
+import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
 import type { ModalHook } from "@/types";
 

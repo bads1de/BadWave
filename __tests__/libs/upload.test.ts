@@ -1,4 +1,4 @@
-import { uploadFile } from "@/libs/upload";
+import { uploadFile } from "@/libs/storage/upload";
 import { uploadFileToR2 } from "@/actions/r2";
 
 // Mock r2 action

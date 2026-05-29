@@ -1,6 +1,6 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-import { extractSongsFromJoin } from "@/libs/songUtils";
+import { extractSongsFromJoin } from "@/libs/song/songUtils";
 
 /**
  * 指定されたプレイリストIDに含まれる曲を取得する

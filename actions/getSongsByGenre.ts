@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
-import { parseGenres } from "@/libs/songUtils";
+import { parseGenres } from "@/libs/song/songUtils";
 
 /**
  * 指定したジャンルの曲一覧を取得する

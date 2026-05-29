@@ -2,7 +2,7 @@
 
 import { FaPlay, FaPause, FaStepBackward, FaStepForward } from "react-icons/fa";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
-import { formatTime } from "@/libs/utils";
+import { formatTime } from "@/libs/utils/utils";
 
 interface RetroPlayerProps {
   audioRef: React.RefObject<HTMLAudioElement>;
