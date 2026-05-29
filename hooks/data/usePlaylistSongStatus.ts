@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
 import { useUser } from "@/hooks/auth/useUser";
 
 /**
@@ -20,7 +20,7 @@ const usePlaylistSongStatus = (songId: string, playlists: { id: string }[]) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["playlistSongStatus", songId, playlistIds, user?.id],
+    queryKey: [CACHED_QUERIES.playlistSongStatus, songId, playlistIds, user?.id],
     queryFn: async () => {
       if (!user?.id || !songId || playlistIds.length === 0) {
         return {};

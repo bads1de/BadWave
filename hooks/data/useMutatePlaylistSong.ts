@@ -111,7 +111,7 @@ const useMutatePlaylistSong = () => {
       // プレイリスト関連のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       // プレイリスト曲の状態を無効化
-      queryClient.invalidateQueries({ queryKey: ["playlistSongStatus"] });
+      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlistSongStatus] });
       toast.success("プレイリストに曲が追加されました！");
     },
     onError: (error: Error) => {

@@ -41,6 +41,7 @@ export const CACHED_QUERIES = {
   spotlight: "spotlight",
   pulse: "pulse",
   userStats: "userStats",
+  playlistSongStatus: "playlistSongStatus",
 } as const;
 
 export const CACHE_CONFIG = {
