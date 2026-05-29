@@ -7,7 +7,7 @@ import { Song } from "@/types";
 // Mock dependencies
 jest.mock("@/hooks/auth/useUser");
 jest.mock("@/hooks/data/useDownload");
-jest.mock("@/libs/utils", () => ({
+jest.mock("@/libs/utils/utils", () => ({
   downloadFile: jest.fn(),
 }));
 

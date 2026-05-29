@@ -2,7 +2,7 @@ import { checkIsAdmin } from "@/actions/checkAdmin";
 import { isCurrentUserAdmin } from "@/libs/auth/admin";
 
 // Mock the libs/admin module
-jest.mock("@/libs/admin", () => ({
+jest.mock("@/libs/auth/admin", () => ({
   isCurrentUserAdmin: jest.fn(),
 }));
 

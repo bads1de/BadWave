@@ -3,11 +3,11 @@ import s3Client from "@/libs/storage/s3";
 import { requireAdmin } from "@/libs/auth/admin";
 
 // Mock dependencies
-jest.mock("@/libs/s3", () => ({
+jest.mock("@/libs/storage/s3", () => ({
   send: jest.fn(),
 }));
 
-jest.mock("@/libs/admin", () => ({
+jest.mock("@/libs/auth/admin", () => ({
   requireAdmin: jest.fn(),
 }));
 

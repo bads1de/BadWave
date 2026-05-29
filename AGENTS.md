@@ -45,8 +45,12 @@ badwave/
 ├── actions/          # Server Actions
 ├── hooks/            # カスタムフック & Zustandストア
 ├── libs/             # ライブラリ設定 & ユーティリティ
+│   ├── audio/        # オーディオエンジン
+│   ├── auth/         # 認証・認可
+│   ├── song/         # 楽曲ユーティリティ
+│   ├── storage/      # S3/R2ストレージ
 │   ├── supabase/     # Supabaseクライアント
-│   └── ...
+│   └── utils/        # 汎用ユーティリティ
 ├── providers/        # Contextプロバイダー
 ├── public/           # 静的ファイル
 ├── __tests__/        # テスト

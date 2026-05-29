@@ -14,7 +14,7 @@ describe("libs/s3", () => {
   });
 
   it("S3Clientが環境変数を使ってエクスポートされる", () => {
-    const s3Module = require("@/libs/s3");
+    const s3Module = require("@/libs/storage/s3");
     // s3.ts は S3Client インスタンスを作成してエクスポートする
     expect(s3Module).toBeDefined();
   });
