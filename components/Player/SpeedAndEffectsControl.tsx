@@ -11,7 +11,6 @@ const SpeedAndEffectsControl: React.FC = () => {
   const playbackRate = usePlaybackRateStore((state) => state.rate);
   const setPlaybackRate = usePlaybackRateStore((state) => state.setRate);
   const { isSpatialEnabled, toggleSpatialEnabled } = useSpatialStore();
-  // 8D Audio, Retro, Bass Boost, Slowed+Reverb の状態
   const is8DAudioEnabled = useEffectStore((state) => state.is8DAudioEnabled);
   const toggle8DAudio = useEffectStore((state) => state.toggle8DAudio);
   const rotationSpeed = useEffectStore((state) => state.rotationSpeed);
@@ -39,7 +38,9 @@ const SpeedAndEffectsControl: React.FC = () => {
       {/* 速度コントロール (HUD Style) */}
       <div className="flex flex-col gap-3 px-1">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">TEMPORAL_RATE_VAR</span>
+          <span className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+            TEMPORAL_RATE_VAR
+          </span>
           <span className="text-[10px] text-white font-black drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]">
             {playbackRate.toFixed(2)}x
           </span>
@@ -90,41 +91,83 @@ const SpeedAndEffectsControl: React.FC = () => {
       {/* FX_MODULES */}
       <div className="space-y-4">
         {[
-          { id: 'slowed', label: 'SLOWED_REVERB', desc: 'PITCH_DOWN_SPATIAL_ADD', active: isSlowedReverb, action: toggleSlowedReverb },
-          { id: 'spatial', label: 'SPATIAL_SYNC', desc: 'HALL_ACOUSTICS_EMULATION', active: isSpatialEnabled, action: toggleSpatialEnabled },
-          { id: '8d', label: '8D_ROTATION', desc: 'BINAURAL_SIGNAL_SWEEP', active: is8DAudioEnabled, action: toggle8DAudio },
-          { id: 'retro', label: 'RETRO_SIGNAL', desc: 'ANALOG_TAPE_SATURATION', active: isRetroEnabled, action: toggleRetro },
-          { id: 'bass', label: 'BASS_AMPLIFIER', desc: 'LOW_FREQ_ENHANCEMENT', active: isBassBoostEnabled, action: toggleBassBoost },
+          {
+            id: "slowed",
+            label: "SLOWED_REVERB",
+            desc: "PITCH_DOWN_SPATIAL_ADD",
+            active: isSlowedReverb,
+            action: toggleSlowedReverb,
+          },
+          {
+            id: "spatial",
+            label: "SPATIAL_SYNC",
+            desc: "HALL_ACOUSTICS_EMULATION",
+            active: isSpatialEnabled,
+            action: toggleSpatialEnabled,
+          },
+          {
+            id: "8d",
+            label: "8D_ROTATION",
+            desc: "BINAURAL_SIGNAL_SWEEP",
+            active: is8DAudioEnabled,
+            action: toggle8DAudio,
+          },
+          {
+            id: "retro",
+            label: "RETRO_SIGNAL",
+            desc: "ANALOG_TAPE_SATURATION",
+            active: isRetroEnabled,
+            action: toggleRetro,
+          },
+          {
+            id: "bass",
+            label: "BASS_AMPLIFIER",
+            desc: "LOW_FREQ_ENHANCEMENT",
+            active: isBassBoostEnabled,
+            action: toggleBassBoost,
+          },
         ].map((effect) => (
           <div key={effect.id} className="group/fx relative">
             <div className="flex items-center justify-between px-1">
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className={`text-[10px] font-black tracking-widest uppercase transition-colors duration-300 ${effect.active ? "text-white" : "text-theme-500/60"}`}>
+                  <span
+                    className={`text-[10px] font-black tracking-widest uppercase transition-colors duration-300 ${effect.active ? "text-white" : "text-theme-500/60"}`}
+                  >
                     // {effect.label}
                   </span>
-                  {effect.active && <div className="w-1 h-1 bg-theme-500 rounded-full animate-ping" />}
+                  {effect.active && (
+                    <div className="w-1 h-1 bg-theme-500 rounded-full animate-ping" />
+                  )}
                 </div>
-                <span className="text-[7px] text-theme-500/30 uppercase tracking-tighter mt-0.5">{effect.desc}</span>
+                <span className="text-[7px] text-theme-500/30 uppercase tracking-tighter mt-0.5">
+                  {effect.desc}
+                </span>
               </div>
               <button
                 onClick={effect.action}
                 className={`w-12 h-5 border transition-all duration-500 relative overflow-hidden ${
-                  effect.active ? "bg-theme-500/20 border-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]" : "bg-theme-900/40 border-theme-500/20"
+                  effect.active
+                    ? "bg-theme-500/20 border-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.3)]"
+                    : "bg-theme-900/40 border-theme-500/20"
                 }`}
               >
                 <div
                   className={`absolute top-0.5 w-4 h-3 transition-all duration-500 ${
-                    effect.active ? "left-7 bg-white shadow-[0_0_10px_white]" : "left-1 bg-theme-500/40"
+                    effect.active
+                      ? "left-7 bg-white shadow-[0_0_10px_white]"
+                      : "left-1 bg-theme-500/40"
                   }`}
                 />
               </button>
             </div>
-            
+
             {/* 8D Audio 回転速度 (Sub-Controls) */}
-            {effect.id === '8d' && is8DAudioEnabled && (
+            {effect.id === "8d" && is8DAudioEnabled && (
               <div className="mt-3 ml-4 flex items-center justify-between border-l border-theme-500/20 pl-4 py-1">
-                <span className="text-[8px] text-theme-500/40 uppercase">ROT_VELOCITY</span>
+                <span className="text-[8px] text-theme-500/40 uppercase">
+                  ROT_VELOCITY
+                </span>
                 <div className="flex gap-1">
                   {rotationSpeeds.map((speed) => (
                     <button
@@ -145,10 +188,10 @@ const SpeedAndEffectsControl: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       {/* HUD装飾ライン */}
       <div className="mt-2 text-[7px] text-theme-500/20 font-mono text-right uppercase italic">
-         signal_path: bypass_main // filter_active: true
+        signal_path: bypass_main // filter_active: true
       </div>
     </div>
   );

@@ -12,9 +12,7 @@ interface EqSliderProps {
   max?: number;
   step?: number;
   className?: string;
-  /** カラースキームのアクセントカラー（From） */
   accentFrom?: string;
-  /** カラースキームのアクセントカラー（To） */
   accentTo?: string;
 }
 
@@ -35,7 +33,10 @@ const EqSlider: React.FC<EqSliderProps> = ({
 }) => {
   return (
     <div
-      className={cn("flex flex-col items-center gap-3 select-none font-mono", className)}
+      className={cn(
+        "flex flex-col items-center gap-3 select-none font-mono",
+        className,
+      )}
     >
       {/* ゲイン値表示 */}
       <span className="text-[10px] font-black text-theme-500 w-8 text-center drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]">
@@ -55,12 +56,13 @@ const EqSlider: React.FC<EqSliderProps> = ({
         <SliderPrimitive.Track className="relative w-2 h-full bg-[#0a0a0f] border border-theme-500/30 overflow-hidden shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
           {/* センターライン */}
           <div className="absolute top-1/2 left-0 w-full h-px bg-theme-500/20 z-0" />
-          
+
           <SliderPrimitive.Range
             className="absolute w-full bg-gradient-to-t from-theme-500/40 via-theme-500 to-white shadow-[0_0_15px_rgba(var(--theme-500),0.8)]"
             style={{
               // 0dBの位置を中央に
-              bottom: value >= 0 ? "50%" : `${50 - (Math.abs(value) / 12) * 50}%`,
+              bottom:
+                value >= 0 ? "50%" : `${50 - (Math.abs(value) / 12) * 50}%`,
               top: value >= 0 ? `${50 - (value / 12) * 50}%` : "50%",
             }}
           />
@@ -69,7 +71,7 @@ const EqSlider: React.FC<EqSliderProps> = ({
           className={cn(
             "block w-4 h-2 bg-white border border-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.8)]",
             "focus:outline-none transition-all duration-300",
-            "group-hover:scale-x-125 cursor-pointer"
+            "group-hover:scale-x-125 cursor-pointer",
           )}
           aria-label="Gain Thumb"
         />

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 interface LrcLine {
-  time: number; // 秒
+  time: number;
   text: string;
 }
 
@@ -116,10 +116,13 @@ const SyncedLyrics: React.FC<SyncedLyricsProps> = ({ lyrics }) => {
 
   // LRC形式の場合は同期表示
   return (
-    <div ref={containerRef} className="flex flex-col items-center gap-6 py-12 relative">
+    <div
+      ref={containerRef}
+      className="flex flex-col items-center gap-6 py-12 relative"
+    >
       {/* 歌詞エリア専用のスキャンライン */}
       <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
-      
+
       {lrcLines.map((line, index) => {
         const isActive = index === currentLineIndex;
         const isPast = index < currentLineIndex;
@@ -142,13 +145,15 @@ const SyncedLyrics: React.FC<SyncedLyricsProps> = ({ lyrics }) => {
                 }
               `}
             >
-              {isActive && <span className="mr-2 text-theme-500 animate-pulse">{">"}</span>}
+              {isActive && (
+                <span className="mr-2 text-theme-500 animate-pulse">{">"}</span>
+              )}
               {line.text}
             </p>
           </div>
         );
       })}
-      
+
       {/* 終端インジケーター */}
       <div className="mt-8 text-[10px] font-mono text-theme-500/20 uppercase tracking-[0.5em]">
         --- END_OF_STREAM ---

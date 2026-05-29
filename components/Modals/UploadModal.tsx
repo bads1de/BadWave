@@ -21,7 +21,6 @@ import Modal from "./Modal";
 import Input from "../common/Input";
 import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
-import Button from "../common/Button";
 import { RiUploadCloud2Line, RiMusic2Line } from "react-icons/ri";
 
 const UploadModal: React.FC = memo(() => {
@@ -67,7 +66,7 @@ const UploadModal: React.FC = memo(() => {
       const files = e.target.files;
       if (files) handleFiles(files);
     },
-    []
+    [],
   );
 
   const handleFiles = useCallback(
@@ -86,7 +85,7 @@ const UploadModal: React.FC = memo(() => {
         }
       }
     },
-    [setValue]
+    [setValue],
   );
 
   const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
@@ -131,7 +130,7 @@ const UploadModal: React.FC = memo(() => {
         uploadModal.onClose();
       }
     },
-    [reset, uploadModal]
+    [reset, uploadModal],
   );
 
   const onSubmit: SubmitHandler<FieldValues> = useCallback(
@@ -164,7 +163,14 @@ const UploadModal: React.FC = memo(() => {
         console.error("Upload error:", error);
       }
     },
-    [mutateAsync, reset, user, selectedGenres, setImagePreview, setAudioPreview]
+    [
+      mutateAsync,
+      reset,
+      user,
+      selectedGenres,
+      setImagePreview,
+      setAudioPreview,
+    ],
   );
 
   return (
@@ -182,7 +188,10 @@ const UploadModal: React.FC = memo(() => {
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-1">
-              <label htmlFor="title" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+              <label
+                htmlFor="title"
+                className="text-[10px] text-theme-500 font-bold uppercase tracking-widest"
+              >
                 [ ASSET_TITLE ]
               </label>
               <Input
@@ -194,7 +203,10 @@ const UploadModal: React.FC = memo(() => {
               />
             </div>
             <div className="space-y-1">
-              <label htmlFor="author" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+              <label
+                htmlFor="author"
+                className="text-[10px] text-theme-500 font-bold uppercase tracking-widest"
+              >
                 [ ORIGIN_AUTHOR ]
               </label>
               <Input
@@ -208,7 +220,10 @@ const UploadModal: React.FC = memo(() => {
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="lyrics" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+            <label
+              htmlFor="lyrics"
+              className="text-[10px] text-theme-500 font-bold uppercase tracking-widest"
+            >
               [ TEXTUAL_DATA_LOG ]
             </label>
             <Textarea
@@ -221,7 +236,9 @@ const UploadModal: React.FC = memo(() => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">[ SECTOR_INDEX ]</label>
+            <label className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+              [ SECTOR_INDEX ]
+            </label>
             <GenreSelect
               onGenreChange={(genres: string) => setSelectedGenres([genres])}
             />
@@ -230,7 +247,10 @@ const UploadModal: React.FC = memo(() => {
 
         <div className="space-y-4">
           <div className="space-y-1">
-            <label htmlFor="file" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+            <label
+              htmlFor="file"
+              className="text-[10px] text-theme-500 font-bold uppercase tracking-widest"
+            >
               [ BINARY_SOURCE ]
             </label>
             <div
@@ -288,7 +308,9 @@ const UploadModal: React.FC = memo(() => {
             {audioPreview && (
               <div className="flex flex-col items-center justify-center p-4 bg-[#0a0a0f] border border-theme-500/40 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.1)]">
                 <RiMusic2Line className="w-8 h-8 text-theme-500 mb-2 animate-pulse" />
-                <span className="text-[8px] text-theme-500 tracking-[0.2em]">SIGNAL_DETECTED</span>
+                <span className="text-[8px] text-theme-500 tracking-[0.2em]">
+                  SIGNAL_DETECTED
+                </span>
               </div>
             )}
           </div>
@@ -303,8 +325,20 @@ const UploadModal: React.FC = memo(() => {
             {isLoading ? (
               <>
                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 TRANSMITTING...
               </>

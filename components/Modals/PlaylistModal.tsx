@@ -1,12 +1,10 @@
 "use client";
 
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
-import { useUser } from "@/hooks/auth/useUser";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
 import Input from "../common/Input";
-import Button from "../common/Button";
 import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
 
 const PlaylistModal = () => {
@@ -62,7 +60,10 @@ const PlaylistModal = () => {
         aria-label="プレイリスト作成"
       >
         <div className="space-y-2">
-          <label htmlFor="title" className="text-[10px] text-theme-500 font-bold uppercase tracking-widest">
+          <label
+            htmlFor="title"
+            className="text-[10px] text-theme-500 font-bold uppercase tracking-widest"
+          >
             [ COLLECTION_IDENTIFIER ]
           </label>
           <Input
@@ -73,7 +74,7 @@ const PlaylistModal = () => {
             className="bg-[#0a0a0f] border-theme-500/30 text-theme-300 placeholder:text-theme-900 focus:border-theme-500 shadow-[inset_0_0_10px_rgba(var(--theme-500),0.05)] rounded-none h-12"
           />
         </div>
-        
+
         <button
           disabled={isLoading}
           type="submit"

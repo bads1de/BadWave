@@ -1,4 +1,3 @@
-import React from "react";
 import getSongsByGenre from "@/actions/getSongsByGenre";
 import GenreContent from "./components/GenreContent";
 import GenreHeader from "./components/GenreHeader";

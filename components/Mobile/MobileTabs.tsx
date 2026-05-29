@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiFillHome, AiOutlineBars, AiOutlineSearch } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa6";
 

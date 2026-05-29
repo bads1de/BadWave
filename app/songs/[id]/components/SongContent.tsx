@@ -2,17 +2,7 @@
 
 import React, { useState, useEffect, useMemo, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Play,
-  Heart,
-  Share2,
-  Download,
-  Edit2,
-  Clock,
-  Music2,
-  Pause,
-  ClipboardCopy,
-} from "lucide-react";
+import { Play, Heart, Clock, Music2, ClipboardCopy } from "lucide-react";
 import { MdLyrics } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,7 +17,6 @@ import toast from "react-hot-toast";
 import AudioWaveform from "@/components/AudioWaveform";
 import useAudioWaveStore from "@/hooks/audio/useAudioWave";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
-import ScrollingText from "@/components/common/ScrollingText";
 
 interface SongContentProps {
   songId: string;
@@ -42,10 +31,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const [duration, setDuration] = useState<string>("");
   const [audioWaveformKey, setAudioWaveformKey] = useState(0);
 
-  const genres = useMemo(
-    () => parseGenres(song?.genre),
-    [song?.genre]
-  );
+  const genres = useMemo(() => parseGenres(song?.genre), [song?.genre]);
 
   const { songGenres } = useGetSongsByGenres(genres, songId);
 
@@ -127,11 +113,12 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white font-mono relative overflow-hidden">
       {/* 背景装飾 */}
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-             backgroundSize: '100px 100px'
-           }} 
+      <div
+        className="fixed inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
+          backgroundSize: "100px 100px",
+        }}
       />
 
       {/* Hero Section (HUD Analysis Style) */}
@@ -145,23 +132,23 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/60 via-transparent to-[#0a0a0f]" />
-        
+
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-           <div className="w-[80%] h-[80%] border border-theme-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
-           <div className="w-[60%] h-[60%] border border-theme-500/5 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+          <div className="w-[80%] h-[80%] border border-theme-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
+          <div className="w-[60%] h-[60%] border border-theme-500/5 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
         </div>
 
         <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center">
-           <AudioWaveform
-             key={audioWaveformKey}
-             audioUrl={song.song_path!}
-             onPlayPause={handlePlayClick}
-             onEnded={handlePlaybackEnded}
-             primaryColor={primaryColor}
-             secondaryColor={secondaryColor}
-             imageUrl={song.image_path!}
-             songId={songId}
-           />
+          <AudioWaveform
+            key={audioWaveformKey}
+            audioUrl={song.song_path!}
+            onPlayPause={handlePlayClick}
+            onEnded={handlePlaybackEnded}
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            imageUrl={song.image_path!}
+            songId={songId}
+          />
         </div>
 
         {/* Content Overlay */}
@@ -181,7 +168,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
                 {/* HUD Corners */}
                 <div className="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-theme-500" />
                 <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-theme-500" />
-                
+
                 <div className="relative h-full w-full overflow-hidden border border-theme-500/40 shadow-[0_0_30px_rgba(var(--theme-500),0.2)]">
                   <Image
                     src={song?.image_path || "/images/wait.jpg"}
@@ -190,9 +177,12 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
                     className="object-cover transition-all duration-1000 group-hover:scale-125"
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width:1280px) 25vw, 20vw"
                   />
-                  <div className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px] cursor-pointer" onClick={handlePlayClick}>
+                  <div
+                    className="absolute inset-0 bg-theme-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px] cursor-pointer"
+                    onClick={handlePlayClick}
+                  >
                     <div className="w-20 h-20 rounded-full bg-white/10 border border-white/40 flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                       <Play size={40} className="text-white fill-current" />
+                      <Play size={40} className="text-white fill-current" />
                     </div>
                   </div>
                 </div>
@@ -202,8 +192,8 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
               <div className="flex-grow space-y-6">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 text-[10px] text-theme-500 tracking-[0.5em] uppercase animate-pulse">
-                     <span className="w-2 h-2 bg-theme-500 rounded-full" />
-                     [ ANALYZING_DATA_STREAM ]
+                    <span className="w-2 h-2 bg-theme-500 rounded-full" />[
+                    ANALYZING_DATA_STREAM ]
                   </div>
                   <h1 className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_15px_rgba(var(--theme-500),0.8)] break-all">
                     {song.title}
@@ -262,7 +252,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-8 py-20 relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-theme-500/20 to-transparent" />
-        
+
         {/* Genre Tags (Index Chips) */}
         <div className="flex flex-wrap gap-3 mb-16">
           {genres.map((genre) => (
@@ -280,7 +270,9 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
             <button
               onClick={() => setActiveTab("lyrics")}
               className={`text-xs font-bold uppercase tracking-[0.3em] transition-all relative group ${
-                activeTab === "lyrics" ? "text-theme-500" : "text-theme-900 hover:text-theme-500/60"
+                activeTab === "lyrics"
+                  ? "text-theme-500"
+                  : "text-theme-900 hover:text-theme-500/60"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -297,7 +289,9 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
             <button
               onClick={() => setActiveTab("similar")}
               className={`text-xs font-bold uppercase tracking-[0.3em] transition-all relative group ${
-                activeTab === "similar" ? "text-theme-500" : "text-theme-900 hover:text-theme-500/60"
+                activeTab === "similar"
+                  ? "text-theme-500"
+                  : "text-theme-900 hover:text-theme-500/60"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -326,7 +320,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
             >
               <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-theme-500/40" />
               <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-theme-500/40" />
-              
+
               <button
                 onClick={copyLyricsToClipboard}
                 className="absolute top-6 right-6 p-2 bg-theme-500/10 border border-theme-500/20 text-theme-500 hover:bg-theme-500/30 hover:text-white transition-all shadow-[0_0_10px_rgba(var(--theme-500),0.1)]"
@@ -334,10 +328,10 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
               >
                 <ClipboardCopy size={18} />
               </button>
-              
+
               <div className="prose prose-invert max-w-none font-mono">
                 <div className="whitespace-pre-line text-lg leading-relaxed text-theme-300 uppercase tracking-tight">
-                   {song.lyrics || "[ NO_LYRICS_DATA_FOUND_IN_SECTOR ]"}
+                  {song.lyrics || "[ NO_LYRICS_DATA_FOUND_IN_SECTOR ]"}
                 </div>
               </div>
             </motion.div>
@@ -363,7 +357,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent" />
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
                         <div className="w-12 h-12 rounded-full border border-theme-500 flex items-center justify-center bg-theme-500/20 backdrop-blur-sm">
-                           <Play size={24} className="text-white fill-current" />
+                          <Play size={24} className="text-white fill-current" />
                         </div>
                       </div>
                     </div>

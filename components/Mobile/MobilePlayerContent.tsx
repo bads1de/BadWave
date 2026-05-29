@@ -9,7 +9,7 @@ import EqualizerButton from "../Player/EqualizerButton";
 
 import { Playlist, Song } from "@/types";
 import Link from "next/link";
-import { motion, useAnimationControls } from "framer-motion";
+import { motion } from "framer-motion";
 import SeekBar from "../Player/Seekbar";
 import LyricsDrawer from "./LyricsDrawer";
 import ScrollingText from "../common/ScrollingText";

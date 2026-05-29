@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
 import useAuthModal from "@/hooks/auth/useAuthModal";
-import Button from "../common/Button";
 import Image from "next/image";
 import { User, LogOut, Menu, X, Home, Search, Settings } from "lucide-react";
 import Link from "next/link";
@@ -64,17 +63,22 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
         duration-500
         font-mono
         `,
-        scrolled ? "shadow-[0_10px_30px_rgba(0,0,0,0.8),0_5px_15px_rgba(var(--theme-500),0.1)]" : "",
-        className
+        scrolled
+          ? "shadow-[0_10px_30px_rgba(0,0,0,0.8),0_5px_15px_rgba(var(--theme-500),0.1)]"
+          : "",
+        className,
       )}
     >
       {/* 背景装飾 */}
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
-      
+
       <div className="w-full px-6 py-4 relative z-10">
         <div className="flex items-center justify-between w-full">
           {/* Logo and app name */}
-          <div className="flex items-center gap-x-4 group/logo cursor-pointer" onClick={() => router.push("/")}>
+          <div
+            className="flex items-center gap-x-4 group/logo cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             <div className="relative">
               <div className="absolute -inset-2 bg-theme-500/20 rounded-none blur-md opacity-0 group-hover/logo:opacity-100 transition-all duration-500" />
               <div className="relative p-1 border border-theme-500/30 group-hover/logo:border-theme-500 transition-colors">
@@ -116,7 +120,10 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                 {/* User profile */}
                 <div className="relative group/user">
                   <div className="absolute -inset-1 bg-theme-500/20 rounded-none blur-sm opacity-0 group-hover/user:opacity-100 transition-all duration-500" />
-                  <Link href="/account" className="relative flex items-center gap-3 bg-theme-500/5 border border-theme-500/20 px-3 py-1.5 hover:border-theme-500/60 transition-all">
+                  <Link
+                    href="/account"
+                    className="relative flex items-center gap-3 bg-theme-500/5 border border-theme-500/20 px-3 py-1.5 hover:border-theme-500/60 transition-all"
+                  >
                     <div className="relative w-8 h-8 rounded-none overflow-hidden border border-theme-500/40 shrink-0">
                       {userDetails?.avatar_url ? (
                         <Image
@@ -132,12 +139,12 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                       )}
                     </div>
                     <div className="hidden md:flex flex-col items-start">
-                       <span className="text-[10px] text-white font-black uppercase tracking-widest truncate max-w-[100px]">
-                          {userDetails?.full_name || "OPERATOR"}
-                       </span>
-                       <span className="text-[7px] text-theme-500/60 uppercase font-bold tracking-tighter">
-                          [ IDENTITY_VERIFIED ]
-                       </span>
+                      <span className="text-[10px] text-white font-black uppercase tracking-widest truncate max-w-[100px]">
+                        {userDetails?.full_name || "OPERATOR"}
+                      </span>
+                      <span className="text-[7px] text-theme-500/60 uppercase font-bold tracking-tighter">
+                        [ IDENTITY_VERIFIED ]
+                      </span>
                     </div>
                   </Link>
                 </div>
@@ -166,12 +173,16 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
           <div className="xl:hidden absolute top-full left-0 w-full bg-[#0a0a0f]/95 backdrop-blur-2xl border-b border-theme-500/40 animate-fadeDown overflow-hidden">
             {/* スキャンライン */}
             <div className="absolute inset-0 opacity-5 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
-            
+
             <div className="flex flex-col p-6 gap-y-2 relative z-10 font-mono text-[10px] font-black tracking-widest uppercase">
               {[
                 { icon: Home, label: "CENTRAL_HUB", href: "/" },
                 { icon: Search, label: "SIGNAL_SCAN", href: "/search" },
-                { icon: RiPlayListFill, label: "DATA_CLUSTERS", href: "/playlists" },
+                {
+                  icon: RiPlayListFill,
+                  label: "DATA_CLUSTERS",
+                  href: "/playlists",
+                },
                 { icon: FaHeart, label: "FAVORITE_LOGS", href: "/liked" },
                 { icon: Settings, label: "NODE_CONFIG", href: "/account" },
               ].map((item) => (
@@ -181,7 +192,10 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                   className="flex items-center gap-x-4 px-4 py-4 border border-theme-500/10 hover:bg-theme-500/10 hover:border-theme-500/40 transition-all group"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <item.icon size={18} className="text-theme-500 group-hover:text-white transition-colors" />
+                  <item.icon
+                    size={18}
+                    className="text-theme-500 group-hover:text-white transition-colors"
+                  />
                   <span>{item.label}</span>
                 </Link>
               ))}
@@ -193,7 +207,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                 <span>[ TERMINATE_SESSION ]</span>
               </button>
             </div>
-            
+
             {/* HUDコーナー */}
             <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-theme-500/20 pointer-events-none" />
           </div>

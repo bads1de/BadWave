@@ -5,14 +5,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import * as RadixSlider from "@radix-ui/react-slider";
-import { HelpCircle } from "lucide-react";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
-import useEffectStore, {
-  ROTATION_SPEED_VALUES,
-  RotationSpeed,
-} from "@/hooks/stores/useEffectStore";
+import useEffectStore, { RotationSpeed } from "@/hooks/stores/useEffectStore";
 
 // HEXカラーをRGBに変換するヘルパー関数
 const hexToRgb = (hex: string): string => {
@@ -20,7 +16,7 @@ const hexToRgb = (hex: string): string => {
   if (result) {
     return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
       result[3],
-      16
+      16,
     )}`;
   }
   return "124, 58, 237"; // デフォルト値（violet-600）
@@ -33,7 +29,7 @@ const PlaybackSpeedButton: React.FC = () => {
   // Slowed + Reverb 状態 (useEffectStore から取得)
   const isSlowedReverb = useEffectStore((state) => state.isSlowedReverb);
   const toggleSlowedReverb = useEffectStore(
-    (state) => state.toggleSlowedReverb
+    (state) => state.toggleSlowedReverb,
   );
 
   const { getColorScheme, hasHydrated } = useColorSchemeStore();
@@ -50,7 +46,7 @@ const PlaybackSpeedButton: React.FC = () => {
   const isRetroEnabled = useEffectStore((state) => state.isRetroEnabled);
   const toggleRetro = useEffectStore((state) => state.toggleRetro);
   const isBassBoostEnabled = useEffectStore(
-    (state) => state.isBassBoostEnabled
+    (state) => state.isBassBoostEnabled,
   );
   const toggleBassBoost = useEffectStore((state) => state.toggleBassBoost);
 
@@ -74,8 +70,8 @@ const PlaybackSpeedButton: React.FC = () => {
       <PopoverTrigger asChild>
         <button
           className={`cursor-pointer transition-all duration-500 font-mono text-[10px] font-black border px-2 py-1 uppercase tracking-widest cyber-glitch ${
-            isActive 
-              ? "bg-theme-500/20 border-theme-500 text-white shadow-[0_0_15px_rgba(var(--theme-500),0.4)]" 
+            isActive
+              ? "bg-theme-500/20 border-theme-500 text-white shadow-[0_0_15px_rgba(var(--theme-500),0.4)]"
               : "border-theme-500/20 text-theme-500 hover:border-theme-500/60 hover:text-white"
           }`}
         >
@@ -89,13 +85,15 @@ const PlaybackSpeedButton: React.FC = () => {
         className="w-64 p-4 bg-[#0a0a0f]/95 backdrop-blur-xl border border-theme-500/40 shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col gap-4 font-mono rounded-none"
       >
         <div className="text-[8px] text-theme-500/40 tracking-[0.4em] uppercase border-b border-theme-500/10 pb-1">
-           // TEMPORAL_SPEED_CONFIG
+          // TEMPORAL_SPEED_CONFIG
         </div>
-        
+
         {/* Speed Slider (HUD Style) */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-theme-500/60 uppercase">RATE_VAR</span>
+            <span className="text-[10px] text-theme-500/60 uppercase">
+              RATE_VAR
+            </span>
             <span className="text-[10px] font-bold text-white">
               {playbackRate.toFixed(2)}x
             </span>
@@ -111,9 +109,7 @@ const PlaybackSpeedButton: React.FC = () => {
             aria-label="Playback Speed"
           >
             <RadixSlider.Track className="relative bg-theme-900 border border-theme-500/20 rounded-none flex-grow h-1.5 overflow-hidden">
-              <RadixSlider.Range
-                className="absolute bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.5)] h-full"
-              />
+              <RadixSlider.Range className="absolute bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.5)] h-full" />
             </RadixSlider.Track>
             <RadixSlider.Thumb
               className="block w-3 h-3 bg-white border border-theme-500 shadow-[0_0_8px_rgba(var(--theme-500),0.8)] focus:outline-none transition-transform hover:scale-125 cursor-pointer"
@@ -144,25 +140,56 @@ const PlaybackSpeedButton: React.FC = () => {
         {/* HUD Toggles */}
         <div className="flex flex-col gap-3">
           {[
-            { id: 'slowed', label: 'SLOWED+REVERB', active: isSlowedReverb, action: toggleSlowedReverb },
-            { id: 'spatial', label: 'SPATIAL_MODE', active: isSpatialEnabled, action: toggleSpatialEnabled },
-            { id: '8d', label: '8D_AUDIO_LINK', active: is8DAudioEnabled, action: toggle8DAudio },
-            { id: 'retro', label: 'RETRO_SIGNAL', active: isRetroEnabled, action: toggleRetro },
-            { id: 'bass', label: 'BASS_AMPLIFY', active: isBassBoostEnabled, action: toggleBassBoost },
+            {
+              id: "slowed",
+              label: "SLOWED+REVERB",
+              active: isSlowedReverb,
+              action: toggleSlowedReverb,
+            },
+            {
+              id: "spatial",
+              label: "SPATIAL_MODE",
+              active: isSpatialEnabled,
+              action: toggleSpatialEnabled,
+            },
+            {
+              id: "8d",
+              label: "8D_AUDIO_LINK",
+              active: is8DAudioEnabled,
+              action: toggle8DAudio,
+            },
+            {
+              id: "retro",
+              label: "RETRO_SIGNAL",
+              active: isRetroEnabled,
+              action: toggleRetro,
+            },
+            {
+              id: "bass",
+              label: "BASS_AMPLIFY",
+              active: isBassBoostEnabled,
+              action: toggleBassBoost,
+            },
           ].map((effect) => (
             <div key={effect.id} className="flex items-center justify-between">
-              <span className={`text-[10px] font-bold tracking-widest ${effect.active ? "text-theme-300" : "text-theme-500/40"}`}>
+              <span
+                className={`text-[10px] font-bold tracking-widest ${effect.active ? "text-theme-300" : "text-theme-500/40"}`}
+              >
                 // {effect.label}
               </span>
               <button
                 onClick={effect.action}
                 className={`w-10 h-4 border transition-all duration-500 relative overflow-hidden ${
-                  effect.active ? "bg-theme-500/20 border-theme-500" : "bg-theme-900/40 border-theme-500/20"
+                  effect.active
+                    ? "bg-theme-500/20 border-theme-500"
+                    : "bg-theme-900/40 border-theme-500/20"
                 }`}
               >
                 <div
                   className={`absolute top-0.5 w-3 h-2 transition-all duration-500 ${
-                    effect.active ? "left-6 bg-white shadow-[0_0_8px_white]" : "left-1 bg-theme-500/40"
+                    effect.active
+                      ? "left-6 bg-white shadow-[0_0_8px_white]"
+                      : "left-1 bg-theme-500/40"
                   }`}
                 />
               </button>

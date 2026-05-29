@@ -7,9 +7,7 @@ interface FrequencyCurveProps {
   bands: EqBand[];
   isEnabled: boolean;
   className?: string;
-  /** カラースキームのアクセントカラー（From） */
   accentFrom?: string;
-  /** カラースキームのアクセントカラー（To） */
   accentTo?: string;
 }
 
@@ -77,13 +75,14 @@ const FrequencyCurve: React.FC<FrequencyCurveProps> = ({
   return (
     <div className="relative group overflow-hidden bg-[#0a0a0f] border border-theme-500/20 p-2 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.05)]">
       {/* HUD装飾背景 */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-             backgroundSize: '10px 10px'
-           }} 
+      <div
+        className="absolute inset-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
+          backgroundSize: "10px 10px",
+        }}
       />
-      
+
       {/* テクニカルラベル */}
       <div className="absolute top-1 left-2 text-[8px] font-mono text-theme-500/60 uppercase tracking-widest z-10">
         [ FREQ_ANALYZER_v2.4 ]
@@ -107,9 +106,9 @@ const FrequencyCurve: React.FC<FrequencyCurveProps> = ({
           strokeWidth="0.5"
           strokeDasharray="2,2"
         />
-        
+
         {/* スキャンライン縦 */}
-        {[0.25, 0.5, 0.75].map(pos => (
+        {[0.25, 0.5, 0.75].map((pos) => (
           <line
             key={pos}
             x1={padding + (viewBoxWidth - padding * 2) * pos}
@@ -164,8 +163,16 @@ const FrequencyCurve: React.FC<FrequencyCurveProps> = ({
               className={isEnabled ? "animate-pulse" : ""}
             />
             {isEnabled && index % 3 === 0 && (
-              <text x={point.x} y={point.y - 6} fontSize="6" fill={themeColor} textAnchor="middle" className="font-mono">
-                {bands[index].gain > 0 ? "+" : ""}{bands[index].gain}
+              <text
+                x={point.x}
+                y={point.y - 6}
+                fontSize="6"
+                fill={themeColor}
+                textAnchor="middle"
+                className="font-mono"
+              >
+                {bands[index].gain > 0 ? "+" : ""}
+                {bands[index].gain}
               </text>
             )}
           </g>
