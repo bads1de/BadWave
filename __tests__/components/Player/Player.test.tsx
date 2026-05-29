@@ -38,13 +38,13 @@ describe("components/Player/Player", () => {
   });
 
   it("Playerがレンダリングされる", () => {
-    const { container } = render(<Player />);
+    const { container } = render(<Player playlists={[]} />);
     expect(container.firstChild).toBeInTheDocument();
   });
 
   it("pulseページではレンダリングされない", () => {
     mockUsePathname.mockReturnValue("/pulse");
-    const { container } = render(<Player />);
+    const { container } = render(<Player playlists={[]} />);
     expect(container.firstChild).toBeNull();
   });
 });

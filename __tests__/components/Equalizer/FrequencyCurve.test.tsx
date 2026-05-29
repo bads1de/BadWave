@@ -3,12 +3,12 @@ import FrequencyCurve from "@/components/Equalizer/FrequencyCurve";
 
 describe("components/Equalizer/FrequencyCurve", () => {
   const defaultBands = [
-    { freq: "60", gain: 0 },
-    { freq: "230", gain: 0 },
-    { freq: "910", gain: 0 },
-    { freq: "4k", gain: 0 },
-    { freq: "10k", gain: 0 },
-    { freq: "16k", gain: 0 },
+    { freq: 60, gain: 0 },
+    { freq: 230, gain: 0 },
+    { freq: 910, gain: 0 },
+    { freq: 4000, gain: 0 },
+    { freq: 10000, gain: 0 },
+    { freq: 16000, gain: 0 },
   ];
 
   it("SVGがレンダリングされる", () => {

@@ -271,7 +271,7 @@ describe("AudioEngine", () => {
     });
 
     it("should return early when lfoGain is null", () => {
-      engine.lfoGain = null;
+      (engine as any).lfoGain = null;
       // Should not throw
       engine.set8DAudioMode(true);
     });

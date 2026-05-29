@@ -14,8 +14,8 @@ jest.mock("next/headers", () => ({
 }));
 
 // @supabase/ssr のモック
-const mockCreateServerClient = jest.fn((_url: string, _anonKey: string, options: any) => {
-  capturedConfig = options;
+const mockCreateServerClient = jest.fn((...args: any[]) => {
+  capturedConfig = args[2];
   return {
     auth: { getSession: jest.fn() },
     from: jest.fn(() => ({ select: jest.fn() })),
@@ -23,7 +23,7 @@ const mockCreateServerClient = jest.fn((_url: string, _anonKey: string, options:
 });
 
 jest.mock("@supabase/ssr", () => ({
-  createServerClient: (...args: any[]) => mockCreateServerClient(...args),
+  createServerClient: (...args: string[]) => mockCreateServerClient(...args),
 }));
 
 describe("libs/supabase/server", () => {
@@ -65,7 +65,7 @@ describe("libs/supabase/server", () => {
   describe("cookies.getAll", () => {
     it("cookieStore.getAllを呼び出して結果を返す", async () => {
       const mockCookiesArray = [{ name: "session", value: "abc123" }];
-      mockCookieStore.getAll.mockReturnValue(mockCookiesArray);
+      mockCookieStore.getAll.mockReturnValue(mockCookiesArray as any);
 
       await createClient();
       const getAll = capturedConfig!.cookies.getAll;

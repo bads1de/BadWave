@@ -113,11 +113,10 @@ describe("components/AudioWaveform", () => {
     audioUrl: "/songs/test.mp3",
     songId: "song-1",
     primaryColor: "#ff00ff",
-    accentFrom: "#ff00ff",
-    accentTo: "#00ffff",
-    isPlaying: false,
-    onTimeUpdate: jest.fn(),
-    onLoaded: jest.fn(),
+    secondaryColor: "#00ffff",
+    imageUrl: "/images/test.jpg",
+    onPlayPause: jest.fn(),
+    onEnded: jest.fn(),
   };
 
   it("AudioWaveformがレンダリングされる", () => {

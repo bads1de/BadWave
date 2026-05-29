@@ -15,7 +15,7 @@ jest.mock("@radix-ui/react-dialog", () => ({
 describe("components/Modals/Modal", () => {
   it("isOpenがtrueの場合、モーダルが表示される", () => {
     render(
-      <Modal isOpen={true} onChange={jest.fn()} title="Test Modal">
+      <Modal isOpen={true} onChange={jest.fn()} title="Test Modal" description="Test modal description">
         <div data-testid="modal-content">Content</div>
       </Modal>
     );
@@ -24,7 +24,7 @@ describe("components/Modals/Modal", () => {
 
   it("タイトルが表示される", () => {
     render(
-      <Modal isOpen={true} onChange={jest.fn()} title="Test Title">
+      <Modal isOpen={true} onChange={jest.fn()} title="Test Title" description="Test title description">
         <div>Content</div>
       </Modal>
     );
@@ -42,7 +42,7 @@ describe("components/Modals/Modal", () => {
 
   it("子要素がレンダリングされる", () => {
     render(
-      <Modal isOpen={true} onChange={jest.fn()} title="Test Modal">
+      <Modal isOpen={true} onChange={jest.fn()} title="Test Modal" description="Test modal description">
         <button data-testid="child-btn">Click me</button>
       </Modal>
     );

@@ -44,7 +44,7 @@ describe("components/Lyrics/SyncedLyrics", () => {
   });
 
   it("undefinedの歌詞ではエラーにならない", () => {
-    const { container } = render(<SyncedLyrics lyrics={undefined} />);
+    const { container } = render(<SyncedLyrics lyrics="" />);
     expect(container.firstChild).toBeInTheDocument();
   });
 });

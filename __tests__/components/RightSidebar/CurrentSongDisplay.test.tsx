@@ -31,14 +31,15 @@ jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
 describe("components/RightSidebar/CurrentSongDisplay", () => {
   const defaultSong = {
     id: "song-1",
+    user_id: "user-1",
     title: "Test Song",
     author: "Test Artist",
     image_path: "/images/test.jpg",
     song_path: "/songs/test.mp3",
     genre: "Electronic",
     duration: 180,
-    count: 100,
-    like_count: 50,
+    count: "100",
+    like_count: "50",
     created_at: "2024-01-01",
   };
 

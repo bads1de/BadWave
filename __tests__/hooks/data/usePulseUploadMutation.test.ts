@@ -84,7 +84,7 @@ describe("hooks/data/usePulseUploadMutation", () => {
   });
 
   it("should fail if user is null", async () => {
-    mockUseUser.mockReturnValue({ user: null });
+    mockUseUser.mockReturnValue({ user: null } as any);
 
     const { result } = setupHook();
     const file = new File([""], "audio.mp3", { type: "audio/mpeg" });

@@ -7,7 +7,7 @@ jest.mock("next/link", () => "a");
 
 describe("components/Sidebar/SidebarItem", () => {
   const defaultProps = {
-    icon: () => "🔊",
+    icon: () => <span>icon</span>,
     label: "Test Item",
     href: "/test",
   };

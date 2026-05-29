@@ -21,7 +21,7 @@ describe("libs/upload", () => {
       url: "https://example.com/uploads/test.mp3",
     });
 
-    const result = await uploadFile(mockFile, "songs", "test-song");
+    const result = await uploadFile(mockFile, "song", "test-song");
 
     expect(result).toBe("https://example.com/uploads/test.mp3");
     expect(uploadFileToR2).toHaveBeenCalledTimes(1);
@@ -30,7 +30,7 @@ describe("libs/upload", () => {
     const formData = (uploadFileToR2 as jest.Mock).mock.calls[0][0];
     expect(formData).toBeInstanceOf(FormData);
     expect(formData.get("file")).toBe(mockFile);
-    expect(formData.get("bucketName")).toBe("songs");
+    expect(formData.get("bucketName")).toBe("song");
     expect(formData.get("fileNamePrefix")).toBe("test-song");
   });
 
@@ -40,7 +40,7 @@ describe("libs/upload", () => {
       error: "Bucket not found",
     });
 
-    await expect(uploadFile(mockFile, "songs", "test-song")).rejects.toThrow(
+    await expect(uploadFile(mockFile, "song", "test-song")).rejects.toThrow(
       "Bucket not found"
     );
   });
@@ -51,7 +51,7 @@ describe("libs/upload", () => {
       error: null,
     });
 
-    await expect(uploadFile(mockFile, "songs", "test-song")).rejects.toThrow(
+    await expect(uploadFile(mockFile, "song", "test-song")).rejects.toThrow(
       "アップロードに失敗しました"
     );
   });
@@ -62,7 +62,7 @@ describe("libs/upload", () => {
       url: null,
     });
 
-    const result = await uploadFile(mockFile, "songs", "test-song");
+    const result = await uploadFile(mockFile, "song", "test-song");
     expect(result).toBeNull();
   });
 

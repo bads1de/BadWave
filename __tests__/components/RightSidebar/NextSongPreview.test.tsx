@@ -8,14 +8,15 @@ jest.mock("next/link", () => "a");
 describe("components/RightSidebar/NextSongPreview", () => {
   const defaultSong = {
     id: "song-2",
+    user_id: "user-1",
     title: "Next Song",
     author: "Next Artist",
     image_path: "/images/next.jpg",
     song_path: "/songs/next.mp3",
     genre: "Rock",
     duration: 200,
-    count: 50,
-    like_count: 25,
+    count: "50",
+    like_count: "25",
     created_at: "2024-01-01",
   };
 
