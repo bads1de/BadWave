@@ -9,6 +9,7 @@ import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
 import useEffectStore, { RotationSpeed } from "@/hooks/stores/useEffectStore";
+import useNightCoreStore from "@/hooks/stores/useNightCoreStore";
 
 // HEXカラーをRGBに変換するヘルパー関数
 const hexToRgb = (hex: string): string => {
@@ -50,6 +51,9 @@ const PlaybackSpeedButton: React.FC = () => {
   );
   const toggleBassBoost = useEffectStore((state) => state.toggleBassBoost);
 
+  const isNightCore = useNightCoreStore((state) => state.isEnabled);
+  const toggleNightCore = useNightCoreStore((state) => state.toggle);
+
   const rates = [0.9, 0.95, 1, 1.05, 1.1, 1.25];
   const rotationSpeeds: { value: RotationSpeed; label: string }[] = [
     { value: "slow", label: "Slow" },
@@ -63,7 +67,8 @@ const PlaybackSpeedButton: React.FC = () => {
     isSpatialEnabled ||
     is8DAudioEnabled ||
     isRetroEnabled ||
-    isBassBoostEnabled;
+    isBassBoostEnabled ||
+    isNightCore;
 
   return (
     <Popover>
@@ -75,7 +80,7 @@ const PlaybackSpeedButton: React.FC = () => {
               : "border-theme-500/20 text-theme-500 hover:border-theme-500/60 hover:text-white"
           }`}
         >
-          {playbackRate}x
+          {isNightCore ? "1.35x" : `${playbackRate}x`}
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -95,7 +100,7 @@ const PlaybackSpeedButton: React.FC = () => {
               RATE_VAR
             </span>
             <span className="text-[10px] font-bold text-white">
-              {playbackRate.toFixed(2)}x
+              {isNightCore ? "1.35x" : `${playbackRate.toFixed(2)}x`}
             </span>
           </div>
           <RadixSlider.Root
@@ -107,6 +112,7 @@ const PlaybackSpeedButton: React.FC = () => {
             min={0.5}
             step={0.05}
             aria-label="Playback Speed"
+            disabled={isNightCore}
           >
             <RadixSlider.Track className="relative bg-theme-900 border border-theme-500/20 rounded-none flex-grow h-1.5 overflow-hidden">
               <RadixSlider.Range className="absolute bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.5)] h-full" />
@@ -124,11 +130,12 @@ const PlaybackSpeedButton: React.FC = () => {
             <button
               key={rate}
               onClick={() => setPlaybackRate(rate)}
+              disabled={isNightCore}
               className={`py-1.5 border text-[10px] font-bold transition-all duration-300 uppercase ${
                 playbackRate === rate
                   ? "bg-theme-500/20 border-theme-500 text-white shadow-[0_0_10px_rgba(var(--theme-500),0.3)]"
                   : "bg-theme-500/5 border-theme-500/10 text-theme-500/60 hover:border-theme-500/40 hover:text-theme-300"
-              }`}
+              } ${isNightCore ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {rate}x
             </button>
@@ -169,6 +176,12 @@ const PlaybackSpeedButton: React.FC = () => {
               label: "BASS_AMPLIFY",
               active: isBassBoostEnabled,
               action: toggleBassBoost,
+            },
+            {
+              id: "nightcore",
+              label: "NIGHTCORE",
+              active: isNightCore,
+              action: toggleNightCore,
             },
           ].map((effect) => (
             <div key={effect.id} className="flex items-center justify-between">

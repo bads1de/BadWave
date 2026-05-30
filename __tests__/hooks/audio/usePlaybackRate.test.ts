@@ -4,6 +4,7 @@
 import { renderHook, act } from "@testing-library/react";
 import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
+import useNightCoreStore from "@/hooks/stores/useNightCoreStore";
 import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 // Mock AudioEngine
@@ -27,6 +28,7 @@ describe("hooks/audio/usePlaybackRate", () => {
     mockAudio.playbackRate = 1;
     act(() => {
       usePlaybackRateStore.setState({ rate: 1.0 });
+      useNightCoreStore.setState({ isEnabled: false });
     });
   });
 
@@ -43,6 +45,42 @@ describe("hooks/audio/usePlaybackRate", () => {
     });
 
     expect(mockAudio.playbackRate).toBe(1.5);
+  });
+
+  it("applies NightCore rate of 1.35 when NightCore is enabled", () => {
+    act(() => {
+      useNightCoreStore.setState({ isEnabled: true });
+    });
+
+    renderHook(() => usePlaybackRate());
+    expect(mockAudio.playbackRate).toBe(1.35);
+  });
+
+  it("ignores store rate when NightCore is enabled", () => {
+    act(() => {
+      usePlaybackRateStore.setState({ rate: 0.9 });
+      useNightCoreStore.setState({ isEnabled: true });
+    });
+
+    renderHook(() => usePlaybackRate());
+    expect(mockAudio.playbackRate).toBe(1.35);
+  });
+
+  it("reverts to store rate when NightCore is disabled", () => {
+    act(() => {
+      usePlaybackRateStore.setState({ rate: 1.1 });
+      useNightCoreStore.setState({ isEnabled: true });
+    });
+
+    const { result } = renderHook(() => usePlaybackRate());
+
+    expect(mockAudio.playbackRate).toBe(1.35);
+
+    act(() => {
+      useNightCoreStore.setState({ isEnabled: false });
+    });
+
+    expect(mockAudio.playbackRate).toBe(1.1);
   });
 
   it("re-applies settings on durationchange event", () => {

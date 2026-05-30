@@ -6,6 +6,7 @@ import { HelpCircle } from "lucide-react";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
 import useEffectStore, { RotationSpeed } from "@/hooks/stores/useEffectStore";
+import useNightCoreStore from "@/hooks/stores/useNightCoreStore";
 
 const SpeedAndEffectsControl: React.FC = () => {
   const playbackRate = usePlaybackRateStore((state) => state.rate);
@@ -25,6 +26,8 @@ const SpeedAndEffectsControl: React.FC = () => {
   const toggleSlowedReverb = useEffectStore(
     (state) => state.toggleSlowedReverb,
   );
+  const isNightCore = useNightCoreStore((state) => state.isEnabled);
+  const toggleNightCore = useNightCoreStore((state) => state.toggle);
 
   const rates = [0.9, 0.95, 1, 1.05, 1.1, 1.25];
   const rotationSpeeds: { value: RotationSpeed; label: string }[] = [
@@ -42,7 +45,7 @@ const SpeedAndEffectsControl: React.FC = () => {
             TEMPORAL_RATE_VAR
           </span>
           <span className="text-[10px] text-white font-black drop-shadow-[0_0_5px_rgba(var(--theme-500),0.5)]">
-            {playbackRate.toFixed(2)}x
+            {isNightCore ? "1.35x" : `${playbackRate.toFixed(2)}x`}
           </span>
         </div>
         <RadixSlider.Root
@@ -54,6 +57,7 @@ const SpeedAndEffectsControl: React.FC = () => {
           min={0.5}
           step={0.05}
           aria-label="Playback Speed"
+          disabled={isNightCore}
         >
           <RadixSlider.Track className="relative bg-theme-900 border border-theme-500/20 rounded-none flex-grow h-1.5 overflow-hidden">
             <RadixSlider.Range className="absolute bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-500),0.5)] h-full" />
@@ -75,11 +79,12 @@ const SpeedAndEffectsControl: React.FC = () => {
           <button
             key={rate}
             onClick={() => setPlaybackRate(rate)}
+            disabled={isNightCore}
             className={`py-2 border text-[10px] font-bold transition-all duration-300 uppercase cyber-glitch ${
               playbackRate === rate
                 ? "bg-theme-500/20 border-theme-500 text-white shadow-[0_0_10px_rgba(var(--theme-500),0.3)]"
                 : "bg-theme-500/5 border-theme-500/10 text-theme-500/60 hover:border-theme-500/40 hover:text-theme-300"
-            }`}
+            } ${isNightCore ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {rate}x
           </button>
@@ -125,6 +130,13 @@ const SpeedAndEffectsControl: React.FC = () => {
             desc: "LOW_FREQ_ENHANCEMENT",
             active: isBassBoostEnabled,
             action: toggleBassBoost,
+          },
+          {
+            id: "nightcore",
+            label: "NIGHTCORE",
+            desc: "SPEED_UP_PITCH_UP",
+            active: isNightCore,
+            action: toggleNightCore,
           },
         ].map((effect) => (
           <div key={effect.id} className="group/fx relative">
