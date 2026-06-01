@@ -2,11 +2,11 @@
 
 ## プロジェクト概要
 
-BadWave は、Next.js 14+ (App Router) で構築された音楽ストリーミングアプリケーションです。Tailwind CSS と shadcn/ui を使用したモダンな UI、Zustand による状態管理、React Query によるデータフェッチングを特徴としています。バックエンドサービスには認証とデータベースに Supabase を使用しています。
+BadWave は、Next.js 16 (App Router) で構築された音楽ストリーミングアプリケーションです。Tailwind CSS と shadcn/ui を使用したモダンな UI、Zustand による状態管理、React Query によるデータフェッチングを特徴としています。バックエンドサービスには認証とデータベースに Supabase を使用しています。
 
 ## 技術スタック
 
-- **フレームワーク:** Next.js 14+ (App Router)
+- **フレームワーク:** Next.js 16 (App Router)
 - **言語:** TypeScript
 - **スタイリング:** Tailwind CSS, shadcn/ui
 - **状態管理:** Zustand
