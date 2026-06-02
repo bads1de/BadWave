@@ -32,7 +32,7 @@ const AudioWaveform = ({
 }: AudioWaveformProps) => {
   // キャンバスとアニメーションの参照
   const canvasRef = useRef<HTMLCanvasElement>(null); // 波形描画用キャンバスの参照
-  const animationRef = useRef<number>(); // アニメーションフレームIDの参照
+  const animationRef = useRef<number | undefined>(undefined); // アニメーションフレームIDの参照
 
   // 状態管理
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); // マウス位置

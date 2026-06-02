@@ -5,7 +5,7 @@ import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { formatTime } from "@/libs/utils/utils";
 
 interface RetroPlayerProps {
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   isPlaying: boolean;
   togglePlay: () => void;
   volume: number;

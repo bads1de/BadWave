@@ -16,7 +16,7 @@ interface VaporwaveThemeProps {
   duration: number;
   analyser: AnalyserNode | null;
   hasStarted: boolean;
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   handleStart: () => void;
   togglePlay: () => void;
   handleVolumeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
