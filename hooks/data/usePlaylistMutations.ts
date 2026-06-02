@@ -44,6 +44,23 @@ export const useUpdatePlaylistTitle = () => {
 
       return { playlistId, newTitle };
     },
+    onMutate: async ({ playlistId, newTitle }) => {
+      await queryClient.cancelQueries({
+        queryKey: [CACHED_QUERIES.playlists],
+      });
+
+      const previousPlaylists = queryClient.getQueryData<any[]>([
+        CACHED_QUERIES.playlists,
+      ]);
+
+      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) =>
+        (old || []).map((p) =>
+          p.id === playlistId ? { ...p, title: newTitle } : p,
+        ),
+      );
+
+      return { previousPlaylists };
+    },
     onSuccess: ({ playlistId, newTitle }) => {
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       toast.success("プレイリスト名を更新しました");
@@ -51,7 +68,13 @@ export const useUpdatePlaylistTitle = () => {
         `/playlists/${playlistId}?title=${encodeURIComponent(newTitle)}`
       );
     },
-    onError: () => {
+    onError: (_error, _variables, context) => {
+      if (context?.previousPlaylists) {
+        queryClient.setQueryData(
+          [CACHED_QUERIES.playlists],
+          context.previousPlaylists,
+        );
+      }
       toast.error("プレイリスト名の更新に失敗しました");
     },
   });
@@ -77,7 +100,24 @@ export const useTogglePlaylistPublic = () => {
         .eq("user_id", user.id);
 
       if (error) throw error;
-      return { isPublic: !isPublic };
+      return { isPublic: !isPublic, playlistId };
+    },
+    onMutate: async ({ playlistId, isPublic }) => {
+      await queryClient.cancelQueries({
+        queryKey: [CACHED_QUERIES.playlists],
+      });
+
+      const previousPlaylists = queryClient.getQueryData<any[]>([
+        CACHED_QUERIES.playlists,
+      ]);
+
+      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) =>
+        (old || []).map((p) =>
+          p.id === playlistId ? { ...p, is_public: !isPublic } : p,
+        ),
+      );
+
+      return { previousPlaylists };
     },
     onSuccess: ({ isPublic }) => {
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
@@ -88,7 +128,13 @@ export const useTogglePlaylistPublic = () => {
       );
       router.refresh();
     },
-    onError: () => {
+    onError: (_error, _variables, context) => {
+      if (context?.previousPlaylists) {
+        queryClient.setQueryData(
+          [CACHED_QUERIES.playlists],
+          context.previousPlaylists,
+        );
+      }
       toast.error("プレイリストの公開設定の更新に失敗しました");
     },
   });
@@ -119,13 +165,34 @@ export const useDeletePlaylist = () => {
         .eq("id", playlistId)
         .eq("user_id", user.id);
     },
+    onMutate: async ({ playlistId }) => {
+      await queryClient.cancelQueries({
+        queryKey: [CACHED_QUERIES.playlists],
+      });
+
+      const previousPlaylists = queryClient.getQueryData<any[]>([
+        CACHED_QUERIES.playlists,
+      ]);
+
+      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) =>
+        (old || []).filter((p) => p.id !== playlistId),
+      );
+
+      return { previousPlaylists };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       toast.success("プレイリストを削除しました");
       router.push("/playlists");
       router.refresh();
     },
-    onError: () => {
+    onError: (_error, _variables, context) => {
+      if (context?.previousPlaylists) {
+        queryClient.setQueryData(
+          [CACHED_QUERIES.playlists],
+          context.previousPlaylists,
+        );
+      }
       toast.error("プレイリストの削除に失敗しました");
     },
   });
