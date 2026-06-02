@@ -4,12 +4,13 @@ import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import { BsRepeat1 } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
+import { IconComponent } from "@/types";
 
 interface CommonControlsProps {
   isPlaying: boolean;
   isShuffling: boolean;
   isRepeating: boolean;
-  Icon: React.ComponentType<{ size?: number; className?: string }>;
+  Icon: IconComponent;
   handlePlay: () => void;
   onPlayNext: () => void;
   onPlayPrevious: () => void;
