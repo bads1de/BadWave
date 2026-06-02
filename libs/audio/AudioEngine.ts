@@ -64,7 +64,7 @@ class AudioEngine {
 
     try {
       const AudioContextClass =
-        window.AudioContext || (window as any).webkitAudioContext;
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.context = new AudioContextClass();
       this.sourceNode = this.context.createMediaElementSource(this.audio);
 

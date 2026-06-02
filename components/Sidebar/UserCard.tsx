@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
 import { toast } from "react-hot-toast";
 import useAuthModal from "@/hooks/auth/useAuthModal";
+import { UserDetails } from "@/types";
 
 interface UserCardProps {
-  userDetails: any;
+  userDetails: UserDetails | null;
   isCollapsed: boolean;
 }
 

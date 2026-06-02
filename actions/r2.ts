@@ -123,11 +123,12 @@ export async function uploadFileToR2(
       success: true,
       url,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("R2 upload error:", error);
+    const message = error instanceof Error ? error.message : "ファイルのアップロードに失敗しました";
     return {
       success: false,
-      error: error.message || "ファイルのアップロードに失敗しました",
+      error: message,
     };
   }
 }
@@ -169,11 +170,12 @@ export async function deleteFileFromR2(
     return {
       success: true,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("R2 delete error:", error);
+    const message = error instanceof Error ? error.message : "ファイルの削除に失敗しました";
     return {
       success: false,
-      error: error.message || "ファイルの削除に失敗しました",
+      error: message,
     };
   }
 }

@@ -8,8 +8,8 @@ describe("libs/songUtils", () => {
   describe("extractSongsFromJoin", () => {
     it("JOIN結果からSong配列を抽出する", () => {
       const data = [
-        { songs: { id: "1", title: "Song 1", artist: "Artist 1" } },
-        { songs: { id: "2", title: "Song 2", artist: "Artist 2" } },
+        { songs: { id: "1", title: "Song 1", author: "Artist 1", user_id: "user-1", song_path: "/songs/1.mp3", image_path: "/images/1.jpg", created_at: "2024-01-01" } },
+        { songs: { id: "2", title: "Song 2", author: "Artist 2", user_id: "user-2", song_path: "/songs/2.mp3", image_path: "/images/2.jpg", created_at: "2024-01-02" } },
       ];
 
       const result = extractSongsFromJoin(data);
@@ -18,13 +18,21 @@ describe("libs/songUtils", () => {
       expect(result[0]).toEqual({
         id: "1",
         title: "Song 1",
-        artist: "Artist 1",
+        author: "Artist 1",
+        user_id: "user-1",
+        song_path: "/songs/1.mp3",
+        image_path: "/images/1.jpg",
+        created_at: "2024-01-01",
         songType: "regular",
       });
       expect(result[1]).toEqual({
         id: "2",
         title: "Song 2",
-        artist: "Artist 2",
+        author: "Artist 2",
+        user_id: "user-2",
+        song_path: "/songs/2.mp3",
+        image_path: "/images/2.jpg",
+        created_at: "2024-01-02",
         songType: "regular",
       });
     });

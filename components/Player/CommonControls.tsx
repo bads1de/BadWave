@@ -9,7 +9,7 @@ interface CommonControlsProps {
   isPlaying: boolean;
   isShuffling: boolean;
   isRepeating: boolean;
-  Icon: React.ComponentType<any>;
+  Icon: React.ComponentType<{ size?: number; className?: string }>;
   handlePlay: () => void;
   onPlayNext: () => void;
   onPlayPrevious: () => void;

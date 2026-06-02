@@ -25,8 +25,8 @@ export interface UserDetails {
   last_name: string;
   full_name?: string;
   avatar_url?: string;
-  billing_address?: any;
-  payment_method?: any;
+  billing_address?: Record<string, unknown>;
+  payment_method?: Record<string, unknown>;
 }
 
 export interface Playlist {
@@ -56,6 +56,8 @@ export interface Spotlight {
   author: string;
   genre?: string;
   description?: string;
+  thumbnail_path?: string;
+  created_at?: string;
 }
 
 export interface Pulse {
@@ -90,4 +92,79 @@ export interface TopPlayedSong extends Song {
  */
 export interface ModalHook {
   onClose: () => void;
+}
+
+// ============================================================================
+// 共通型定義
+// ============================================================================
+
+/**
+ * 同期用の曲型（badwave-windowsのIPC通信で使用）
+ * Song型にオプショナルフィールドを追加
+ */
+export interface SongForSync {
+  id: string;
+  title: string;
+  author: string;
+  song_path: string;
+  image_path: string;
+  genre?: string;
+  count?: number;
+  like_count?: number;
+  created_at: string;
+  user_id?: string;
+  video_path?: string;
+  duration?: number;
+  lyrics?: string;
+}
+
+/**
+ * 同期用のプレイリスト型
+ */
+export interface PlaylistForSync {
+  id: string;
+  title: string;
+  image_path?: string;
+  is_public: boolean;
+  created_at: string;
+  user_name?: string;
+  user_id?: string;
+  createdAt?: string;
+}
+
+/**
+ * 同期用のスポットライト型
+ */
+export interface SpotlightForSync {
+  id: string;
+  video_path: string;
+  title: string;
+  author: string;
+  genre?: string;
+  description?: string;
+  thumbnail_path?: string;
+  created_at?: string;
+}
+
+/**
+ * アイコンコンポーネントの型
+ * lucide-reactなどのアイコンライブラリと互換性のある型
+ */
+export type IconComponent = React.ComponentType<{
+  size?: string | number;
+  color?: string;
+  strokeWidth?: number;
+  className?: string;
+}>;
+
+/**
+ * Cookieオプションの型
+ * Supabase認証で使用
+ */
+export interface CookieOptions {
+  path?: string;
+  maxAge?: number;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: "lax" | "strict" | "none";
 }

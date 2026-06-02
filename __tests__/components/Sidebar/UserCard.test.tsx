@@ -34,6 +34,8 @@ jest.mock("@/components/ui/avatar", () => ({
 describe("components/Sidebar/UserCard", () => {
   const defaultUserDetails = {
     id: "user-1",
+    first_name: "Test",
+    last_name: "User",
     full_name: "Test User",
     avatar_url: "/avatars/test.jpg",
     email: "test@example.com",

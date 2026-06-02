@@ -9,11 +9,11 @@ import { Song } from "@/types";
  * @param data - Supabase JOIN クエリの結果
  * @returns Song 配列
  */
-export function extractSongsFromJoin(data: Record<string, any>[]): Song[] {
+export function extractSongsFromJoin(data: { songs: Song }[]): Song[] {
   return data.map((item) => ({
     ...item.songs,
     songType: "regular" as const,
-  })) as Song[];
+  }));
 }
 
 /**
