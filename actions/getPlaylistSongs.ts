@@ -18,11 +18,15 @@ const getPlaylistSongs = async (
     .from("playlists")
     .select("is_public, user_id")
     .eq("id", playlistId)
-    .single();
+    .maybeSingle();
 
   if (playlistError) {
     console.error("Error fetching playlist:", playlistError);
     throw new Error(getErrorMessage(playlistError));
+  }
+
+  if (!playlist) {
+    return [];
   }
 
   // 現在のユーザー情報を取得

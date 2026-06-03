@@ -94,13 +94,13 @@ export const MyUserContextProvider = (props: Props) => {
     queryFn: async () => {
       if (!user) return null;
 
-      const { data, error } = await supabase.from("users").select("*").single();
+      const { data, error } = await supabase.from("users").select("*").maybeSingle();
 
       if (error) {
         throw new Error(`ユーザー情報の取得に失敗しました: ${getErrorMessage(error)}`);
       }
 
-      return data as UserDetails;
+      return data as UserDetails | null;
     },
     enabled: !!user, // ユーザーが存在する場合のみクエリを実行
     staleTime: CACHE_CONFIG.staleTime,
