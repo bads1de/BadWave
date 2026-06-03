@@ -1,5 +1,6 @@
 import { Spotlight } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * @returns Spotlight[]
@@ -17,8 +18,8 @@ const getSpotlight = async (): Promise<Spotlight[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching spotlights:", error.message);
-    throw new Error(error.message);
+    console.error("Error fetching spotlights:", getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Spotlight[]) || [];

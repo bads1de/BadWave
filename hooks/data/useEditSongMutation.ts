@@ -9,6 +9,8 @@ import { sanitizeTitle } from "@/libs/utils/utils";
 import { uploadFile } from "@/libs/storage/upload";
 import { serializeGenres } from "@/libs/song/songUtils";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 import type { Song, ModalHook } from "@/types";
 
 interface EditSongParams {
@@ -96,8 +98,8 @@ const useEditSongMutation = (editModal: ModalHook) => {
       currentSong,
     }: EditSongParams) => {
       if (!id) {
-        toast.error("曲のIDが必要です");
-        throw new Error("曲のIDが必要です");
+        toast.error(ERROR_MESSAGES.SONG_ID_REQUIRED);
+        throw new Error(ERROR_MESSAGES.SONG_ID_REQUIRED);
       }
 
       let updatedVideoPath = currentSong.video_path;
@@ -174,7 +176,7 @@ const useEditSongMutation = (editModal: ModalHook) => {
     },
     onError: (error: Error) => {
       console.error("Edit song error:", error);
-      toast.error("編集に失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.EDIT_FAILED));
     },
   });
 };

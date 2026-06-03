@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 import { parseGenres } from "@/libs/song/songUtils";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 指定したジャンルの曲一覧を取得する
@@ -20,8 +21,8 @@ const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching songs by genre:", error.message);
-    throw new Error(error.message);
+    console.error("Error fetching songs by genre:", getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Song[]) || [];

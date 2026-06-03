@@ -2,6 +2,7 @@
 
 import { Song, type PaginatedSongsResult } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * ページネーション対応の曲取得
@@ -27,8 +28,8 @@ const getSongsPaginated = async (
   ]);
 
   if (songsResult.error) {
-    console.error("Error fetching songs:", songsResult.error.message);
-    throw new Error(songsResult.error.message);
+    console.error("Error fetching songs:", getErrorMessage(songsResult.error));
+    throw new Error(getErrorMessage(songsResult.error));
   }
 
   const totalCount = countResult.count || 0;

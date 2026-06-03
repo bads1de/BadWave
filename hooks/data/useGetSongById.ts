@@ -2,6 +2,7 @@ import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 指定されたIDに基づいて曲を取得するカスタムフック
@@ -32,7 +33,7 @@ const useGetSongById = (id?: string) => {
         .maybeSingle();
 
       if (error) {
-        throw new Error(`Failed to load song: ${error.message}`);
+        throw new Error(`Failed to load song: ${getErrorMessage(error)}`);
       }
 
       return data as Song;

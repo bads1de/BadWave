@@ -1,5 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * パブリックプレイリスト一覧を取得する
@@ -16,8 +17,8 @@ const getPublicPlaylists = async (limit: number = 6): Promise<Playlist[]> => {
     .limit(limit);
 
   if (error) {
-    console.error("Error fetching public playlists:", error.message);
-    throw new Error(error.message);
+    console.error("Error fetching public playlists:", getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Playlist[]) || [];

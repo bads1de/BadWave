@@ -84,7 +84,7 @@ const useAudioWaveStore = create<AudioWaveState>((set, get) => ({
 
     // 新しいAudioContextを作成
     const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
     analyser.fftSize = 512;
 

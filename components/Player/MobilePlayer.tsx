@@ -1,5 +1,5 @@
 import React from "react";
-import { Song, Playlist } from "@/types";
+import { Song, Playlist, IconComponent } from "@/types";
 import MediaItem from "../Song/MediaItem";
 import MobilePlayerContent from "../Mobile/MobilePlayerContent";
 
@@ -14,7 +14,7 @@ interface MobilePlayerProps {
   isPlaying: boolean;
   isShuffling: boolean;
   isRepeating: boolean;
-  Icon: React.ComponentType<any>;
+  Icon: IconComponent;
   handlePlay: () => void;
   handleSeek: (time: number) => void;
   toggleMobilePlayer: () => void;

@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { createClient } from "@/libs/supabase/client";
 import { useUser } from "@/hooks/auth/useUser";
 import Image from "next/image";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import AccountModal from "./AccountModal";
 import ColorSchemeSelector from "./ColorSchemeSelector";
 import TopPlayedSongs from "./TopPlayedSongs";
@@ -28,7 +29,7 @@ const AccountContent = () => {
       router.push("/");
       toast.success("ログアウトしました");
     } catch (error) {
-      toast.error("エラーが発生しました");
+      toast.error(ERROR_MESSAGES.GENERIC_ERROR);
     } finally {
       setIsLoading(false);
     }

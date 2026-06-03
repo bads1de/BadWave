@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
+import { Playlist } from "@/types";
 
 interface UpdatePlaylistTitleParams {
   playlistId: string;
@@ -49,11 +52,11 @@ export const useUpdatePlaylistTitle = () => {
         queryKey: [CACHED_QUERIES.playlists],
       });
 
-      const previousPlaylists = queryClient.getQueryData<any[]>([
+      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
         CACHED_QUERIES.playlists,
       ]);
 
-      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) =>
+      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) =>
         (old || []).map((p) =>
           p.id === playlistId ? { ...p, title: newTitle } : p,
         ),
@@ -75,7 +78,7 @@ export const useUpdatePlaylistTitle = () => {
           context.previousPlaylists,
         );
       }
-      toast.error("プレイリスト名の更新に失敗しました");
+      toast.error(getErrorMessage(_error, ERROR_MESSAGES.PLAYLIST_UPDATE_FAILED));
     },
   });
 };
@@ -107,11 +110,11 @@ export const useTogglePlaylistPublic = () => {
         queryKey: [CACHED_QUERIES.playlists],
       });
 
-      const previousPlaylists = queryClient.getQueryData<any[]>([
+      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
         CACHED_QUERIES.playlists,
       ]);
 
-      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) =>
+      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) =>
         (old || []).map((p) =>
           p.id === playlistId ? { ...p, is_public: !isPublic } : p,
         ),
@@ -135,7 +138,7 @@ export const useTogglePlaylistPublic = () => {
           context.previousPlaylists,
         );
       }
-      toast.error("プレイリストの公開設定の更新に失敗しました");
+      toast.error(getErrorMessage(_error, ERROR_MESSAGES.PLAYLIST_VISIBILITY_UPDATE_FAILED));
     },
   });
 };
@@ -170,11 +173,11 @@ export const useDeletePlaylist = () => {
         queryKey: [CACHED_QUERIES.playlists],
       });
 
-      const previousPlaylists = queryClient.getQueryData<any[]>([
+      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
         CACHED_QUERIES.playlists,
       ]);
 
-      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) =>
+      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) =>
         (old || []).filter((p) => p.id !== playlistId),
       );
 
@@ -193,7 +196,7 @@ export const useDeletePlaylist = () => {
           context.previousPlaylists,
         );
       }
-      toast.error("プレイリストの削除に失敗しました");
+      toast.error(getErrorMessage(_error, ERROR_MESSAGES.PLAYLIST_DELETE_FAILED));
     },
   });
 };

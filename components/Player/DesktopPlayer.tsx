@@ -1,6 +1,6 @@
 import React from "react";
 import { Mic2 } from "lucide-react";
-import { Playlist, Song } from "@/types";
+import { Playlist, Song, IconComponent } from "@/types";
 import LikeButton from "../LikeButton";
 import MediaItem from "../Song/MediaItem";
 import SeekBar from "./Seekbar";
@@ -21,7 +21,7 @@ interface DesktopPlayerProps {
   isPlaying: boolean;
   isShuffling: boolean;
   isRepeating: boolean;
-  Icon: React.ComponentType<any>;
+  Icon: IconComponent;
   handlePlay: () => void;
   handleSeek: (time: number) => void;
   onPlayNext: () => void;

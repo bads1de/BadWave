@@ -376,7 +376,7 @@ class AudioEngine {
 
       // Distortion: 音割れを防ぐため大幅に低減 (ほぼ隠し味/サチュレーション程度)
       // amount=10 くらいで歪み感を抑える
-      this.distortionNode.curve = this.makeDistortionCurve(10) as any;
+      this.distortionNode.curve = this.makeDistortionCurve(10) as Float32Array<ArrayBuffer>;
 
       this.isRetroActive = true;
     } else {

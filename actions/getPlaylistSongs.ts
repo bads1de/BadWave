@@ -1,6 +1,7 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 指定されたプレイリストIDに含まれる曲を取得する
@@ -21,7 +22,7 @@ const getPlaylistSongs = async (
 
   if (playlistError) {
     console.error("Error fetching playlist:", playlistError);
-    throw new Error(playlistError.message);
+    throw new Error(getErrorMessage(playlistError));
   }
 
   // 現在のユーザー情報を取得
@@ -43,7 +44,7 @@ const getPlaylistSongs = async (
 
   if (error) {
     console.error("Error fetching playlist songs:", error);
-    throw new Error(error.message);
+    throw new Error(getErrorMessage(error));
   }
 
   return extractSongsFromJoin(data || []);

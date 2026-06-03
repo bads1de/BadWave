@@ -2,6 +2,8 @@ import { createClient } from "@/libs/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 曲のいいね操作を行うカスタムフック
@@ -101,7 +103,7 @@ const useLikeMutation = (songId: string, userId?: string) => {
         );
       }
       console.error("Like mutation error:", error);
-      toast.error("エラーが発生しました。もう一度お試しください。");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.GENERIC_ERROR_RETRY));
     },
   });
 };

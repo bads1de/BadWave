@@ -7,6 +7,7 @@ import Image from "next/image";
 import Modal from "@/components/Modals/Modal";
 import { Camera, User, Lock } from "lucide-react";
 import useUpdateUserProfileMutation from "@/hooks/data/useUpdateUserProfileMutation";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -91,13 +92,13 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
 
     // パスワードのバリデーション
     if (newPassword.length < 8) {
-      toast.error("パスワードは8文字以上で入力してください");
+      toast.error(ERROR_MESSAGES.PASSWORD_MIN_LENGTH);
       return;
     }
 
     // パスワードの一致確認
     if (newPassword !== confirmPassword) {
-      toast.error("パスワードが一致しません");
+      toast.error(ERROR_MESSAGES.PASSWORD_MISMATCH);
       return;
     }
 

@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 import { CACHED_QUERIES } from "@/constants";
-import type { ModalHook } from "@/types";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
+import type { ModalHook, Playlist } from "@/types";
 
 interface CreatePlaylistParams {
   title: string;
@@ -27,8 +29,8 @@ const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
   return useMutation({
     mutationFn: async ({ title }: CreatePlaylistParams) => {
       if (!title || !user) {
-        toast.error("タイトルを入力してください");
-        throw new Error("タイトルを入力してください");
+        toast.error(ERROR_MESSAGES.TITLE_REQUIRED);
+        throw new Error(ERROR_MESSAGES.TITLE_REQUIRED);
       }
 
       // プレイリストを作成
@@ -40,8 +42,8 @@ const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
       });
 
       if (error) {
-        toast.error(error.message);
-        throw new Error(error.message);
+        toast.error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error));
       }
 
       return { title };
@@ -51,18 +53,19 @@ const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
         queryKey: [CACHED_QUERIES.playlists],
       });
 
-      const previousPlaylists = queryClient.getQueryData<any[]>([
+      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
         CACHED_QUERIES.playlists,
       ]);
 
-      queryClient.setQueryData<any[]>([CACHED_QUERIES.playlists], (old) => [
+      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) => [
         ...(old || []),
         {
           id: `temp_${Date.now()}`,
           title,
           is_public: false,
-          user_id: user?.id,
+          user_id: user?.id ?? "",
           user_name: user?.full_name,
+          created_at: new Date().toISOString(),
         },
       ]);
 

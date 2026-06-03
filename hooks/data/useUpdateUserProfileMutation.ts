@@ -7,6 +7,8 @@ import { createClient } from "@/libs/supabase/client";
 import { deleteFileFromR2 } from "@/actions/r2";
 import { uploadFile } from "@/libs/storage/upload";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
 
 interface UpdateProfileParams {
@@ -41,8 +43,8 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
   const updateProfile = useMutation({
     mutationFn: async ({ userId, fullName }: UpdateProfileParams) => {
       if (!userId) {
-        toast.error("ユーザーIDが必要です");
-        throw new Error("ユーザーIDが必要です");
+        toast.error(ERROR_MESSAGES.USER_ID_REQUIRED);
+        throw new Error(ERROR_MESSAGES.USER_ID_REQUIRED);
       }
 
       // プロフィール名を更新
@@ -52,7 +54,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
         .eq("id", userId);
 
       if (error) {
-        toast.error(error.message);
+        toast.error(getErrorMessage(error));
         throw error;
       }
 
@@ -71,7 +73,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
     },
     onError: (error: Error) => {
       console.error("Update profile error:", error);
-      toast.error("プロフィールの更新に失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.UPDATE_PROFILE_FAILED));
     },
   });
 
@@ -85,8 +87,8 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
       currentAvatarUrl,
     }: UpdateAvatarParams) => {
       if (!userId || !avatarFile) {
-        toast.error("ユーザーIDと画像が必要です");
-        throw new Error("ユーザーIDと画像が必要です");
+        toast.error(ERROR_MESSAGES.USER_ID_AND_IMAGE_REQUIRED);
+        throw new Error(ERROR_MESSAGES.USER_ID_AND_IMAGE_REQUIRED);
       }
 
       // 既存のアバター画像がある場合は削除する
@@ -110,13 +112,13 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
       try {
         avatarUrl = await uploadFile(avatarFile, "image", `avatar-${userId}`);
       } catch (error) {
-        toast.error("アップロードに失敗しました");
-        throw new Error("アップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }
 
       if (!avatarUrl) {
-        toast.error("アップロードに失敗しました");
-        throw new Error("アップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }
 
       // データベースのユーザー情報を更新する
@@ -126,7 +128,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
         .eq("id", userId);
 
       if (error) {
-        toast.error(error.message);
+        toast.error(getErrorMessage(error));
         throw error;
       }
 
@@ -142,7 +144,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
     },
     onError: (error: Error) => {
       console.error("Update avatar error:", error);
-      toast.error("アバターの更新に失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.UPDATE_AVATAR_FAILED));
     },
   });
 
@@ -152,8 +154,8 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
   const updatePassword = useMutation({
     mutationFn: async ({ newPassword }: UpdatePasswordParams) => {
       if (!newPassword || newPassword.length < 8) {
-        toast.error("パスワードは8文字以上で入力してください");
-        throw new Error("パスワードは8文字以上で入力してください");
+        toast.error(ERROR_MESSAGES.PASSWORD_MIN_LENGTH);
+        throw new Error(ERROR_MESSAGES.PASSWORD_MIN_LENGTH);
       }
 
       // Supabaseの認証APIでパスワードを更新
@@ -162,7 +164,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
       });
 
       if (error) {
-        toast.error(error.message);
+        toast.error(getErrorMessage(error));
         throw error;
       }
 
@@ -177,7 +179,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
     },
     onError: (error: Error) => {
       console.error("Update password error:", error);
-      toast.error("パスワードの更新に失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.UPDATE_PASSWORD_FAILED));
     },
   });
 

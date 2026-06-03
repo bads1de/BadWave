@@ -7,6 +7,8 @@ import { createClient } from "@/libs/supabase/client";
 import { uploadFile } from "@/libs/storage/upload";
 import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
 
 interface PulseUploadParams {
@@ -31,18 +33,18 @@ const usePulseUploadMutation = (pulseUploadModal: ModalHook) => {
       await requireAdminPermission();
 
       if (!musicFile || !user) {
-        toast.error("音声ファイルを選択してください");
-        throw new Error("音声ファイルを選択してください");
+        toast.error(ERROR_MESSAGES.AUDIO_FILE_REQUIRED);
+        throw new Error(ERROR_MESSAGES.AUDIO_FILE_REQUIRED);
       }
 
       if (!title.trim()) {
-        toast.error("タイトルを入力してください");
-        throw new Error("タイトルを入力してください");
+        toast.error(ERROR_MESSAGES.TITLE_REQUIRED);
+        throw new Error(ERROR_MESSAGES.TITLE_REQUIRED);
       }
 
       if (!genre.trim()) {
-        toast.error("ジャンルを入力してください");
-        throw new Error("ジャンルを入力してください");
+        toast.error(ERROR_MESSAGES.GENRE_REQUIRED);
+        throw new Error(ERROR_MESSAGES.GENRE_REQUIRED);
       }
 
       // 音声をR2にアップロード
@@ -50,13 +52,13 @@ const usePulseUploadMutation = (pulseUploadModal: ModalHook) => {
       try {
         musicUrl = await uploadFile(musicFile, "pulse", "pulse");
       } catch (error) {
-        toast.error("音声のアップロードに失敗しました");
-        throw new Error("音声のアップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.AUDIO_UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.AUDIO_UPLOAD_FAILED);
       }
 
       if (!musicUrl) {
-        toast.error("音声のアップロードに失敗しました");
-        throw new Error("音声のアップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.AUDIO_UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.AUDIO_UPLOAD_FAILED);
       }
 
       // データベースにレコードを作成
@@ -67,8 +69,8 @@ const usePulseUploadMutation = (pulseUploadModal: ModalHook) => {
       });
 
       if (error) {
-        toast.error(error.message);
-        throw new Error(error.message);
+        toast.error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error));
       }
 
       return { title, genre };

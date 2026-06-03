@@ -54,9 +54,9 @@ export default function PulseClient({
 
     // AudioContextの初期化（ブラウザ制限のためユーザーアクション内で行う）
     if (!audioContextRef.current) {
-      const AudioContext =
-        window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = new AudioContext();
+      const AudioContextConstructor: typeof AudioContext =
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AudioContextConstructor();
       const analyserNode = ctx.createAnalyser();
       analyserNode.fftSize = 2048;
 

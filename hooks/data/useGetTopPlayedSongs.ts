@@ -3,6 +3,7 @@ import { type Period } from "@/types/stats";
 import { createClient } from "@/libs/supabase/client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { getErrorMessage } from "@/libs/utils/error";
 
 const useGetTopPlayedSongs = (userId?: string, period: Period = "day") => {
   const supabase = createClient();
@@ -22,7 +23,7 @@ const useGetTopPlayedSongs = (userId?: string, period: Period = "day") => {
       });
 
       if (error) {
-        throw new Error(`再生履歴の取得に失敗しました: ${error.message}`);
+        throw new Error(`再生履歴の取得に失敗しました: ${getErrorMessage(error)}`);
       }
 
       return (data || []) as TopPlayedSong[];

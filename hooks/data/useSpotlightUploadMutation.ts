@@ -7,6 +7,8 @@ import { createClient } from "@/libs/supabase/client";
 import { uploadFile } from "@/libs/storage/upload";
 import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
 
 interface SpotlightUploadParams {
@@ -41,8 +43,8 @@ const useSpotlightUploadMutation = (
       await requireAdminPermission();
 
       if (!videoFile || !user) {
-        toast.error("動画ファイルを選択してください");
-        throw new Error("動画ファイルを選択してください");
+        toast.error(ERROR_MESSAGES.VIDEO_FILE_REQUIRED);
+        throw new Error(ERROR_MESSAGES.VIDEO_FILE_REQUIRED);
       }
 
       // 動画をR2にアップロード
@@ -50,13 +52,13 @@ const useSpotlightUploadMutation = (
       try {
         videoUrl = await uploadFile(videoFile, "spotlight", "spotlight");
       } catch (error) {
-        toast.error("動画のアップロードに失敗しました");
-        throw new Error("動画のアップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.VIDEO_UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.VIDEO_UPLOAD_FAILED);
       }
 
       if (!videoUrl) {
-        toast.error("動画のアップロードに失敗しました");
-        throw new Error("動画のアップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.VIDEO_UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.VIDEO_UPLOAD_FAILED);
       }
 
       // データベースにレコードを作成
@@ -70,8 +72,8 @@ const useSpotlightUploadMutation = (
       });
 
       if (error) {
-        toast.error(error.message);
-        throw new Error(error.message);
+        toast.error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error));
       }
 
       return { title, author };

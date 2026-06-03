@@ -1,6 +1,7 @@
 import { Song, SongType } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 現在のユーザーが「いいね」した曲一覧を取得する
@@ -31,7 +32,7 @@ const getLikedSongs = async (
 
   if (error) {
     console.error("Error fetching liked songs:", error);
-    throw new Error(error.message);
+    throw new Error(getErrorMessage(error));
   }
 
   // データがなければ空の配列を返す

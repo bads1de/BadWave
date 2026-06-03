@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider, QueryCache } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "@/libs/utils/error";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CACHE_CONFIG } from "@/constants";
@@ -18,7 +19,7 @@ const TanStackProvider = ({ children }: Props) => {
         queryCache: new QueryCache({
           onError: (error) => {
             console.error(error);
-            toast.error(error.message);
+            toast.error(getErrorMessage(error));
           },
         }),
         defaultOptions: {

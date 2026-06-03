@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
     }
   };
 
-  const studioItems = [
+  const studioItems: { icon: React.ComponentType<{ size?: number }>; label: string; action: "music" | "playlist" | "spotlight" | "pulse" }[] = [
     {
       icon: RiPlayListFill,
       label: "INIT_PLAYLIST",
@@ -331,7 +331,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       {studioItems.map((item) => (
                         <button
                           key={item.action}
-                          onClick={() => openModal(item.action as any)}
+                          onClick={() => openModal(item.action)}
                           className="flex items-center gap-x-3 px-3 py-3 rounded-none transition-all duration-300 border border-transparent hover:border-theme-500/30 text-theme-500/60 hover:text-white hover:bg-theme-500/10 w-full text-left cyber-glitch"
                         >
                           <item.icon size={20} />

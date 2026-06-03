@@ -11,6 +11,8 @@ import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { serializeGenres } from "@/libs/song/songUtils";
 import uniqid from "uniqid";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
 
 interface UploadSongParams {
@@ -45,8 +47,8 @@ const useUploadSongMutation = (uploadModal: ModalHook) => {
       await requireAdminPermission();
 
       if (!songFile || !imageFile || !user) {
-        toast.error("必須フィールドが未入力です");
-        throw new Error("必須フィールドが未入力です");
+        toast.error(ERROR_MESSAGES.REQUIRED_FIELDS);
+        throw new Error(ERROR_MESSAGES.REQUIRED_FIELDS);
       }
 
       const uniqueID = uniqid();
@@ -61,13 +63,13 @@ const useUploadSongMutation = (uploadModal: ModalHook) => {
         songUrl = await uploadFile(songFile, "song", songFileNamePrefix);
         imageUrl = await uploadFile(imageFile, "image", imageFileNamePrefix);
       } catch (error) {
-        toast.error("ファイルのアップロードに失敗しました");
-        throw new Error("ファイルのアップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }
 
       if (!songUrl || !imageUrl) {
-        toast.error("ファイルのアップロードに失敗しました");
-        throw new Error("ファイルのアップロードに失敗しました");
+        toast.error(ERROR_MESSAGES.UPLOAD_FAILED);
+        throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }
 
       // Create record
@@ -85,8 +87,8 @@ const useUploadSongMutation = (uploadModal: ModalHook) => {
         });
 
       if (supabaseError) {
-        toast.error(supabaseError.message);
-        throw new Error(supabaseError.message);
+        toast.error(getErrorMessage(supabaseError));
+        throw new Error(getErrorMessage(supabaseError));
       }
 
       return { title, author };
@@ -105,7 +107,7 @@ const useUploadSongMutation = (uploadModal: ModalHook) => {
     },
     onError: (error: Error) => {
       console.error("Upload song error:", error);
-      toast.error(error.message || "アップロードに失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.SONG_UPLOAD_FAILED));
     },
   });
 };

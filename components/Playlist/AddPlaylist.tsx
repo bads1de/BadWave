@@ -13,6 +13,7 @@ import useAuthModal from "@/hooks/auth/useAuthModal";
 import useGetSongById from "@/hooks/data/useGetSongById";
 import usePlaylistSongStatus from "@/hooks/data/usePlaylistSongStatus";
 import useMutatePlaylistSong from "@/hooks/data/useMutatePlaylistSong";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 
 interface PlaylistMenuProps {
   playlists: Playlist[];
@@ -57,7 +58,7 @@ const AddPlaylist: React.FC<PlaylistMenuProps> = ({
     }
 
     if (isInPlaylist[playlistId]) {
-      toast.error("既にプレイリストに追加されています。");
+      toast.error(ERROR_MESSAGES.PLAYLIST_ALREADY_ADDED);
       return;
     }
 

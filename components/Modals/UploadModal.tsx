@@ -16,6 +16,7 @@ import Image from "next/image";
 import useUploadModal from "@/hooks/modal/useUploadModal";
 import { useUser } from "@/hooks/auth/useUser";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 
 import Modal from "./Modal";
 import Input from "../common/Input";
@@ -81,7 +82,7 @@ const UploadModal: React.FC = memo(() => {
           setValue("image", [file]);
           setImagePreview(URL.createObjectURL(file));
         } else {
-          toast.error("サポートされていないファイル形式です");
+          toast.error(ERROR_MESSAGES.UNSUPPORTED_FILE_FORMAT);
         }
       }
     },

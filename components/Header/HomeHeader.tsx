@@ -10,6 +10,7 @@ import { User, LogOut, Menu, X, Home, Search, Settings } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { createClient } from "@/libs/supabase/client";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { RiPlayListFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa";
 
@@ -42,7 +43,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
       toast.success("LOGOUT_SUCCESSFUL");
       router.refresh();
     } catch (error) {
-      toast.error("SYSTEM_ERROR_DURING_LOGOUT");
+      toast.error(ERROR_MESSAGES.LOGOUT_FAILED);
     }
   };
 

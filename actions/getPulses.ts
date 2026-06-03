@@ -1,5 +1,6 @@
 import { Pulse } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * @returns Pulse[]
@@ -17,8 +18,8 @@ const getPulses = async (): Promise<Pulse[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching pulses:", error.message);
-    throw new Error(error.message);
+    console.error("Error fetching pulses:", getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Pulse[]) || [];

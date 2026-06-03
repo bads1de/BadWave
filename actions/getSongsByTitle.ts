@@ -1,5 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * タイトルで曲を検索する
@@ -23,7 +24,7 @@ const getSongsByTitle = async (title: string) => {
 
   if (error) {
     console.error("Error fetching songs:", error);
-    throw new Error(error.message);
+    throw new Error(getErrorMessage(error));
   }
 
   return {

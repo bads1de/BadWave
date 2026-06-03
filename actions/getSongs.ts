@@ -1,5 +1,6 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 全ての曲を取得する
@@ -15,8 +16,8 @@ const getSongs = async (): Promise<Song[]> => {
     .limit(12);
 
   if (error) {
-    console.error("Error fetching songs:", error.message);
-    throw new Error(error.message);
+    console.error("Error fetching songs:", getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Song[]) || [];

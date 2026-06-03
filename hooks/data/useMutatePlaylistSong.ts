@@ -2,8 +2,11 @@ import { createClient } from "@/libs/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 import { useUser } from "@/hooks/auth/useUser";
 import { useRouter } from "next/navigation";
+import { Song } from "@/types";
 
 /**
  * プレイリスト曲の操作（追加・削除）を行うカスタムフック
@@ -40,7 +43,7 @@ const useMutatePlaylistSong = () => {
 
       if (error) {
         throw new Error(
-          `プレイリストから曲の削除に失敗しました: ${error.message}`
+          `プレイリストから曲の削除に失敗しました: ${getErrorMessage(error)}`
         );
       }
 
@@ -51,13 +54,13 @@ const useMutatePlaylistSong = () => {
         queryKey: [CACHED_QUERIES.playlists, playlistId, "songs"],
       });
 
-      const previousSongs = queryClient.getQueryData<any[]>([
+      const previousSongs = queryClient.getQueryData<Song[]>([
         CACHED_QUERIES.playlists,
         playlistId,
         "songs",
       ]);
 
-      queryClient.setQueryData<any[]>(
+      queryClient.setQueryData<Song[]>(
         [CACHED_QUERIES.playlists, playlistId, "songs"],
         (old) => (old || []).filter((s) => s.id !== songId),
       );
@@ -80,7 +83,7 @@ const useMutatePlaylistSong = () => {
         );
       }
       console.error("Error deleting song from playlist:", error);
-      toast.error(error.message || "プレイリストから曲の削除に失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.PLAYLIST_DELETE_SONG_FAILED));
     },
   });
 
@@ -113,7 +116,7 @@ const useMutatePlaylistSong = () => {
 
       if (error) {
         throw new Error(
-          `プレイリストへの曲の追加に失敗しました: ${error.message}`
+          `プレイリストへの曲の追加に失敗しました: ${getErrorMessage(error)}`
         );
       }
 
@@ -138,17 +141,17 @@ const useMutatePlaylistSong = () => {
         queryKey: [CACHED_QUERIES.playlists, playlistId, "songs"],
       });
 
-      const previousSongs = queryClient.getQueryData<any[]>([
+      const previousSongs = queryClient.getQueryData<Song[]>([
         CACHED_QUERIES.playlists,
         playlistId,
         "songs",
       ]);
 
-      queryClient.setQueryData<any[]>(
+      queryClient.setQueryData<Song[]>(
         [CACHED_QUERIES.playlists, playlistId, "songs"],
         (old) => [
           ...(old || []),
-          { id: songId, playlist_id: playlistId },
+          { id: songId, playlist_id: playlistId } as unknown as Song,
         ],
       );
 
@@ -172,7 +175,7 @@ const useMutatePlaylistSong = () => {
         );
       }
       console.error("Error adding song to playlist:", error);
-      toast.error(error.message || "プレイリストへの曲の追加に失敗しました");
+      toast.error(getErrorMessage(error, ERROR_MESSAGES.PLAYLIST_ADD_SONG_FAILED));
     },
   });
 

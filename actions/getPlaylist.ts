@@ -1,5 +1,6 @@
 import { Playlist } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 指定されたプレイリストIDのプレイリスト情報を取得する
@@ -20,7 +21,7 @@ const getPlaylist = async (playlistId: string): Promise<Playlist | null> => {
       return null;
     }
     console.error("Error fetching playlist:", error);
-    throw new Error(error.message);
+    throw new Error(getErrorMessage(error));
   }
 
   return playlist;

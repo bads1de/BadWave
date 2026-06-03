@@ -8,6 +8,8 @@ import { deleteFileFromR2 } from "@/actions/r2";
 import { useUser } from "@/hooks/auth/useUser";
 import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { CACHED_QUERIES } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { getErrorMessage } from "@/libs/utils/error";
 
 interface DeleteSongParams {
   songId: string;
@@ -102,8 +104,8 @@ const useDeleteSongMutation = () => {
     },
     onError: (error: Error) => {
       console.error("Delete song error:", error);
-      if (error.message !== "管理者権限が必要です") {
-        toast.error(error.message || "削除に失敗しました");
+      if (error.message !== ERROR_MESSAGES.ADMIN_REQUIRED) {
+        toast.error(getErrorMessage(error, ERROR_MESSAGES.DELETE_FAILED));
       }
     },
   });

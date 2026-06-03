@@ -14,6 +14,7 @@ import { downloadFile, formatTime } from "@/libs/utils/utils";
 import { parseGenres } from "@/libs/song/songUtils";
 import { Card } from "@/components/ui/card";
 import toast from "react-hot-toast";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import AudioWaveform from "@/components/AudioWaveform";
 import useAudioWaveStore from "@/hooks/audio/useAudioWave";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
@@ -104,7 +105,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
       navigator.clipboard.writeText(song?.lyrics || "");
       toast.success("Lyrics copied to clipboard!");
     } catch (error) {
-      toast.error("Failed to copy lyrics.");
+      toast.error(ERROR_MESSAGES.COPY_LYRICS_FAILED);
     }
   }, [song?.lyrics]);
 

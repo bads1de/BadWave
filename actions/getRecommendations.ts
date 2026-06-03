@@ -1,5 +1,6 @@
 import { SongWithRecommendation } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 現在のユーザーに対する推薦曲を取得する
@@ -30,7 +31,7 @@ const getRecommendations = async (
 
     if (error) {
       console.error("Error fetching recommendations:", error);
-      throw new Error(error.message);
+      throw new Error(getErrorMessage(error));
     }
 
     // データがない場合は空配列を返す

@@ -1,5 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * ユーザーのプレイリスト一覧を取得する
@@ -23,8 +24,8 @@ const getPlaylists = async (): Promise<Playlist[]> => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(`Failed to fetch playlists: ${error.message}`);
-    throw new Error(error.message);
+    console.error(`Failed to fetch playlists: ${getErrorMessage(error)}`);
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Playlist[]) || [];

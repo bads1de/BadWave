@@ -2,6 +2,7 @@
 
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
+import { getErrorMessage } from "@/libs/utils/error";
 import { subMonths, subWeeks, subDays } from "date-fns";
 
 /**
@@ -37,8 +38,8 @@ const getTrendSongs = async (
     .limit(10);
 
   if (error) {
-    console.error("Error fetching trend songs:", error.message);
-    throw new Error(error.message);
+    console.error("Error fetching trend songs:", getErrorMessage(error));
+    throw new Error(getErrorMessage(error));
   }
 
   return (data as Song[]) || [];

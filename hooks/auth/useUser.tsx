@@ -12,6 +12,7 @@ import { User, Session } from "@supabase/supabase-js";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * ユーザーコンテキストの型定義
@@ -39,10 +40,9 @@ export const UserContext = createContext<UserContextType | undefined>(
 /**
  * コンテキストプロバイダーのプロパティ型
  * @interface Props
- * @property {any} [propName] - 任意のプロパティを受け入れる
  */
 export interface Props {
-  [propName: string]: any;
+  children: React.ReactNode;
 }
 
 /**
@@ -97,7 +97,7 @@ export const MyUserContextProvider = (props: Props) => {
       const { data, error } = await supabase.from("users").select("*").single();
 
       if (error) {
-        throw new Error(`ユーザー情報の取得に失敗しました: ${error.message}`);
+        throw new Error(`ユーザー情報の取得に失敗しました: ${getErrorMessage(error)}`);
       }
 
       return data as UserDetails;

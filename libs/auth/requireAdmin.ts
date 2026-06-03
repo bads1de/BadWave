@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { checkIsAdmin } from "@/actions/checkAdmin";
+import { ERROR_MESSAGES } from "@/constants/errorMessages";
 
 /**
  * 管理者権限を確認し、権限がない場合はエラーをスローするクライアントサイドヘルパー
@@ -13,7 +14,7 @@ export async function requireAdminPermission(): Promise<void> {
   const { isAdmin } = await checkIsAdmin();
 
   if (!isAdmin) {
-    toast.error("管理者権限が必要です");
-    throw new Error("管理者権限が必要です");
+    toast.error(ERROR_MESSAGES.ADMIN_REQUIRED);
+    throw new Error(ERROR_MESSAGES.ADMIN_REQUIRED);
   }
 }

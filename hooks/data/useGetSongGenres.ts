@@ -2,6 +2,7 @@ import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { getErrorMessage } from "@/libs/utils/error";
 
 /**
  * 指定されたジャンルに一致する曲を取得するカスタムフック
@@ -40,7 +41,7 @@ const useGetSongsByGenres = (genres: string[], excludeId?: string) => {
 
       if (error) {
         throw new Error(
-          `ジャンルによる曲の取得に失敗しました: ${error.message}`
+          `ジャンルによる曲の取得に失敗しました: ${getErrorMessage(error)}`
         );
       }
 
