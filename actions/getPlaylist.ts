@@ -14,12 +14,9 @@ const getPlaylist = async (playlistId: string): Promise<Playlist | null> => {
     .from("playlists")
     .select("*")
     .eq("id", playlistId)
-    .single();
+    .maybeSingle();
 
   if (error) {
-    if (error.code === "PGRST116") {
-      return null;
-    }
     console.error("Error fetching playlist:", error);
     throw new Error(getErrorMessage(error));
   }
