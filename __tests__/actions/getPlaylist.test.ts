@@ -12,7 +12,7 @@ describe("actions/getPlaylist", () => {
 
   beforeEach(() => {
     mockSingle = jest.fn();
-    mockEq = jest.fn(() => ({ single: mockSingle }));
+    mockEq = jest.fn(() => ({ maybeSingle: mockSingle }));
     const mockSelect = jest.fn(() => ({ eq: mockEq }));
     const mockFrom = jest.fn(() => ({ select: mockSelect }));
 
@@ -36,7 +36,7 @@ describe("actions/getPlaylist", () => {
   it("should return null if playlist not found (PGRST116)", async () => {
     mockSingle.mockResolvedValue({ 
       data: null, 
-      error: { code: "PGRST116", message: "Not found" } 
+      error: null 
     });
 
     const result = await getPlaylist("999");

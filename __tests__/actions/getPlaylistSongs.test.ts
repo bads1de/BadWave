@@ -19,7 +19,7 @@ describe("actions/getPlaylistSongs", () => {
     mockEq = jest.fn();
 
     // Setup generic chain for playlist info
-    mockEq.mockImplementation(() => ({ single: mockSingle }));
+    mockEq.mockImplementation(() => ({ maybeSingle: mockSingle }));
     
     // Setup generic chain for playlist songs
     // Needs to handle multiple .eq calls.
@@ -32,7 +32,7 @@ describe("actions/getPlaylistSongs", () => {
     const mockSelect = jest.fn().mockImplementation((query) => {
       if (query.includes("is_public")) {
         // Playlist info query
-        return { eq: () => ({ single: mockSingle }) };
+        return { eq: () => ({ maybeSingle: mockSingle }) };
       } else {
         // Playlist songs query
         return { 

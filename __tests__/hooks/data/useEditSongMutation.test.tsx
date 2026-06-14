@@ -297,6 +297,6 @@ describe("useEditSongMutation", () => {
     });
 
     // エラーメッセージが表示されたことを確認
-    expect(toast.error).toHaveBeenCalledWith("編集に失敗しました");
+    expect(toast.error).toHaveBeenCalledWith("Database error");
   });
 });

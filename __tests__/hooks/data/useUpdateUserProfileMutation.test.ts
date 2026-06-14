@@ -203,9 +203,9 @@ describe("hooks/data/useUpdateUserProfileMutation", () => {
           userId: "user-1",
           avatarFile: file,
         })
-      ).rejects.toThrow("アップロードに失敗しました");
+      ).rejects.toThrow("ファイルのアップロードに失敗しました");
 
-      expect(toast.error).toHaveBeenCalledWith("アップロードに失敗しました");
+      expect(toast.error).toHaveBeenCalledWith("ファイルのアップロードに失敗しました");
     });
 
     it("throws error when upload returns null URL", async () => {
@@ -224,9 +224,9 @@ describe("hooks/data/useUpdateUserProfileMutation", () => {
           userId: "user-1",
           avatarFile: file,
         })
-      ).rejects.toThrow("アップロードに失敗しました");
+      ).rejects.toThrow("ファイルのアップロードに失敗しました");
 
-      expect(toast.error).toHaveBeenCalledWith("アップロードに失敗しました");
+      expect(toast.error).toHaveBeenCalledWith("ファイルのアップロードに失敗しました");
     });
 
     it("throws error when supabase avatar update fails", async () => {

@@ -169,7 +169,7 @@ describe("PlaylistOptionsPopover", () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        "プレイリスト名の更新に失敗しました"
+        "Database error"
       );
     });
   });
