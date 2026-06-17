@@ -3,7 +3,7 @@
 import { Pulse } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 
 /**
  * Pulseデータを取得するカスタムフック
@@ -22,7 +22,7 @@ const useGetPulses = (initialData: Pulse[] = []) => {
     queryKey: [CACHED_QUERIES.pulse],
     queryFn: async () => {
       const { data, error } = await supabaseClient
-        .from("pulses")
+        .from(TABLES.PULSES)
         .select("*")
         .order("created_at", { ascending: false });
 

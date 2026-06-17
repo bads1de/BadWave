@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/libs/supabase/client";
 import { deleteFileFromR2 } from "@/actions/r2";
 import { uploadFile } from "@/libs/storage/upload";
-import { CACHED_QUERIES } from "@/constants";
+import { CACHED_QUERIES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
@@ -49,7 +49,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
 
       // プロフィール名を更新
       const { error } = await supabaseClient
-        .from("users")
+        .from(TABLES.USERS)
         .update({ full_name: fullName })
         .eq("id", userId);
 
@@ -123,7 +123,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
 
       // データベースのユーザー情報を更新する
       const { error } = await supabaseClient
-        .from("users")
+        .from(TABLES.USERS)
         .update({ avatar_url: avatarUrl })
         .eq("id", userId);
 

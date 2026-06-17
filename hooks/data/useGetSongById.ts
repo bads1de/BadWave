@@ -1,7 +1,7 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 import { getErrorMessage } from "@/libs/utils/error";
 
 /**
@@ -27,7 +27,7 @@ const useGetSongById = (id?: string) => {
       }
 
       const { data, error } = await supabaseClient
-        .from("songs")
+        .from(TABLES.SONGS)
         .select("*")
         .eq("id", id)
         .maybeSingle();

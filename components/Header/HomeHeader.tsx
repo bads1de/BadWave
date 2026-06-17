@@ -11,6 +11,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { createClient } from "@/libs/supabase/client";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import { ROUTES } from "@/constants";
 import { RiPlayListFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa";
 
@@ -122,7 +123,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                 <div className="relative group/user">
                   <div className="absolute -inset-1 bg-theme-500/20 rounded-none blur-sm opacity-0 group-hover/user:opacity-100 transition-all duration-500" />
                   <Link
-                    href="/account"
+                    href={ROUTES.ACCOUNT}
                     className="relative flex items-center gap-3 bg-theme-500/5 border border-theme-500/20 px-3 py-1.5 hover:border-theme-500/60 transition-all"
                   >
                     <div className="relative w-8 h-8 rounded-none overflow-hidden border border-theme-500/40 shrink-0">
@@ -178,14 +179,14 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
             <div className="flex flex-col p-6 gap-y-2 relative z-10 font-mono text-[10px] font-black tracking-widest uppercase">
               {[
                 { icon: Home, label: "CENTRAL_HUB", href: "/" },
-                { icon: Search, label: "SIGNAL_SCAN", href: "/search" },
+                { icon: Search, label: "SIGNAL_SCAN", href: ROUTES.SEARCH },
                 {
                   icon: RiPlayListFill,
                   label: "DATA_CLUSTERS",
-                  href: "/playlists",
+                  href: ROUTES.PLAYLISTS,
                 },
-                { icon: FaHeart, label: "FAVORITE_LOGS", href: "/liked" },
-                { icon: Settings, label: "NODE_CONFIG", href: "/account" },
+                { icon: FaHeart, label: "FAVORITE_LOGS", href: ROUTES.LIKED },
+                { icon: Settings, label: "NODE_CONFIG", href: ROUTES.ACCOUNT },
               ].map((item) => (
                 <Link
                   key={item.label}

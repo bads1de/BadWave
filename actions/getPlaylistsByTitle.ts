@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * タイトルでパブリックプレイリストを検索する
@@ -18,7 +19,7 @@ const getPlaylistsByTitle = async (title: string) => {
   }
 
   const { data, error } = await supabase
-    .from("playlists")
+    .from(TABLES.PLAYLISTS)
     .select("*")
     .eq("is_public", true) // パブリック状態のプレイリストのみ
     .ilike("title", `%${title}%`) // タイトルで検索

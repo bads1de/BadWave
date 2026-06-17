@@ -1,6 +1,7 @@
 import { Playlist } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * 指定されたプレイリストIDのプレイリスト情報を取得する
@@ -11,7 +12,7 @@ const getPlaylist = async (playlistId: string): Promise<Playlist | null> => {
   const supabase = await createClient();
 
   const { data: playlist, error } = await supabase
-    .from("playlists")
+    .from(TABLES.PLAYLISTS)
     .select("*")
     .eq("id", playlistId)
     .maybeSingle();

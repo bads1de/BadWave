@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import { CACHED_QUERIES } from "@/constants";
+import { CACHED_QUERIES, ROUTES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
 import { Playlist } from "@/types";
@@ -38,7 +38,7 @@ export const useUpdatePlaylistTitle = () => {
       if (!user) throw new Error("Unauthorized");
 
       const { error } = await supabase
-        .from("playlists")
+        .from(TABLES.PLAYLISTS)
         .update({ title: newTitle })
         .eq("id", playlistId)
         .eq("user_id", user.id);
@@ -67,9 +67,7 @@ export const useUpdatePlaylistTitle = () => {
     onSuccess: ({ playlistId, newTitle }) => {
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       toast.success("プレイリスト名を更新しました");
-      router.push(
-        `/playlists/${playlistId}?title=${encodeURIComponent(newTitle)}`
-      );
+      router.push(`${ROUTES.PLAYLISTS_DETAIL(playlistId)}?title=${encodeURIComponent(newTitle)}`);
     },
     onError: (_error, _variables, context) => {
       if (context?.previousPlaylists) {
@@ -97,7 +95,7 @@ export const useTogglePlaylistPublic = () => {
       if (!user) throw new Error("Unauthorized");
 
       const { error } = await supabase
-        .from("playlists")
+        .from(TABLES.PLAYLISTS)
         .update({ is_public: !isPublic })
         .eq("id", playlistId)
         .eq("user_id", user.id);
@@ -157,13 +155,13 @@ export const useDeletePlaylist = () => {
       if (!user) throw new Error("Unauthorized");
 
       await supabase
-        .from("playlist_songs")
+        .from(TABLES.PLAYLIST_SONGS)
         .delete()
         .eq("playlist_id", playlistId)
         .eq("user_id", user.id);
 
       await supabase
-        .from("playlists")
+        .from(TABLES.PLAYLISTS)
         .delete()
         .eq("id", playlistId)
         .eq("user_id", user.id);
@@ -186,7 +184,7 @@ export const useDeletePlaylist = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
       toast.success("プレイリストを削除しました");
-      router.push("/playlists");
+      router.push(ROUTES.PLAYLISTS);
       router.refresh();
     },
     onError: (_error, _variables, context) => {

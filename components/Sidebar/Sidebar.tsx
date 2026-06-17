@@ -25,6 +25,7 @@ import Link from "next/link";
 import Hover from "../common/Hover";
 import Image from "next/image";
 import { GoSidebarCollapse } from "react-icons/go";
+import { ROUTES } from "@/constants";
 import UserCard from "./UserCard";
 
 interface SidebarProps {
@@ -93,24 +94,24 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
       {
         icon: BiSearch,
         label: "Search",
-        active: pathname === "/search",
-        href: "/search",
+        active: pathname === ROUTES.SEARCH,
+        href: ROUTES.SEARCH,
       },
       {
         icon: BiPulse,
         label: "Pulse",
-        active: pathname === "/pulse",
-        href: "/pulse",
+        active: pathname === ROUTES.PULSE,
+        href: ROUTES.PULSE,
       },
     ],
     [pathname],
   );
 
   const isLibraryActive = useMemo(() => {
-    return pathname === "/playlists" || pathname === "/liked";
+    return pathname === ROUTES.PLAYLISTS || pathname === ROUTES.LIKED;
   }, [pathname]);
 
-  const isPulsePage = pathname === "/pulse";
+  const isPulsePage = pathname === ROUTES.PULSE;
 
   return (
     <div
@@ -253,10 +254,10 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   >
                     <div className="flex flex-col gap-y-2 font-mono uppercase tracking-widest text-[10px]">
                       <Link
-                        href="/playlists"
+                        href={ROUTES.PLAYLISTS}
                         className={twMerge(
                           "flex items-center gap-x-3 px-3 py-3 rounded-none transition-all duration-300 border border-transparent hover:border-theme-500/30",
-                          pathname === "/playlists"
+                          pathname === ROUTES.PLAYLISTS
                             ? "bg-theme-500/20 text-white border-theme-500/60 shadow-[0_0_10px_rgba(var(--theme-500),0.3)]"
                             : "text-theme-500/60 hover:text-white hover:bg-theme-500/10",
                         )}
@@ -265,10 +266,10 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                         <p className="font-bold">// PLAYLISTS</p>
                       </Link>
                       <Link
-                        href="/liked"
+                        href={ROUTES.LIKED}
                         className={twMerge(
                           "flex items-center gap-x-3 px-3 py-3 rounded-none transition-all duration-300 border border-transparent hover:border-theme-500/30",
-                          pathname === "/liked"
+                          pathname === ROUTES.LIKED
                             ? "bg-theme-500/20 text-white border-theme-500/60 shadow-[0_0_10px_rgba(var(--theme-500),0.3)]"
                             : "text-theme-500/60 hover:text-white hover:bg-theme-500/10",
                         )}

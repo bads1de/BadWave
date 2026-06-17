@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 
 /**
  * 曲のいいね状態を取得するカスタムフック
@@ -22,7 +22,7 @@ const useLikeStatus = (songId: string, userId?: string) => {
       if (!userId) return false;
 
       const { data, error } = await supabaseClient
-        .from("liked_songs_regular")
+        .from(TABLES.LIKED_SONGS_REGULAR)
         .select("*")
         .eq("user_id", userId)
         .eq("song_id", songId)

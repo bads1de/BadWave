@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { AiFillHome, AiOutlineBars, AiOutlineSearch } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa6";
+import { ROUTES } from "@/constants";
 
 const MobileTabs = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -20,14 +21,14 @@ const MobileTabs = () => {
       <div className="flex w-full justify-around items-center px-4 relative z-10">
         {[
           { id: "home", icon: AiFillHome, href: "/", label: "HOME" },
-          { id: "add", icon: AiOutlineSearch, href: "/search", label: "SCAN" },
+          { id: "add", icon: AiOutlineSearch, href: ROUTES.SEARCH, label: "SCAN" },
           {
             id: "playlist",
             icon: AiOutlineBars,
-            href: "/playlists",
+            href: ROUTES.PLAYLISTS,
             label: "NODE",
           },
-          { id: "liked", icon: FaHeart, href: "/liked", label: "DATA" },
+          { id: "liked", icon: FaHeart, href: ROUTES.LIKED, label: "DATA" },
         ].map((tab) => (
           <button
             key={tab.id}

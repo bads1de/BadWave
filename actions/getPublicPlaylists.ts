@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * パブリックプレイリスト一覧を取得する
@@ -10,7 +11,7 @@ const getPublicPlaylists = async (limit: number = 6): Promise<Playlist[]> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("playlists")
+    .from(TABLES.PLAYLISTS)
     .select("*")
     .eq("is_public", true)
     .order("created_at", { ascending: false })

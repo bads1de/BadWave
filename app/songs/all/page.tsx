@@ -12,6 +12,7 @@ import usePlayer from "@/hooks/player/usePlayer";
 import SongItem from "@/components/Song/SongItem";
 import SongItemSkeleton from "@/components/Song/SongItemSkeleton";
 import Pagination from "@/components/common/Pagination";
+import { DURATIONS } from "@/constants";
 
 const PAGE_SIZE = 24;
 
@@ -52,7 +53,7 @@ export default function AllSongsPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    visible: { opacity: 1, y: 0, transition: { duration: DURATIONS.FAST } },
   };
 
   return (

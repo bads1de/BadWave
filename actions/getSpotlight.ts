@@ -1,6 +1,7 @@
 import { Spotlight } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * @returns Spotlight[]
@@ -13,7 +14,7 @@ const getSpotlight = async (): Promise<Spotlight[]> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("spotlights")
+    .from(TABLES.SPOTLIGHTS)
     .select("*")
     .order("created_at", { ascending: false });
 

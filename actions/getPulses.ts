@@ -1,6 +1,7 @@
 import { Pulse } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * @returns Pulse[]
@@ -13,7 +14,7 @@ const getPulses = async (): Promise<Pulse[]> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("pulses")
+    .from(TABLES.PULSES)
     .select("*")
     .order("created_at", { ascending: false });
 

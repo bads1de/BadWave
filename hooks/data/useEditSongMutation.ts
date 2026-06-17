@@ -8,7 +8,7 @@ import { deleteFileFromR2 } from "@/actions/r2";
 import { sanitizeTitle } from "@/libs/utils/utils";
 import { uploadFile } from "@/libs/storage/upload";
 import { serializeGenres } from "@/libs/song/songUtils";
-import { CACHED_QUERIES } from "@/constants";
+import { CACHED_QUERIES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
 import type { Song, ModalHook } from "@/types";
@@ -141,7 +141,7 @@ const useEditSongMutation = (editModal: ModalHook) => {
 
       // データベースを更新
       const { error } = await supabaseClient
-        .from("songs")
+        .from(TABLES.SONGS)
         .update({
           title,
           author,

@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
 
 /**
@@ -22,7 +22,7 @@ const useGetPlaylistSongs = (playlistId?: string) => {
       if (!playlistId) return [];
 
       const { data, error } = await supabaseClient
-        .from("playlist_songs")
+        .from(TABLES.PLAYLIST_SONGS)
         .select("*, songs(*)")
         .eq("playlist_id", playlistId)
         .order("created_at", { ascending: false });

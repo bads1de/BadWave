@@ -4,6 +4,7 @@ import { useState, memo, useCallback } from "react";
 import { Song } from "@/types";
 import { motion } from "framer-motion";
 import useOnPlay from "@/hooks/player/useOnPlay";
+import { DURATIONS } from "@/constants";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import SongItem from "@/components/Song/SongItem";
 
@@ -34,7 +35,7 @@ const ForYouBoard: React.FC<ForYouBoardProps> = ({
 
   const itemVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    visible: { opacity: 1, y: 0, transition: { duration: DURATIONS.NORMAL } },
   };
 
   if (recommendations.length === 0) {

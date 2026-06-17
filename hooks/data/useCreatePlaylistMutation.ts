@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
-import { CACHED_QUERIES } from "@/constants";
+import { CACHED_QUERIES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook, Playlist } from "@/types";
@@ -34,7 +34,7 @@ const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
       }
 
       // プレイリストを作成
-      const { error } = await supabaseClient.from("playlists").insert({
+      const { error } = await supabaseClient.from(TABLES.PLAYLISTS).insert({
         user_id: user.id,
         user_name: user.full_name,
         title,

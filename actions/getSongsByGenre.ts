@@ -2,6 +2,7 @@ import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 import { parseGenres } from "@/libs/song/songUtils";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * 指定したジャンルの曲一覧を取得する
@@ -15,7 +16,7 @@ const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
 
   // データベースから曲を検索
   const { data, error } = await supabase
-    .from("songs")
+    .from(TABLES.SONGS)
     .select("*")
     .or(genreArray.map((genre) => `genre.ilike.%${genre}%`).join(","))
     .order("created_at", { ascending: false });

@@ -10,7 +10,7 @@ import { uploadFile } from "@/libs/storage/upload";
 import { requireAdminPermission } from "@/libs/auth/requireAdmin";
 import { serializeGenres } from "@/libs/song/songUtils";
 import uniqid from "uniqid";
-import { CACHED_QUERIES } from "@/constants";
+import { CACHED_QUERIES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
@@ -74,7 +74,7 @@ const useUploadSongMutation = (uploadModal: ModalHook) => {
 
       // Create record
       const { error: supabaseError } = await supabaseClient
-        .from("songs")
+        .from(TABLES.SONGS)
         .insert({
           user_id: user.id,
           title,

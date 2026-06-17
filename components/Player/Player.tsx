@@ -8,6 +8,7 @@ import MobileTabs from "../Mobile/MobileTabs";
 import { Playlist } from "@/types";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
 import { usePathname } from "next/navigation";
+import { ROUTES } from "@/constants";
 import useAudioControl from "@/hooks/audio/useAudioControl";
 import LyricsModal from "../Modals/LyricsModal/LyricsModal";
 
@@ -20,7 +21,7 @@ const Player = ({ playlists }: PlayerProps) => {
   const { isMobilePlayer, toggleMobilePlayer } = useMobilePlayer();
   const { song } = useGetSongById(player.activeId);
   const pathname = usePathname();
-  const isPulsePage = pathname === "/pulse";
+  const isPulsePage = pathname === ROUTES.PULSE;
   const { stopMainPlayer } = useAudioControl();
 
   // pulseページに遷移したら曲を停止する

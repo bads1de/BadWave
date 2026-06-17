@@ -10,6 +10,7 @@ import EqualizerButton from "../Player/EqualizerButton";
 import { Playlist, Song } from "@/types";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { SPRING_CONFIG } from "@/constants";
 import SeekBar from "../Player/Seekbar";
 import LyricsDrawer from "./LyricsDrawer";
 import ScrollingText from "../common/ScrollingText";
@@ -71,7 +72,7 @@ const MobilePlayerContent = React.memo(
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        transition={SPRING_CONFIG.mobile}
         drag={showLyrics ? false : "y"}
         dragConstraints={{ top: 0, bottom: 0 }}
         dragElastic={0.1}

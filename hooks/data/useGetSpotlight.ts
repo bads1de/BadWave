@@ -3,7 +3,7 @@
 import { Spotlight } from "@/types";
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 
 /**
  * スポットライトデータを取得するカスタムフック
@@ -22,7 +22,7 @@ const useGetSpotlight = (initialData: Spotlight[] = []) => {
     queryKey: [CACHED_QUERIES.spotlight],
     queryFn: async () => {
       const { data, error } = await supabaseClient
-        .from("spotlights")
+        .from(TABLES.SPOTLIGHTS)
         .select("*")
         .order("created_at", { ascending: false });
 

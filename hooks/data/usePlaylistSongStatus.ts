@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 import { useUser } from "@/hooks/auth/useUser";
 
 /**
@@ -27,7 +27,7 @@ const usePlaylistSongStatus = (songId: string, playlists: { id: string }[]) => {
       }
 
       const { data, error } = await supabaseClient
-        .from("playlist_songs")
+        .from(TABLES.PLAYLIST_SONGS)
         .select("playlist_id")
         .eq("user_id", user.id)
         .eq("song_id", songId)

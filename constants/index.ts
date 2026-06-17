@@ -53,3 +53,37 @@ export const CACHE_CONFIG = {
  * 認証が必要なルートのリスト
  */
 export const PROTECTED_ROUTES = ["/account", "/liked", "/playlist"] as const;
+
+export const TABLES = {
+  SONGS: "songs",
+  PLAYLISTS: "playlists",
+  PLAYLIST_SONGS: "playlist_songs",
+  LIKED_SONGS_REGULAR: "liked_songs_regular",
+  USERS: "users",
+  SPOTLIGHTS: "spotlights",
+  PULSES: "pulses",
+} as const;
+
+export const DURATIONS = {
+  FAST: 0.3,
+  NORMAL: 0.5,
+  SLOW: 1,
+} as const;
+
+export const SPRING_CONFIG = {
+  mobile: { type: "spring" as const, damping: 30, stiffness: 300 },
+  mobileMass: { type: "spring" as const, damping: 30, stiffness: 300, mass: 0.8 },
+} as const;
+
+export const ROUTES = {
+  HOME: "/",
+  ACCOUNT: "/account",
+  LIKED: "/liked",
+  SEARCH: "/search",
+  PLAYLISTS: "/playlists",
+  PULSE: "/pulse",
+  SONGS_ALL: "/songs/all",
+  SONGS_DETAIL: (id: string) => `/songs/${id}`,
+  GENRE: (genre: string) => `/genre/${encodeURIComponent(genre)}`,
+  PLAYLISTS_DETAIL: (id: string) => `/playlists/${id}`,
+} as const;

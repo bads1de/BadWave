@@ -3,6 +3,7 @@
 import { Song, type PaginatedSongsResult } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * ページネーション対応の曲取得
@@ -20,11 +21,11 @@ const getSongsPaginated = async (
   // 曲と総件数を並列取得
   const [songsResult, countResult] = await Promise.all([
     supabase
-      .from("songs")
+      .from(TABLES.SONGS)
       .select("*")
       .order("created_at", { ascending: false })
       .range(offset, offset + pageSize - 1),
-    supabase.from("songs").select("*", { count: "exact", head: true }),
+    supabase.from(TABLES.SONGS).select("*", { count: "exact", head: true }),
   ]);
 
   if (songsResult.error) {

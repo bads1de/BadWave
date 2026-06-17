@@ -1,5 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_CONFIG } from "@/constants";
 import { BsChevronDown } from "react-icons/bs";
 import SyncedLyrics from "../Lyrics/SyncedLyrics";
 
@@ -35,7 +36,7 @@ const LyricsDrawer: React.FC<LyricsDrawerProps> = ({
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
-          transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
+          transition={SPRING_CONFIG.mobileMass}
           drag="y"
           dragConstraints={{ top: 0, bottom: 0 }}
           dragElastic={0.05}

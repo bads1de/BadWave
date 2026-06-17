@@ -6,7 +6,7 @@ import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 import { uploadFile } from "@/libs/storage/upload";
 import { requireAdminPermission } from "@/libs/auth/requireAdmin";
-import { CACHED_QUERIES } from "@/constants";
+import { CACHED_QUERIES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
 import type { ModalHook } from "@/types";
@@ -62,7 +62,7 @@ const usePulseUploadMutation = (pulseUploadModal: ModalHook) => {
       }
 
       // データベースにレコードを作成
-      const { error } = await supabaseClient.from("pulses").insert({
+      const { error } = await supabaseClient.from(TABLES.PULSES).insert({
         music_path: musicUrl,
         title,
         genre,

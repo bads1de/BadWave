@@ -3,6 +3,7 @@
 import React, { memo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { DURATIONS } from "@/constants";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
@@ -62,7 +63,7 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = memo(
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: DURATIONS.NORMAL }}
               className="relative h-32 w-32 md:h-64 md:w-64 group mx-auto md:mx-0 cyber-glitch"
             >
               {/* HUDコーナー */}
@@ -84,7 +85,7 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = memo(
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: DURATIONS.NORMAL, delay: 0.2 }}
               className="flex flex-col gap-y-3 text-center md:text-left font-mono"
             >
               <p className="text-theme-500 text-xs tracking-[0.3em] uppercase opacity-80">

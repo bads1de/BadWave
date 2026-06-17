@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useGetTrendSongs from "@/hooks/data/useGetTrendSongs";
 import { motion } from "framer-motion";
+import { DURATIONS } from "@/constants";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { Song } from "@/types";
@@ -42,7 +43,7 @@ const TrendBoard: React.FC<TrendBoardProps> = memo(
 
     const itemVariants = {
       hidden: { opacity: 0, y: 50 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+      visible: { opacity: 1, y: 0, transition: { duration: DURATIONS.NORMAL } },
     };
 
     return (

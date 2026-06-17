@@ -3,6 +3,7 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 import { subMonths, subWeeks, subDays } from "date-fns";
 
 /**
@@ -15,7 +16,7 @@ const getTrendSongs = async (
 ): Promise<Song[]> => {
   const supabase = await createClient();
 
-  let query = supabase.from("songs").select("*");
+  let query = supabase.from(TABLES.SONGS).select("*");
 
   // 指定された期間に基づいてデータをフィルタリング
   switch (period) {

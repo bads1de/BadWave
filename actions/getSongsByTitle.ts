@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * タイトルで曲を検索する
@@ -11,7 +12,7 @@ const getSongsByTitle = async (title: string) => {
   const supabase = await createClient();
 
   const query = supabase
-    .from("songs")
+    .from(TABLES.SONGS)
     .select("*")
     .order("created_at", { ascending: false });
 

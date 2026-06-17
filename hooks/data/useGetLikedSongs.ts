@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
 
 /**
@@ -22,7 +22,7 @@ const useGetLikedSongs = (userId?: string) => {
       if (!userId) return [];
 
       const { data, error } = await supabaseClient
-        .from("liked_songs_regular")
+        .from(TABLES.LIKED_SONGS_REGULAR)
         .select("*, songs(*)")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });

@@ -2,6 +2,7 @@ import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * 指定されたプレイリストIDに含まれる曲を取得する
@@ -15,7 +16,7 @@ const getPlaylistSongs = async (
 
   // まずプレイリストの情報を取得して public かどうかを確認
   const { data: playlist, error: playlistError } = await supabase
-    .from("playlists")
+    .from(TABLES.PLAYLISTS)
     .select("is_public, user_id")
     .eq("id", playlistId)
     .maybeSingle();
@@ -40,7 +41,7 @@ const getPlaylistSongs = async (
   }
 
   const { data, error } = await supabase
-    .from("playlist_songs")
+    .from(TABLES.PLAYLIST_SONGS)
     .select("*, songs(*)")
     .eq("playlist_id", playlistId)
     .eq("song_type", "regular")

@@ -7,6 +7,7 @@ import { Song } from "@/types";
 import usePlayer from "@/hooks/player/usePlayer";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { motion } from "framer-motion";
+import { DURATIONS } from "@/constants";
 
 interface LatestBoardProps {
   songs: Song[];
@@ -24,7 +25,7 @@ const LatestBoard: React.FC<LatestBoardProps> = ({ songs }) => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    visible: { opacity: 1, y: 0, transition: { duration: DURATIONS.NORMAL } },
   };
 
   // メモ化された再生処理関数

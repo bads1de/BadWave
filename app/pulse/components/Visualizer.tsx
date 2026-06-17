@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import React from "react";
+import { DURATIONS } from "@/constants";
 
 const Visualizer = React.memo(() => {
   return (
@@ -25,7 +26,7 @@ const Visualizer = React.memo(() => {
               height: ["20%", `${Math.random() * 80 + 20}%`, "20%"],
             }}
             transition={{
-              duration: 0.5 + Math.random() * 0.5,
+              duration: DURATIONS.NORMAL + Math.random() * 0.5,
               repeat: Infinity,
               ease: "easeInOut",
               repeatType: "mirror",

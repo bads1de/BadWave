@@ -4,6 +4,7 @@ import qs from "query-string";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useDebounce from "@/hooks/utils/useDebounce";
+import { ROUTES } from "@/constants";
 import { BiSearch } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
 import { useSearchHistoryStore } from "@/hooks/stores/useSearchHistoryStore";
@@ -52,7 +53,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     }
 
     const url = qs.stringifyUrl({
-      url: "/search",
+      url: ROUTES.SEARCH,
       query,
     });
 

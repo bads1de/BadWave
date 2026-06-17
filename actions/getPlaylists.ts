@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
 import { getErrorMessage } from "@/libs/utils/error";
+import { TABLES } from "@/constants";
 
 /**
  * ユーザーのプレイリスト一覧を取得する
@@ -18,7 +19,7 @@ const getPlaylists = async (): Promise<Playlist[]> => {
   }
 
   const { data, error } = await supabase
-    .from("playlists")
+    .from(TABLES.PLAYLISTS)
     .select("*")
     .eq("user_id", user?.id)
     .order("created_at", { ascending: false });

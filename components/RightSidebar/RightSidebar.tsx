@@ -6,6 +6,7 @@ import useGetSongById from "@/hooks/data/useGetSongById";
 import FullScreenLayout from "./FullScreenLayout";
 import { twMerge } from "tailwind-merge";
 import { usePathname } from "next/navigation";
+import { ROUTES } from "@/constants";
 
 interface RightSidebarProps {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ children }) => {
   const { song } = useGetSongById(player.activeId);
   const { song: nextSong } = useGetSongById(player.getNextSongId());
   const pathname = usePathname();
-  const isPulsePage = pathname === "/pulse";
+  const isPulsePage = pathname === ROUTES.PULSE;
 
   const currentSong = song;
   const nextTrack = nextSong;
