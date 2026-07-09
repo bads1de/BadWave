@@ -8,6 +8,7 @@ import RightSidebar from "@/components/RightSidebar/RightSidebar";
 import Sidebar from "@/components/Sidebar/Sidebar";
 
 import ModalProvider from "@/providers/ModalProvider";
+import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import ThemeProvider from "@/providers/ThemeProvider";
 import PlaybackStateProvider from "@/providers/PlaybackStateProvider";
 
@@ -57,6 +58,7 @@ export default async function RootLayout({
                     <RightSidebar>{children}</RightSidebar>
                   </Sidebar>
                   <Player playlists={playlists} />
+                  <KeyboardShortcuts />
                 </div>
               </PlaybackStateProvider>
             </ThemeProvider>
