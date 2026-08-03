@@ -52,12 +52,14 @@ const useAudioPlayer = (songUrl: string) => {
   const hasRestoredRef = useRef<boolean>(false);
 
   // エラーハンドラ
-  const errorHandlerRef = useRef(createAudioErrorHandler({
-    maxConsecutiveErrors: 3,
-    skipDelayMs: 500,
-    setIsPlaying,
-    onPlayNext: () => onPlayNextRef.current(),
-  }));
+  const errorHandlerRef = useRef(
+    createAudioErrorHandler({
+      maxConsecutiveErrors: 3,
+      skipDelayMs: 500,
+      setIsPlaying,
+      onPlayNext: () => onPlayNextRef.current(),
+    }),
+  );
 
   // --- useLatestRef: イベントリスナー内から最新の状態を参照するため ---
   const isRestoringRef = useLatestRef(isRestoring);
@@ -109,7 +111,7 @@ const useAudioPlayer = (songUrl: string) => {
         }
       }
     },
-    [player.activeId, player.ids, savePlaybackState, audio]
+    [player.activeId, player.ids, savePlaybackState, audio],
   );
 
   // 次の曲を再生する関数
@@ -173,7 +175,12 @@ const useAudioPlayer = (songUrl: string) => {
     const handleCanPlayThrough = () => {
       errorHandlerRef.current.resetErrors();
       if (!isRestoringRef.current) {
-        audio.play().catch((e) => console.error("Auto-play failed:", e));
+        // AbortError（play()がpause()によって中断された場合）は無視する
+        audio.play().catch((e) => {
+          if (e.name !== "AbortError") {
+            console.error("Auto-play failed:", e);
+          }
+        });
       }
     };
 
@@ -189,8 +196,8 @@ const useAudioPlayer = (songUrl: string) => {
     };
 
     const handlePlayEvent = () => {
-        setIsPlaying(true);
-        engine.resumeContext();
+      setIsPlaying(true);
+      engine.resumeContext();
     };
 
     const handlePause = () => {
@@ -225,7 +232,12 @@ const useAudioPlayer = (songUrl: string) => {
     if (!audio) return;
 
     if (isPlaying) {
-      audio.play().catch((e) => console.error("Play failed:", e));
+      // AbortError（play()がpause()によって中断された場合）は無視する
+      audio.play().catch((e) => {
+        if (e.name !== "AbortError") {
+          console.error("Play failed:", e);
+        }
+      });
     } else {
       audio.pause();
     }
@@ -245,7 +257,10 @@ const useAudioPlayer = (songUrl: string) => {
     setDuration(0);
 
     // crossOriginをURLに応じて動的に設定
-    audio.crossOrigin = songUrl.startsWith("blob:") || songUrl.startsWith("file:") ? null : "anonymous";
+    audio.crossOrigin =
+      songUrl.startsWith("blob:") || songUrl.startsWith("file:")
+        ? null
+        : "anonymous";
 
     // 新しいソースを設定
     audio.src = songUrl;
@@ -310,17 +325,20 @@ const useAudioPlayer = (songUrl: string) => {
       audio.addEventListener("canplay", handleCanPlay, { once: true });
       return () => audio.removeEventListener("canplay", handleCanPlay);
     }
-  }, [playbackStateHydrated, savedSongId, savedPosition, player.activeId, audio]);
+  }, [
+    playbackStateHydrated,
+    savedSongId,
+    savedPosition,
+    player.activeId,
+    audio,
+  ]);
 
   const formattedCurrentTime = useMemo(
     () => formatTime(currentTime),
-    [currentTime]
+    [currentTime],
   );
 
-  const formattedDuration = useMemo(
-    () => formatTime(duration),
-    [duration]
-  );
+  const formattedDuration = useMemo(() => formatTime(duration), [duration]);
 
   return {
     formattedCurrentTime,
