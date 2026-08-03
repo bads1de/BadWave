@@ -65,7 +65,7 @@ const PlaylistContent: React.FC<PlaylistContentProps> = memo(
                 </h3>
                 <div className="flex justify-between items-center mt-2">
                    <span className="text-[8px] text-theme-500/40 uppercase tracking-tighter">
-                      // DATA_TYPE: COLLECTION
+                      {"// DATA_TYPE: COLLECTION"}
                    </span>
                    <div className="w-1 h-1 bg-theme-500 rounded-full animate-pulse" />
                 </div>

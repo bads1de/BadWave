@@ -10,7 +10,7 @@ jest.mock("@/libs/supabase/middleware", () => ({
 jest.mock("next/server", () => ({
   NextResponse: {
     next: jest.fn(),
-    redirect: jest.fn((url) => ({
+    redirect: jest.fn(() => ({
       cookies: {
         set: jest.fn(),
       },
@@ -19,7 +19,7 @@ jest.mock("next/server", () => ({
 }));
 
 describe("Proxy", () => {
-  let mockRequest: any;
+  let mockRequest: { nextUrl: { pathname: string }; url: string };
 
   beforeEach(() => {
     jest.clearAllMocks();

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import PlayButton from "@/components/Player/PlayButton";
 
 describe("components/Player/PlayButton", () => {

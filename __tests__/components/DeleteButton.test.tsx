@@ -8,7 +8,7 @@ import "@testing-library/jest-dom";
 jest.mock("@/hooks/data/useDeleteSongMutation");
 
 jest.mock("react-icons/hi", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     HiTrash: () => React.createElement("div", { "data-testid": "hi-trash" }),

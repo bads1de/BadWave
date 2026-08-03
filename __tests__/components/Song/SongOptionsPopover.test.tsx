@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import SongOptionsPopover from "@/components/Song/SongOptionsPopover";
 import { useUser } from "@/hooks/auth/useUser";
 import useDownload from "@/hooks/data/useDownload";
@@ -13,11 +14,11 @@ jest.mock("@/libs/utils/utils", () => ({
 
 // Mock Popover
 jest.mock("@/components/ui/popover", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
-    Popover: ({ children }: any) => React.createElement("div", null, children),
-    PopoverTrigger: ({ children }: any) => React.createElement("div", null, children),
-    PopoverContent: ({ children }: any) => React.createElement("div", { "data-testid": "popover-content" }, children),
+    Popover: ({ children }: { children: ReactNode }) => React.createElement("div", null, children),
+    PopoverTrigger: ({ children }: { children: ReactNode }) => React.createElement("div", null, children),
+    PopoverContent: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover-content" }, children),
   };
 });
 
@@ -26,7 +27,7 @@ jest.mock("@/components/LikeButton", () => {
   return {
     __esModule: true,
     default: () => {
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", null, "LikeButton");
     },
   };
@@ -36,7 +37,7 @@ jest.mock("@/components/Playlist/DeletePlaylistSongsBtn", () => {
   return {
     __esModule: true,
     default: () => {
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", null, "DeleteButton");
     },
   };
@@ -45,15 +46,23 @@ jest.mock("@/components/Playlist/DeletePlaylistSongsBtn", () => {
 jest.mock("@/components/Modals/DownloadPreviewModal", () => {
   return {
     __esModule: true,
-    default: ({ isOpen }: any) => {
-      const React = require("react");
+    default: ({ isOpen }: { isOpen: boolean }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return isOpen ? React.createElement("div", { "data-testid": "download-modal" }, "DownloadModal") : null;
     },
   };
 });
 
 describe("components/Song/SongOptionsPopover", () => {
-  const mockSong: Song = { id: "1", title: "Song" } as any;
+  const mockSong: Song = {
+    id: "1",
+    user_id: "user-1",
+    author: "Author",
+    title: "Song",
+    song_path: "song.mp3",
+    image_path: "img.jpg",
+    created_at: "2024-01-01",
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();

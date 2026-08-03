@@ -12,8 +12,8 @@ jest.mock("@/hooks/audio/usePlaybackRate", () => jest.fn());
 jest.mock("@/components/Player/DesktopPlayer", () => {
   return {
     __esModule: true,
-    default: ({ handlePlay, isPlaying }: any) => {
-      const React = require("react");
+    default: ({ handlePlay, isPlaying }: { handlePlay: () => void; isPlaying: boolean }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement(
         "div", 
         { "data-testid": "desktop-player" },
@@ -29,8 +29,8 @@ jest.mock("@/components/Player/DesktopPlayer", () => {
 jest.mock("@/components/Player/MobilePlayer", () => {
   return {
     __esModule: true,
-    default: ({ handlePlay, isPlaying }: any) => {
-      const React = require("react");
+    default: ({ handlePlay, isPlaying }: { handlePlay: () => void; isPlaying: boolean }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement(
         "div", 
         { "data-testid": "mobile-player" },

@@ -1,5 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { updateSession } from "@/libs/supabase/middleware";
 
 // モックの設定
@@ -21,8 +21,11 @@ jest.mock("next/server", () => ({
 }));
 
 describe("updateSession", () => {
-  let mockRequest: any;
-  let mockSupabase: any;
+  let mockRequest: {
+    headers: Headers;
+    cookies: { getAll: jest.Mock; set: jest.Mock };
+  };
+  let mockSupabase: { auth: { getUser: jest.Mock } };
 
   beforeEach(() => {
     mockRequest = {
@@ -45,7 +48,7 @@ describe("updateSession", () => {
   });
 
   it("should update session and return user", async () => {
-    const result = await updateSession(mockRequest as NextRequest);
+    const result = await updateSession(mockRequest as unknown as NextRequest);
 
     expect(createServerClient).toHaveBeenCalled();
     expect(mockSupabase.auth.getUser).toHaveBeenCalled();
@@ -65,7 +68,7 @@ describe("updateSession", () => {
       }
     );
 
-    const result = await updateSession(mockRequest as NextRequest);
+    const result = await updateSession(mockRequest as unknown as NextRequest);
 
     expect(mockRequest.cookies.set).toHaveBeenCalledWith(
       "test-cookie",

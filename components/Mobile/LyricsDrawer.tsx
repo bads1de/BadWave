@@ -94,7 +94,7 @@ const LyricsDrawer: React.FC<LyricsDrawerProps> = ({
               <div className="mb-6 flex justify-between items-center border-l-2 border-theme-500 pl-4">
                 <div className="space-y-1">
                   <p className="text-[10px] text-theme-500/60 uppercase tracking-widest">
-                    // DECRYPTING_SIGNAL
+                    {"// DECRYPTING_SIGNAL"}
                   </p>
                   <h2 className="text-xl font-black text-white uppercase tracking-tighter">
                     SIGNAL_LYRICS

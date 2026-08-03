@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import SongList from "@/components/Song/SongList";
 import usePlayer from "@/hooks/player/usePlayer";
 import { Song } from "@/types";
@@ -8,10 +9,10 @@ jest.mock("@/hooks/player/usePlayer");
 
 // Mock dependencies
 jest.mock("framer-motion", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     motion: {
-      div: (props: any) => {
+      div: (props: { children?: ReactNode; className?: string; onClick?: () => void }) => {
         const { children } = props;
         // Avoid passing motion props to div
         const divProps = { 
@@ -29,13 +30,16 @@ describe("components/Song/SongList", () => {
   const mockSetId = jest.fn();
   const mockSong: Song = {
     id: "song-1",
+    user_id: "user-1",
     title: "Test Song",
     author: "Test Author",
     genre: "Pop",
     image_path: "img.jpg",
     count: "100",
     like_count: "50",
-  } as any;
+    song_path: "song.mp3",
+    created_at: "2024-01-01",
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();

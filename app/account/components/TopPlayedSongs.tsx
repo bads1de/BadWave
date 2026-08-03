@@ -149,7 +149,7 @@ const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
                   {song.title}
                 </h4>
                 <p className="text-theme-500/60 text-[10px] uppercase tracking-tighter mt-1">
-                  // ORIGIN: {song.author}
+                  {"// ORIGIN: "}{song.author}
                 </p>
               </div>
 

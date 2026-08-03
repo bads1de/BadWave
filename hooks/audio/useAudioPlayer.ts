@@ -26,12 +26,11 @@ const useAudioPlayer = (songUrl: string) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   // モバイルは固定値1を使用、デスクトップはストアから取得
-  const [mobileVolume, setMobileVolume] = useState(1);
-  const { volume: storedVolume, setVolume: setStoredVolume } = useVolumeStore();
+  const [mobileVolume] = useState(1);
+  const { volume: storedVolume } = useVolumeStore();
 
   // モバイルかデスクトップかで使用するボリュームを切り替え
   const volume = isMobile ? mobileVolume : storedVolume;
-  const setVolume = isMobile ? setMobileVolume : setStoredVolume;
 
   const isRepeating = usePlayer((state) => state.isRepeating);
   const isShuffling = usePlayer((state) => state.isShuffling);

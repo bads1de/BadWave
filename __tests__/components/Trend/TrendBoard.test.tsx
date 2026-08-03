@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import TrendBoard from "@/components/Trend/TrendBoard";
 import useGetTrendSongs from "@/hooks/data/useGetTrendSongs";
 import useOnPlay from "@/hooks/player/useOnPlay";
@@ -12,8 +13,8 @@ jest.mock("@/hooks/player/useOnPlay");
 jest.mock("@/components/common/ScrollableContainer", () => {
   return {
     __esModule: true,
-    default: ({ children }: any) => {
-      const React = require("react");
+    default: ({ children }: { children: ReactNode }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "scrollable-container" }, children);
     },
   };
@@ -24,11 +25,14 @@ describe("components/Trend/TrendBoard", () => {
   const mockSongs: Song[] = [
     {
       id: "song-1",
+      user_id: "user-1",
       title: "Trend Song 1",
       author: "Artist 1",
       image_path: "img1.jpg",
+      song_path: "song1.mp3",
       count: "100",
-    } as any,
+      created_at: "2024-01-01",
+    },
   ];
 
   beforeEach(() => {

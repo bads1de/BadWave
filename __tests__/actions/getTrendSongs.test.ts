@@ -7,7 +7,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getTrendSongs", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockLimit: jest.Mock;
   let mockOrder: jest.Mock;
   let mockGte: jest.Mock;

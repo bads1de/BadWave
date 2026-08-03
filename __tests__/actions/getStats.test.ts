@@ -6,7 +6,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getStats", () => {
-  let mockSupabase: any;
+  let mockSupabase: { auth: { getUser: jest.Mock }; rpc: jest.Mock };
   let mockRpc: jest.Mock;
   let mockGetUser: jest.Mock;
 

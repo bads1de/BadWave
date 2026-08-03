@@ -4,12 +4,11 @@ import * as React from "react";
 import {
   useState,
   useRef,
-  useEffect,
   DragEvent,
   memo,
   useCallback,
 } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 
@@ -30,7 +29,6 @@ const UploadModal: React.FC = memo(() => {
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
 
   const uploadModal = useUploadModal();
@@ -40,7 +38,7 @@ const UploadModal: React.FC = memo(() => {
   const { mutateAsync, isPending: isLoading } =
     useUploadSongMutation(uploadModal);
 
-  const { register, handleSubmit, reset, watch, setValue } =
+  const { register, handleSubmit, reset, control, setValue } =
     useForm<FieldValues>({
       defaultValues: {
         author: "",
@@ -51,24 +49,8 @@ const UploadModal: React.FC = memo(() => {
       },
     });
 
-  const song = watch("song");
-  const image = watch("image");
-
-  const handleFileDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    handleFiles(files);
-  }, []);
-
-  const handleFileInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files;
-      if (files) handleFiles(files);
-    },
-    [],
-  );
+  const song = useWatch({ control, name: "song" });
+  const image = useWatch({ control, name: "image" });
 
   const handleFiles = useCallback(
     (files: FileList) => {
@@ -89,6 +71,22 @@ const UploadModal: React.FC = memo(() => {
     [setValue],
   );
 
+  const handleFileDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    handleFiles(files);
+  }, [handleFiles]);
+
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files) handleFiles(files);
+    },
+    [handleFiles],
+  );
+
   const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
@@ -98,21 +96,26 @@ const UploadModal: React.FC = memo(() => {
     setIsDragging(false);
   }, []);
 
-  useEffect(() => {
+  // 選択ファイルが変わったらプレビューを更新 (レンダー中の状態調整パターン)
+  const [prevImage, setPrevImage] = useState<FileList | null>(null);
+  if (image !== prevImage) {
+    setPrevImage(image);
     if (image && image.length > 0) {
-      const file = image[0];
-      setImagePreview(URL.createObjectURL(file));
+      setImagePreview(URL.createObjectURL(image[0]));
     }
-  }, [image]);
-
-  useEffect(() => {
+  }
+  const [prevSong, setPrevSong] = useState<FileList | null>(null);
+  if (song !== prevSong) {
+    setPrevSong(song);
     if (song && song.length > 0) {
-      const file = song[0];
-      setAudioPreview(URL.createObjectURL(file));
+      setAudioPreview(URL.createObjectURL(song[0]));
     }
-  }, [song]);
+  }
 
-  useEffect(() => {
+  // モーダルが閉じたらフォームとプレビューをリセット (レンダー中の状態調整パターン)
+  const [prevOpen, setPrevOpen] = useState(uploadModal.isOpen);
+  if (uploadModal.isOpen !== prevOpen) {
+    setPrevOpen(uploadModal.isOpen);
     if (!uploadModal.isOpen) {
       reset();
       if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -120,7 +123,7 @@ const UploadModal: React.FC = memo(() => {
       setImagePreview(null);
       setAudioPreview(null);
     }
-  }, [uploadModal.isOpen, reset, imagePreview, audioPreview]);
+  }
 
   const onChange = useCallback(
     (open: boolean) => {

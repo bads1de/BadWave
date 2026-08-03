@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import useGetAllSongsPaginated from "@/hooks/data/useGetAllSongsPaginated";
 import getSongsPaginated from "@/actions/getSongsPaginated";
 import { renderHookWithQueryClient } from "../../test-utils";

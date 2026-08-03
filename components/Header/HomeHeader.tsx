@@ -43,7 +43,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
       await supabaseClient.auth.signOut();
       toast.success("LOGOUT_SUCCESSFUL");
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.LOGOUT_FAILED);
     }
   };
@@ -98,7 +98,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                 BadWave
               </h1>
               <span className="text-[8px] text-theme-500/40 tracking-[0.5em] uppercase -mt-1 font-bold">
-                // SYSTEM_CORE_v2.0
+                {"// SYSTEM_CORE_v2.0"}
               </span>
             </div>
           </div>
@@ -163,7 +163,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                   onClick={authModal.onOpen}
                   className="px-6 py-2 bg-theme-500 text-[#0a0a0f] font-black text-[10px] uppercase tracking-[0.3em] hover:shadow-[0_0_20px_rgba(var(--theme-500),0.6)] transition-all cyber-glitch"
                 >
-                  // INITIALIZE_AUTH
+                  {"// INITIALIZE_AUTH"}
                 </button>
               </div>
             )}

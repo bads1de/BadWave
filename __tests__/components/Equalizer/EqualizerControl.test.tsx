@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import EqualizerControl from "@/components/Equalizer/EqualizerControl";
 
 jest.mock("@/hooks/stores/useEqualizerStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = {
       bands: [
         { freq: 60, gain: 0 },
@@ -40,7 +40,7 @@ jest.mock("@/hooks/stores/useEqualizerStore", () => ({
 
 jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = {
       colorSchemeId: "neon",
       getColorScheme: () => ({

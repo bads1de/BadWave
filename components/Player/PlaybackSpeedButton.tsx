@@ -6,22 +6,9 @@ import {
 } from "@/components/ui/popover";
 import * as RadixSlider from "@radix-ui/react-slider";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
-import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
-import useEffectStore, { RotationSpeed } from "@/hooks/stores/useEffectStore";
+import useEffectStore from "@/hooks/stores/useEffectStore";
 import useNightCoreStore from "@/hooks/stores/useNightCoreStore";
-
-// HEXカラーをRGBに変換するヘルパー関数
-const hexToRgb = (hex: string): string => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (result) {
-    return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
-      result[3],
-      16,
-    )}`;
-  }
-  return "124, 58, 237"; // デフォルト値（violet-600）
-};
 
 const PlaybackSpeedButton: React.FC = () => {
   const playbackRate = usePlaybackRateStore((state) => state.rate);
@@ -33,17 +20,11 @@ const PlaybackSpeedButton: React.FC = () => {
     (state) => state.toggleSlowedReverb,
   );
 
-  const { getColorScheme, hasHydrated } = useColorSchemeStore();
-  const colorScheme = getColorScheme();
-  const accentFrom = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
-  const accentFromRgb = hexToRgb(accentFrom);
   const { isSpatialEnabled, toggleSpatialEnabled } = useSpatialStore();
 
   // 8D Audio, Retro, Bass Boost 状態
   const is8DAudioEnabled = useEffectStore((state) => state.is8DAudioEnabled);
   const toggle8DAudio = useEffectStore((state) => state.toggle8DAudio);
-  const rotationSpeed = useEffectStore((state) => state.rotationSpeed);
-  const setRotationSpeed = useEffectStore((state) => state.setRotationSpeed);
   const isRetroEnabled = useEffectStore((state) => state.isRetroEnabled);
   const toggleRetro = useEffectStore((state) => state.toggleRetro);
   const isBassBoostEnabled = useEffectStore(
@@ -55,11 +36,6 @@ const PlaybackSpeedButton: React.FC = () => {
   const toggleNightCore = useNightCoreStore((state) => state.toggle);
 
   const rates = [0.9, 0.95, 1, 1.05, 1.1, 1.25];
-  const rotationSpeeds: { value: RotationSpeed; label: string }[] = [
-    { value: "slow", label: "Slow" },
-    { value: "medium", label: "Medium" },
-    { value: "fast", label: "Fast" },
-  ];
 
   const isActive =
     playbackRate !== 1 ||
@@ -90,7 +66,7 @@ const PlaybackSpeedButton: React.FC = () => {
         className="w-64 p-4 bg-[#0a0a0f]/95 backdrop-blur-xl border border-theme-500/40 shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col gap-4 font-mono rounded-none"
       >
         <div className="text-[8px] text-theme-500/40 tracking-[0.4em] uppercase border-b border-theme-500/10 pb-1">
-          // TEMPORAL_SPEED_CONFIG
+          {"// TEMPORAL_SPEED_CONFIG"}
         </div>
 
         {/* Speed Slider (HUD Style) */}
@@ -188,7 +164,7 @@ const PlaybackSpeedButton: React.FC = () => {
               <span
                 className={`text-[10px] font-bold tracking-widest ${effect.active ? "text-theme-300" : "text-theme-500/40"}`}
               >
-                // {effect.label}
+                {"// "}{effect.label}
               </span>
               <button
                 onClick={effect.action}

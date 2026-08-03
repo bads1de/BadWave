@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Image from "next/image";
 
@@ -9,7 +9,6 @@ import Modal from "./Modal";
 import Input from "../common/Input";
 import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
-import Button from "../common/Button";
 import useEditSongMutation from "@/hooks/data/useEditSongMutation";
 import { parseGenres } from "@/libs/song/songUtils";
 
@@ -33,7 +32,7 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
     onClose,
   });
 
-  const { register, handleSubmit, reset, setValue, watch } =
+  const { register, handleSubmit, reset, setValue } =
     useForm<EditFormValues>({
       defaultValues: {
         id: song.id,
@@ -47,12 +46,12 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
         genre: song.genre || "All",
       },
     });
-
-  const watchVideo = watch("video");
-  const watchSong = watch("song");
-  const watchImage = watch("image");
-
-  useEffect(() => {
+  // モーダルが開いたとき・曲が変わったときにフォームをリセットする
+  // (レンダー中の状態調整パターン: React公式ドキュメント推奨)
+  const [prevSongKey, setPrevSongKey] = useState("");
+  const songKey = `${song.id}-${isOpen}`;
+  if (songKey !== prevSongKey) {
+    setPrevSongKey(songKey);
     if (isOpen) {
       reset({
         id: song.id,
@@ -70,7 +69,7 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
       });
       setSelectedGenres(song.genre ? parseGenres(song.genre) : []);
     }
-  }, [isOpen, song, reset]);
+  }
 
   const onSubmit: SubmitHandler<EditFormValues> = async (values) => {
     try {
@@ -139,7 +138,7 @@ const EditModal = ({ song, isOpen, onClose }: EditModalProps) => {
                 htmlFor="lrc-upload"
                 className="cursor-pointer bg-theme-500/10 border border-theme-500/40 hover:bg-theme-500 hover:text-[#0a0a0f] text-[8px] font-black px-2 py-1 transition-all uppercase tracking-widest"
               >
-                // LOAD_LRC
+                {"// LOAD_LRC"}
               </label>
               <input
                 id="lrc-upload"

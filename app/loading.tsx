@@ -1,8 +1,5 @@
 "use client";
 
-import { PulseLoader } from "react-spinners";
-import { motion } from "framer-motion";
-
 const Loading = () => {
   return (
     <div className="h-full w-full flex items-center justify-center bg-[#0a0a0f] relative overflow-hidden font-mono">

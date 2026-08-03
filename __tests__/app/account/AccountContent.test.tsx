@@ -34,21 +34,21 @@ jest.mock("@/hooks/auth/useUser", () => ({
 
 // Components inside AccountContent that might need mocking
 jest.mock("@/app/account/components/ColorSchemeSelector", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return function DummyColorSchemeSelector() {
     return React.createElement("div", { "data-testid": "color-scheme-selector" }, "ColorSchemeSelector");
   };
 });
 
 jest.mock("@/app/account/components/TopPlayedSongs", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return function DummyTopPlayedSongs() {
     return React.createElement("div", { "data-testid": "top-played-songs" }, "TopPlayedSongs");
   };
 });
 
 jest.mock("@/app/account/components/StatsOverview", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return function DummyStatsOverview() {
     return React.createElement("div", { "data-testid": "stats-overview" }, "StatsOverview");
   };

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import GenreBoard from "@/components/Genre/GenreBoard";
 
 jest.mock("@/components/common/ScrollableContainer", () => "div");

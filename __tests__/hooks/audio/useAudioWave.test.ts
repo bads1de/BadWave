@@ -35,9 +35,9 @@ class MockAudio {
   }
 }
 
-global.AudioContext = MockAudioContext as any;
-global.window.AudioContext = MockAudioContext as any;
-global.Audio = MockAudio as any;
+global.AudioContext = MockAudioContext as unknown as typeof AudioContext;
+global.window.AudioContext = MockAudioContext as unknown as typeof AudioContext;
+global.Audio = MockAudio as unknown as typeof Audio;
 
 describe("hooks/audio/useAudioWave", () => {
   beforeEach(() => {
@@ -69,7 +69,7 @@ describe("hooks/audio/useAudioWave", () => {
 
     // Mock readyState to allow play
     if (result.current.audioElement) {
-      (result.current.audioElement as any).readyState = 4; // HAVE_ENOUGH_DATA
+      (result.current.audioElement as { readyState: number }).readyState = 4; // HAVE_ENOUGH_DATA
     }
 
     await act(async () => {

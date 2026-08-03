@@ -51,7 +51,7 @@ const useSpotlightUploadMutation = (
       let videoUrl: string | null;
       try {
         videoUrl = await uploadFile(videoFile, "spotlight", "spotlight");
-      } catch (error) {
+      } catch {
         toast.error(ERROR_MESSAGES.VIDEO_UPLOAD_FAILED);
         throw new Error(ERROR_MESSAGES.VIDEO_UPLOAD_FAILED);
       }

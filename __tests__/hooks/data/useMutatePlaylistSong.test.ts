@@ -2,6 +2,7 @@ import { waitFor, act } from "@testing-library/react";
 import useMutatePlaylistSong from "@/hooks/data/useMutatePlaylistSong";
 import { createClient } from "@/libs/supabase/client";
 import { CACHED_QUERIES } from "@/constants";
+import type { QueryClient } from "@tanstack/react-query";
 import { renderHookWithQueryClient } from "../../test-utils";
 
 jest.mock("@/libs/supabase/client", () => ({
@@ -27,10 +28,10 @@ jest.mock("react-hot-toast", () => ({
 import toast from "react-hot-toast";
 
 describe("hooks/data/useMutatePlaylistSong", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockInsert: jest.Mock;
   let mockDelete: jest.Mock;
-  let queryClient: any;
+  let queryClient: QueryClient;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -273,11 +274,11 @@ describe("hooks/data/useMutatePlaylistSong", () => {
       });
 
       await waitFor(() => {
-        const cached = queryClient.getQueryData<any[]>([
+        const cached = queryClient.getQueryData([
           CACHED_QUERIES.playlists,
           "playlist-1",
           "songs",
-        ]);
+        ]) as Array<{ id: string; playlist_id: string }> | undefined;
         expect(cached).toHaveLength(2);
         expect(cached![1]).toMatchObject({
           id: "new-song",
@@ -309,7 +310,7 @@ describe("hooks/data/useMutatePlaylistSong", () => {
         }).catch(() => {});
       });
 
-      const cached = queryClient.getQueryData<any[]>([
+      const cached = queryClient.getQueryData([
         CACHED_QUERIES.playlists,
         "playlist-1",
         "songs",
@@ -345,11 +346,11 @@ describe("hooks/data/useMutatePlaylistSong", () => {
       });
 
       await waitFor(() => {
-        const cached = queryClient.getQueryData<any[]>([
+        const cached = queryClient.getQueryData([
           CACHED_QUERIES.playlists,
           "playlist-1",
           "songs",
-        ]);
+        ]) as Array<{ id: string; playlist_id: string }> | undefined;
         expect(cached).toHaveLength(1);
         expect(cached![0].id).toBe("song-to-keep");
       });
@@ -382,7 +383,7 @@ describe("hooks/data/useMutatePlaylistSong", () => {
         }).catch(() => {});
       });
 
-      const cached = queryClient.getQueryData<any[]>([
+      const cached = queryClient.getQueryData([
         CACHED_QUERIES.playlists,
         "playlist-1",
         "songs",

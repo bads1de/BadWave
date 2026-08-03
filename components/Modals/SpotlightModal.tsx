@@ -48,9 +48,6 @@ const SpotlightModal = () => {
       return;
     }
 
-    // Reset loading state when video changes
-    setIsLoading(true);
-
     const mainVideo = videoRef.current;
     if (!mainVideo) return;
 
@@ -118,13 +115,18 @@ const SpotlightModal = () => {
                       ref={videoRef}
                       key={selectedItem.video_path}
                       src={selectedItem.video_path}
+                      onLoadStart={() => setIsLoading(true)}
                       loop
                       playsInline
                       muted={false}
                       controls={false}
                       onClick={(e) => {
                         const v = e.currentTarget;
-                        v.paused ? v.play() : v.pause();
+                        if (v.paused) {
+                          v.play();
+                        } else {
+                          v.pause();
+                        }
                       }}
                       onLoadedData={() => setIsLoading(false)}
                       className={`relative max-w-full max-h-full w-full h-full object-contain shadow-[0_0_40px_rgba(0,0,0,0.5)] z-10 cursor-pointer transition-opacity duration-1000 ${
@@ -186,7 +188,7 @@ const SpotlightModal = () => {
                   <div className="space-y-6">
                     <div className="space-y-2">
                        <p className="text-[8px] text-theme-500/40 uppercase tracking-widest font-bold">
-                          // DATA_STREAM_METADATA
+                          {"// DATA_STREAM_METADATA"}
                        </p>
                        <h2 className="text-3xl font-black text-white leading-tight uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(var(--theme-500),0.5)]">
                          {selectedItem.title}

@@ -8,7 +8,7 @@ process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-anon-key";
 
 jest.mock("framer-motion", () => ({
   motion: { div: "div", span: "span" },
-  AnimatePresence: ({ children }: any) => children,
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 jest.mock("next/image", () => "img");
@@ -20,8 +20,10 @@ jest.mock("@/components/Player/EqualizerButton", () => "div");
 jest.mock("@/components/LikeButton", () => "div");
 
 jest.mock("@/components/common/ScrollingText", () => {
-  const React = require("react");
-  return (props: { text: string }) => React.createElement("span", null, props.text);
+  const React = jest.requireActual<typeof import("react")>("react");
+  const MockScrollingText = (props: { text: string }) =>
+    React.createElement("span", null, props.text);
+  return MockScrollingText;
 });
 
 jest.mock("@/components/Mobile/LyricsDrawer", () => "div");

@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
 import UploadModal from "@/components/Modals/UploadModal";
 import useUploadModal from "@/hooks/modal/useUploadModal";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
 import { useUser } from "@/hooks/auth/useUser";
-import { toast } from "react-hot-toast";
 
 // Mock AWS SDK to avoid runtime issues in Jest
 jest.mock("@aws-sdk/client-s3", () => ({
@@ -24,9 +24,9 @@ jest.mock("react-hot-toast");
 jest.mock("@/components/Modals/Modal", () => {
   return {
     __esModule: true,
-    default: ({ isOpen, children }: any) => {
+    default: ({ isOpen, children }: { isOpen: boolean; children: ReactNode }) => {
       if (!isOpen) return null;
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "upload-modal" }, children);
     },
   };
@@ -35,8 +35,8 @@ jest.mock("@/components/Modals/Modal", () => {
 jest.mock("@/components/Genre/GenreSelect", () => {
   return {
     __esModule: true,
-    default: ({ onGenreChange }: any) => {
-      const React = require("react");
+    default: ({ onGenreChange }: { onGenreChange: (genre: string) => void }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("button", {
         onClick: () => onGenreChange("Pop"),
         "data-testid": "genre-select"

@@ -5,7 +5,7 @@ import "@testing-library/jest-dom";
 
 // Mock react-icons
 jest.mock("react-icons/fa", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     FaPlay: () => React.createElement("div", { "data-testid": "fa-play" }),
     FaPause: () => React.createElement("div", { "data-testid": "fa-pause" }),
@@ -17,7 +17,7 @@ jest.mock("react-icons/fa", () => {
 });
 
 jest.mock("react-icons/md", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     MdSkipPrevious: () =>
       React.createElement("div", { "data-testid": "md-skip-previous" }),
@@ -91,11 +91,10 @@ describe("RetroPlayer", () => {
     // So if we query fa-play, parentElement or closest('button') should work.
 
     // However, if we click the wrapper, we might need to find the button role.
-    const button = screen.getByRole("button", { name: "" }); // There are multiple buttons.
     // Let's rely on finding the button that contains the play icon.
     // Using closest('button') on the icon is reliable.
 
-    fireEvent.click(playButton?.closest("button")!);
+    fireEvent.click(playButton!.closest("button")!);
     expect(defaultProps.togglePlay).toHaveBeenCalledTimes(1);
 
     // Rerender with isPlaying=true

@@ -140,7 +140,7 @@ describe("SpotlightUploadModal", () => {
   });
 
   it("モーダルが閉じられるとフォームがリセットされること", async () => {
-    const { rerender } = renderComponent();
+    renderComponent();
 
     // フォーム入力
     const titleInput = screen.getByPlaceholderText("INPUT_NODE_NAME");

@@ -1,14 +1,11 @@
 "use client";
 
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
-import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
+import React, { memo, useCallback, useRef, useState } from "react";
+import { useForm, SubmitHandler, FieldValues, useWatch } from "react-hook-form";
 import { RiVideoLine, RiUploadCloud2Line } from "react-icons/ri";
-
-import { useUser } from "@/hooks/auth/useUser";
 
 import Modal from "./Modal";
 import Input from "@/components/common/Input";
-import Button from "@/components/common/Button";
 
 import useSpotLightUploadModal from "@/hooks/modal/useSpotLightUpload";
 import useSpotlightUploadMutation from "@/hooks/data/useSpotlightUploadMutation";
@@ -18,13 +15,12 @@ const SpotlightUploadModal: React.FC = memo(() => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const spotlightUploadModal = useSpotLightUploadModal();
-  const { user } = useUser();
 
   // TanStack Queryを使用したミューテーション
   const { mutateAsync, isPending: isLoading } =
     useSpotlightUploadMutation(spotlightUploadModal);
 
-  const { register, handleSubmit, reset, setValue, watch } =
+  const { register, handleSubmit, reset, setValue, control } =
     useForm<FieldValues>({
       defaultValues: {
         video: null,
@@ -35,21 +31,26 @@ const SpotlightUploadModal: React.FC = memo(() => {
       },
     });
 
-  const video = watch("video");
+  const video = useWatch({ control, name: "video" });
 
-  useEffect(() => {
+  // 選択ファイルが変わったらプレビューを更新 (レンダー中の状態調整パターン)
+  const [prevVideo, setPrevVideo] = useState<FileList | null>(null);
+  if (video !== prevVideo) {
+    setPrevVideo(video);
     if (video && video.length > 0) {
-      const file = video[0];
-      setVideoPreview(URL.createObjectURL(file));
+      setVideoPreview(URL.createObjectURL(video[0]));
     }
-  }, [video]);
+  }
 
-  useEffect(() => {
+  // モーダルが閉じたらフォームとプレビューをリセット (レンダー中の状態調整パターン)
+  const [prevOpen, setPrevOpen] = useState(spotlightUploadModal.isOpen);
+  if (spotlightUploadModal.isOpen !== prevOpen) {
+    setPrevOpen(spotlightUploadModal.isOpen);
     if (!spotlightUploadModal.isOpen) {
       reset();
       setVideoPreview(null);
     }
-  }, [spotlightUploadModal.isOpen, reset]);
+  }
 
   const onFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

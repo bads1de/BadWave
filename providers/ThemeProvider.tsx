@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 
 interface ThemeProviderProps {
@@ -8,12 +8,13 @@ interface ThemeProviderProps {
 }
 
 const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [isMounted, setIsMounted] = useState(false);
   const { colorSchemeId } = useColorSchemeStore();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // ハイドレーションエラーを防ぐため、クライアントでのマウント後にのみテーマを適用する
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
     if (!isMounted) return;

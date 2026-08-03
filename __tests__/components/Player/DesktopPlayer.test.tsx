@@ -12,7 +12,7 @@ jest.mock("@/hooks/stores/useLyricsStore", () => ({
 }));
 
 jest.mock("@/components/Song/MediaItem", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () =>
@@ -21,7 +21,7 @@ jest.mock("@/components/Song/MediaItem", () => {
 });
 
 jest.mock("@/components/Player/CommonControls", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () =>
@@ -34,7 +34,7 @@ jest.mock("@/components/Player/CommonControls", () => {
 });
 
 jest.mock("@/components/Player/Seekbar", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () =>
@@ -43,7 +43,7 @@ jest.mock("@/components/Player/Seekbar", () => {
 });
 
 jest.mock("@/components/Playlist/AddPlaylist", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () =>
@@ -56,7 +56,7 @@ jest.mock("@/components/Playlist/AddPlaylist", () => {
 });
 
 jest.mock("@/components/LikeButton", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () =>
@@ -69,7 +69,7 @@ jest.mock("@/components/LikeButton", () => {
 });
 
 jest.mock("@/components/Player/Slider", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () =>
@@ -80,7 +80,7 @@ jest.mock("@/components/Player/Slider", () => {
 // react-icons のモック
 // react-icons のモック
 jest.mock("react-icons/bs", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     BsPlayFill: () =>
       React.createElement("div", { "data-testid": "play-icon-internal" }),
@@ -90,7 +90,7 @@ jest.mock("react-icons/bs", () => {
 });
 
 jest.mock("react-icons/md", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     MdLyrics: () =>
       React.createElement("div", { "data-testid": "lyrics-icon" }),

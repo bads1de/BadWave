@@ -29,7 +29,7 @@ describe("components/common/Hover", () => {
   });
 
   it("カスタムcontentSizeがpropsとして渡される", () => {
-    const { container } = render(
+    render(
       <Hover description="Test" contentSize="w-64" isCollapsed={true}>
         <button>Hover me</button>
       </Hover>

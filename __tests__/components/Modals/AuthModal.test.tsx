@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
 import AuthModal from "@/components/Modals/AuthModal";
 import useAuthModal from "@/hooks/auth/useAuthModal";
 import { createClient } from "@/libs/supabase/client";
@@ -19,9 +20,9 @@ jest.mock("next/navigation", () => ({
 jest.mock("@/components/Modals/Modal", () => {
   return {
     __esModule: true,
-    default: ({ isOpen, children }: any) => {
+    default: ({ isOpen, children }: { isOpen: boolean; children: ReactNode }) => {
       if (!isOpen) return null;
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "auth-modal" }, children);
     },
   };
@@ -29,13 +30,15 @@ jest.mock("@/components/Modals/Modal", () => {
 
 jest.mock("@supabase/auth-ui-react", () => ({
   Auth: () => {
-    const React = require("react");
+    const React = jest.requireActual<typeof import("react")>("react");
     return React.createElement("div", { "data-testid": "supabase-auth-ui" }, "Auth UI");
   },
 }));
 
 describe("components/Modals/AuthModal", () => {
-  let mockSupabase: any;
+  let mockSupabase: {
+    auth: { getSession: jest.Mock; onAuthStateChange: jest.Mock };
+  };
   let mockGetSession: jest.Mock;
   let mockOnAuthStateChange: jest.Mock;
   let mockOnClose: jest.Mock;

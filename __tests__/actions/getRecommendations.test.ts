@@ -1,4 +1,3 @@
-import * as React from "react";
 import getRecommendations from "@/actions/getRecommendations";
 import { createClient } from "@/libs/supabase/server";
 

@@ -1,13 +1,13 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import Slider from "@/components/Player/Slider";
-import * as RadixSlider from "@radix-ui/react-slider";
 
 // Radix UI Slider is complex to test fully as it relies on pointer events and layout.
 // We mock the Radix parts to verify our wrapper logic (value passing).
 jest.mock("@radix-ui/react-slider", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
-    Root: (props: any) => {
+    Root: (props: { children?: ReactNode; onValueChange?: (value: number[]) => void; value?: number[] } & Record<string, unknown>) => {
       const { children, onValueChange, value } = props;
       const otherProps = Object.assign({}, props);
       delete otherProps.children;
@@ -16,26 +16,26 @@ jest.mock("@radix-ui/react-slider", () => {
 
       const elementProps = Object.assign({
         "data-testid": "radix-root",
-        onClick: () => onValueChange([0.5]),
+        onClick: () => onValueChange?.([0.5]),
         "data-value": value?.[0]
       }, otherProps);
 
-      return React.createElement("div", elementProps, children);
+      return React.createElement("div", elementProps as React.HTMLAttributes<HTMLDivElement>, children);
     },
-    Track: (props: any) => {
+    Track: (props: { children?: ReactNode } & Record<string, unknown>) => {
         const { children } = props;
         const otherProps = Object.assign({}, props);
         delete otherProps.children;
         const elementProps = Object.assign({ "data-testid": "radix-track" }, otherProps);
-        return React.createElement("div", elementProps, children);
+        return React.createElement("div", elementProps as React.HTMLAttributes<HTMLDivElement>, children);
     },
-    Range: (props: any) => {
+    Range: (props: Record<string, unknown>) => {
         const elementProps = Object.assign({ "data-testid": "radix-range" }, props);
-        return React.createElement("div", elementProps);
+        return React.createElement("div", elementProps as React.HTMLAttributes<HTMLDivElement>);
     },
-    Thumb: (props: any) => {
+    Thumb: (props: Record<string, unknown>) => {
         const elementProps = Object.assign({ "data-testid": "radix-thumb" }, props);
-        return React.createElement("div", elementProps);
+        return React.createElement("div", elementProps as React.HTMLAttributes<HTMLDivElement>);
     },
   };
 });

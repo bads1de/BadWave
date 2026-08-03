@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import FullScreenLayout from "@/components/RightSidebar/FullScreenLayout";
 
 jest.mock("@/hooks/stores/useLyricsStore", () => ({

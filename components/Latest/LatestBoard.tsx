@@ -4,7 +4,6 @@ import { useState, useCallback, memo } from "react";
 import SongItem from "@/components/Song/SongItem";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import { Song } from "@/types";
-import usePlayer from "@/hooks/player/usePlayer";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { motion } from "framer-motion";
 import { DURATIONS } from "@/constants";
@@ -14,7 +13,6 @@ interface LatestBoardProps {
 }
 
 const LatestBoard: React.FC<LatestBoardProps> = ({ songs }) => {
-  const player = usePlayer();
   const onPlay = useOnPlay(songs);
   const [showArrows, setShowArrows] = useState(false);
 

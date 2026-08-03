@@ -1,6 +1,6 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
-import { useUser } from "@/hooks/auth/useUser";
 import { createClient } from "@/libs/supabase/client";
 
 // Mock dependencies
@@ -37,16 +37,16 @@ jest.mock("@tanstack/react-query", () => ({
 // Mock Popover components from shadcn/ui
 // Since they rely on Radix UI, simple mocking is safer for unit tests
 jest.mock("@/components/ui/popover", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
-    Popover: ({ children }: any) => React.createElement("div", { "data-testid": "popover" }, children),
-    PopoverTrigger: ({ children }: any) => React.createElement("div", { "data-testid": "popover-trigger" }, children),
-    PopoverContent: ({ children }: any) => React.createElement("div", { "data-testid": "popover-content" }, children),
+    Popover: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover" }, children),
+    PopoverTrigger: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover-trigger" }, children),
+    PopoverContent: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover-content" }, children),
   };
 });
 
 describe("components/Playlist/PlaylistOptionsPopover", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
 
   beforeEach(() => {
     jest.clearAllMocks();

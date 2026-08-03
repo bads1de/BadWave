@@ -3,7 +3,6 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/libs/utils/utils";
-import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 
 interface PaginationProps {
   currentPage: number;
@@ -27,9 +26,6 @@ const Pagination: React.FC<PaginationProps> = ({
   siblingCount = 1,
   className,
 }) => {
-  const { getColorScheme } = useColorSchemeStore();
-  const theme = getColorScheme();
-
   // ページがない場合は表示しない
   if (totalPages <= 1) return null;
 
@@ -103,7 +99,7 @@ const Pagination: React.FC<PaginationProps> = ({
               key={`dots-${index}`}
               className="flex items-center justify-center w-8 h-10 text-theme-900 font-black"
             >
-              //
+              {"//"}
             </span>
           ) : (
             <button

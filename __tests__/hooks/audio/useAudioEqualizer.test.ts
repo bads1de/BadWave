@@ -4,7 +4,6 @@
 import { renderHook, act } from "@testing-library/react";
 import useAudioEqualizer from "@/hooks/audio/useAudioEqualizer";
 import useEqualizerStore from "@/hooks/stores/useEqualizerStore";
-import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 // Mock AudioEngine
 const mockFilter = { gain: { value: 0 } };

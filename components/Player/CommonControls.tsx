@@ -3,7 +3,6 @@ import { FaRandom } from "react-icons/fa";
 import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import { BsRepeat1 } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
-import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 import { IconComponent } from "@/types";
 
 interface CommonControlsProps {
@@ -20,7 +19,6 @@ interface CommonControlsProps {
 }
 
 const CommonControls: React.FC<CommonControlsProps> = ({
-  isPlaying,
   isShuffling,
   isRepeating,
   Icon,
@@ -31,13 +29,6 @@ const CommonControls: React.FC<CommonControlsProps> = ({
   toggleRepeat,
   isMobile = false,
 }) => {
-  const { getColorScheme, hasHydrated } = useColorSchemeStore();
-  const colorScheme = getColorScheme();
-
-  // カラースキーマからの色取得
-  const theme500 = hasHydrated ? `rgba(${colorScheme.colors.theme500}, 1)` : "#06b6d4";
-  const glowColor = hasHydrated ? `rgba(${colorScheme.colors.glow}, 0.6)` : "rgba(0, 255, 255, 0.6)";
-
   return (
     <div
       className={twMerge(

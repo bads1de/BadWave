@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import qs from "query-string";
 import { MdLibraryMusic } from "react-icons/md";
 import { RiPlayListFill } from "react-icons/ri";
@@ -15,20 +14,9 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<string>("songs");
-
-  // 検索クエリがある場合はそれを取得
-  const title = searchParams.get("title") || "";
-
-  useEffect(() => {
-    // URLからtabパラメータを取得
-    const tab = searchParams.get("tab") || "songs";
-    setActiveTab(tab);
-  }, [searchParams]);
+  const activeTab = searchParams.get("tab") || "songs";
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value);
-
     // 現在のクエリパラメータを維持しながら、tabパラメータを更新
     const currentQuery: Record<string, string> = {};
     searchParams.forEach((value, key) => {

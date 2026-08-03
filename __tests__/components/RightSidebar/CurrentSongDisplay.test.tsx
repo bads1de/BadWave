@@ -6,8 +6,10 @@ jest.mock("next/image", () => "img");
 jest.mock("next/link", () => "a");
 
 jest.mock("@/components/common/ScrollingText", () => {
-  const React = require("react");
-  return (props: { text: string }) => React.createElement("span", null, props.text);
+  const React = jest.requireActual<typeof import("react")>("react");
+  const MockScrollingText = (props: { text: string }) =>
+    React.createElement("span", null, props.text);
+  return MockScrollingText;
 });
 
 jest.mock("@/hooks/stores/useColorSchemeStore", () => ({

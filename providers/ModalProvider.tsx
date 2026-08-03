@@ -4,16 +4,17 @@ import AuthModal from "@/components/Modals/AuthModal";
 import PlaylistModal from "@/components/Modals/PlaylistModal";
 import SpotlightModal from "@/components/Modals/SpotlightModal";
 import UploadModal from "@/components/Modals/UploadModal";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import SpotlightUploadModal from "@/components/Modals/SpotlightUploadModal";
 import PulseUploadModal from "@/components/Modals/PulseUploadModal";
 
 const ModalProvider: React.FC = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // ハイドレーションエラーを防ぐため、クライアントでのマウント後にのみモーダルを描画する
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   if (!isMounted) {
     return null;

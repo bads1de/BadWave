@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import ThemeProvider from "@/providers/ThemeProvider";
 
 // next-themes is not installed - use virtual mock
 jest.mock("next-themes", () => ({
-  ThemeProvider: ({ children }: any) => children,
+  ThemeProvider: ({ children }: { children: ReactNode }) => children,
 }), { virtual: true });
 
 jest.mock("@/hooks/stores/useColorSchemeStore", () => ({

@@ -51,7 +51,7 @@ const usePulseUploadMutation = (pulseUploadModal: ModalHook) => {
       let musicUrl: string | null;
       try {
         musicUrl = await uploadFile(musicFile, "pulse", "pulse");
-      } catch (error) {
+      } catch {
         toast.error(ERROR_MESSAGES.AUDIO_UPLOAD_FAILED);
         throw new Error(ERROR_MESSAGES.AUDIO_UPLOAD_FAILED);
       }

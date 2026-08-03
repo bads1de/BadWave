@@ -1,5 +1,4 @@
 import { renderHook, act } from "@testing-library/react";
-import { QueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
@@ -44,14 +43,6 @@ jest.mock("@/actions/checkAdmin", () => ({
 }));
 
 describe("useUploadSongMutation", () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
   // テストのためにモックを使用する
 
   const mockRouter = {
@@ -165,7 +156,7 @@ describe("useUploadSongMutation", () => {
             type: "image/jpeg",
           }),
         });
-      } catch (error) {
+      } catch {
         // エラーが発生することを期待
       }
     });
@@ -205,7 +196,7 @@ describe("useUploadSongMutation", () => {
             type: "image/jpeg",
           }),
         });
-      } catch (error) {
+      } catch {
         // エラーが発生することを期待
       }
     });
@@ -246,7 +237,7 @@ describe("useUploadSongMutation", () => {
             type: "image/jpeg",
           }),
         });
-      } catch (error) {
+      } catch {
         // エラーが発生することを期待
       }
     });

@@ -1,18 +1,23 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import LyricsDrawer from "@/components/Mobile/LyricsDrawer";
 
 // Mock framer-motion to render children directly without animation complexity
 jest.mock("framer-motion", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
-    AnimatePresence: ({ children }: any) => React.createElement(React.Fragment, null, children),
+    AnimatePresence: ({ children }: { children: ReactNode }) => React.createElement(React.Fragment, null, children),
     motion: {
-      div: (props: any) => {
+      div: (props: { children?: ReactNode } & Record<string, unknown>) => {
         const { children } = props;
         const otherProps = Object.assign({}, props);
         delete otherProps.children;
         const elementProps = Object.assign({ "data-testid": "motion-div" }, otherProps);
-        return React.createElement("div", elementProps, children);
+        return React.createElement(
+          "div",
+          elementProps as React.HTMLAttributes<HTMLDivElement>,
+          children
+        );
       },
     },
   };

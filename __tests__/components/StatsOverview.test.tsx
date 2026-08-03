@@ -4,23 +4,23 @@ import StatsOverview from "@/app/account/components/StatsOverview";
 
 // Mock dependencies
 jest.mock("recharts", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
-    ResponsiveContainer: ({ children }: any) => React.createElement("div", null, children),
-    BarChart: ({ children }: any) => React.createElement("div", null, children),
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => React.createElement("div", null, children),
+    BarChart: ({ children }: { children: React.ReactNode }) => React.createElement("div", null, children),
     Bar: () => React.createElement("div", null, "Bar"),
     XAxis: () => React.createElement("div", null, "XAxis"),
     YAxis: () => React.createElement("div", null, "YAxis"),
     CartesianGrid: () => React.createElement("div", null, "CartesianGrid"),
     Tooltip: () => React.createElement("div", null, "Tooltip"),
-    PieChart: ({ children }: any) => React.createElement("div", null, children),
-    Pie: ({ children }: any) => React.createElement("div", null, children),
+    PieChart: ({ children }: { children: React.ReactNode }) => React.createElement("div", null, children),
+    Pie: ({ children }: { children: React.ReactNode }) => React.createElement("div", null, children),
     Cell: () => React.createElement("div", null, "Cell"),
   };
 });
 
 jest.mock("lucide-react", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     Flame: () => React.createElement("div", { "data-testid": "flame-icon" }),
     Clock: () => React.createElement("div", { "data-testid": "clock-icon" }),
@@ -57,7 +57,7 @@ jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
 }));
 
 jest.mock("@/app/account/components/ContributionHeatmap", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: () => React.createElement("div", { "data-testid": "contribution-heatmap" }),

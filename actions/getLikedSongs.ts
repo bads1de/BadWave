@@ -1,4 +1,4 @@
-import { Song, SongType } from "@/types";
+import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
 import { getErrorMessage } from "@/libs/utils/error";
@@ -6,12 +6,9 @@ import { TABLES } from "@/constants";
 
 /**
  * 現在のユーザーが「いいね」した曲一覧を取得する
- * @param {'regular'} [songType='regular'] - 曲のタイプ
  * @returns {Promise<Song[]>} いいねした曲の配列
  */
-const getLikedSongs = async (
-  songType: SongType = "regular"
-): Promise<Song[]> => {
+const getLikedSongs = async (): Promise<Song[]> => {
   // supabaseクライアントを初期化
   const supabase = await createClient();
 

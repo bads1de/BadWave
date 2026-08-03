@@ -177,7 +177,7 @@ const MobilePlayerContent = React.memo(
               </h1>
             </Link>
             <p className="text-xs sm:text-sm text-theme-500 uppercase tracking-[0.3em]">
-              // AUTH: {song.author}
+              {"// AUTH: "}{song.author}
             </p>
           </div>
 
@@ -190,7 +190,7 @@ const MobilePlayerContent = React.memo(
               className="w-full h-1.5"
             />
             <div className="flex justify-between text-[10px] font-bold font-mono text-theme-500/60 tracking-widest">
-              <span>{formattedCurrentTime} // [START]</span>
+              <span>{formattedCurrentTime}{" // [START]"}</span>
               <div className="h-px flex-1 mx-4 bg-theme-500/10 self-center" />
               <span>[END] // {formattedDuration}</span>
             </div>

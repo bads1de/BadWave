@@ -6,7 +6,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getSongsPaginated", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockRange: jest.Mock;
   let mockCountSelect: jest.Mock;
 
@@ -20,7 +20,7 @@ describe("actions/getSongsPaginated", () => {
     const mockFrom = jest.fn((table) => {
       if (table === "songs") {
         return {
-          select: (query: any, options: any) => {
+          select: (query: string, options: { count?: string } = {}) => {
             if (options && options.count) {
               return mockCountSelect();
             }

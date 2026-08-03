@@ -42,7 +42,22 @@ const createMockAudioNode = () => ({
   type: "sine",
 });
 
-let mockAudioContext: any;
+interface MockAudioContext {
+  createMediaElementSource: jest.Mock;
+  createBiquadFilter: jest.Mock;
+  createGain: jest.Mock;
+  createConvolver: jest.Mock;
+  createStereoPanner: jest.Mock;
+  createWaveShaper: jest.Mock;
+  createOscillator: jest.Mock;
+  createBuffer: jest.Mock;
+  currentTime: number;
+  sampleRate: number;
+  state: string;
+  resume: jest.Mock;
+}
+
+let mockAudioContext: MockAudioContext;
 
 function resetMocks() {
   mockLinearRampToValueAtTime = jest.fn();
@@ -81,8 +96,8 @@ beforeEach(() => {
   (global.Audio as jest.Mock) = jest.fn(() => ({
     crossOrigin: "",
     preservesPitch: true,
-  })) as any;
-  (AudioEngine as any).instance = null;
+  }));
+  (AudioEngine as unknown as { instance: AudioEngine | null }).instance = null;
 });
 
 describe("AudioEngine", () => {
@@ -131,8 +146,10 @@ describe("AudioEngine", () => {
 
     it("should not fail when webkitAudioContext is used", () => {
       // Remove standard AudioContext, use webkit
-      (global.AudioContext as any) = undefined;
-      (global as any).webkitAudioContext = jest.fn(() => mockAudioContext);
+      (global as { AudioContext?: typeof AudioContext }).AudioContext = undefined;
+      (global as { webkitAudioContext?: unknown }).webkitAudioContext = jest.fn(
+        () => mockAudioContext
+      );
 
       const engine2 = AudioEngine.getInstance();
       engine2.initialize();
@@ -142,8 +159,8 @@ describe("AudioEngine", () => {
 
     it("should catch initialization error when AudioContext is unavailable", () => {
       // Both AudioContext and webkitAudioContext are undefined
-      (global.AudioContext as any) = undefined;
-      (global as any).webkitAudioContext = undefined;
+      (global as { AudioContext?: typeof AudioContext }).AudioContext = undefined;
+      (global as { webkitAudioContext?: unknown }).webkitAudioContext = undefined;
 
       const engine2 = AudioEngine.getInstance();
       // Should not throw, should catch error gracefully
@@ -243,9 +260,14 @@ describe("AudioEngine", () => {
 
     it("should set preservesPitch on audio element", () => {
       engine.setPreservesPitch(true);
-      expect((engine.audio as any).preservesPitch).toBe(true);
-      expect((engine.audio as any).mozPreservesPitch).toBe(true);
-      expect((engine.audio as any).webkitPreservesPitch).toBe(true);
+      expect((engine.audio as { preservesPitch: boolean }).preservesPitch).toBe(true);
+      expect(
+        (engine.audio as unknown as { mozPreservesPitch: boolean }).mozPreservesPitch
+      ).toBe(true);
+      expect(
+        (engine.audio as unknown as { webkitPreservesPitch: boolean })
+          .webkitPreservesPitch
+      ).toBe(true);
     });
 
     it("should return early when audio is null", () => {
@@ -271,7 +293,7 @@ describe("AudioEngine", () => {
     });
 
     it("should return early when lfoGain is null", () => {
-      (engine as any).lfoGain = null;
+      (engine as unknown as { lfoGain: GainNode | null }).lfoGain = null;
       // Should not throw
       engine.set8DAudioMode(true);
     });

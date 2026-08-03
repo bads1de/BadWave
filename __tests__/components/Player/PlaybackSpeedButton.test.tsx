@@ -4,7 +4,7 @@ import PlaybackSpeedButton from "@/components/Player/PlaybackSpeedButton";
 // Zustand stores use selectors - mock needs to handle selector function
 jest.mock("@/hooks/stores/usePlaybackRateStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = { rate: 1, setRate: jest.fn(), hasHydrated: true, setHasHydrated: jest.fn() };
     return selector ? selector(state) : state;
   },
@@ -12,7 +12,7 @@ jest.mock("@/hooks/stores/usePlaybackRateStore", () => ({
 
 jest.mock("@/hooks/stores/useEffectStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = {
       effects: { slowed: false, spatial: false, rotation8d: false, retro: false, bass: false },
       toggleEffect: jest.fn(),
@@ -25,7 +25,7 @@ jest.mock("@/hooks/stores/useEffectStore", () => ({
 
 jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = {
       colorSchemeId: "neon",
       getColorScheme: () => ({
@@ -47,7 +47,7 @@ jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
 
 jest.mock("@/hooks/stores/useSpatialStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = {
       isEnabled: false,
       toggle: jest.fn(),

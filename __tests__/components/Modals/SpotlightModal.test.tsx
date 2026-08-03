@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import SpotlightModal from "@/components/Modals/SpotlightModal";
 
 // Mock HTMLVideoElement.play to return a Promise (needed for the .catch() call in the component)
@@ -14,7 +15,7 @@ jest.mock("next/image", () => "img");
 
 jest.mock("framer-motion", () => ({
   motion: { div: "div" },
-  AnimatePresence: ({ children }: any) => children,
+  AnimatePresence: ({ children }: { children: ReactNode }) => children,
 }));
 
 jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
@@ -47,8 +48,7 @@ const mockSelectedItem = {
 };
 
 jest.mock("@/hooks/modal/useSpotlightModal", () => {
-  const state: any = {};
-  const store = (selector?: any) => {
+  const store = (selector?: (data: unknown) => unknown) => {
     const data = {
       isOpen: true,
       onClose: jest.fn(),

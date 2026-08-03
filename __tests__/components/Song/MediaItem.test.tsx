@@ -8,7 +8,7 @@ jest.mock("@/components/common/ScrollingText", () => {
   return {
     __esModule: true,
     default: ({ text }: { text: string }) => {
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("span", null, text);
     },
   };
@@ -17,10 +17,13 @@ jest.mock("@/components/common/ScrollingText", () => {
 describe("components/Song/MediaItem", () => {
   const mockSong: Song = {
     id: "song-1",
+    user_id: "user-1",
     title: "Test Song",
     author: "Test Author",
     image_path: "image.jpg",
-  } as any;
+    song_path: "song.mp3",
+    created_at: "2024-01-01",
+  };
 
   const mockSetId = jest.fn();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, memo } from "react";
+import { useState, memo } from "react";
 import {
   BarChart,
   Bar,
@@ -37,6 +37,9 @@ const GENRE_COLORS = [
   "#84cc16",
 ];
 
+// 曜日別データ (0=日曜 ~ 6=土曜)
+const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
 const StatsOverview: React.FC = memo(() => {
   const [period, setPeriod] = useState<StatsPeriod>("week");
   const { stats, isLoading } = useStats(period);
@@ -44,51 +47,44 @@ const StatsOverview: React.FC = memo(() => {
   const colorScheme = getColorScheme();
 
   // 時間帯データを0-23時で整形
-  const hourlyData = React.useMemo(() => {
-    if (!stats?.hourly_activity) return [];
-    const fullData = Array.from({ length: 24 }, (_, i) => ({
-      hour: `${i.toString().padStart(2, "0")}H`,
-      count: 0,
-    }));
-    stats.hourly_activity.forEach((item) => {
-      fullData[item.hour].count = item.count;
-    });
-    return fullData;
-  }, [stats?.hourly_activity]);
+  const fullHourlyData = Array.from({ length: 24 }, (_, i) => ({
+    hour: `${i.toString().padStart(2, "0")}H`,
+    count: 0,
+  }));
+  const hourlyData = !stats?.hourly_activity
+    ? []
+    : stats.hourly_activity.reduce((acc, item) => {
+        acc[item.hour].count = item.count;
+        return acc;
+      }, fullHourlyData);
 
   // サマリーデータ
-  const totalPlays = React.useMemo(() => {
-    return (
-      stats?.hourly_activity?.reduce((sum, item) => sum + item.count, 0) ?? 0
-    );
-  }, [stats?.hourly_activity]);
+  const totalPlays =
+    stats?.hourly_activity?.reduce((sum, item) => sum + item.count, 0) ?? 0;
 
   const streak = stats?.streak ?? 0;
 
-  const topGenre = React.useMemo(() => {
-    if (!stats?.genre_stats || stats.genre_stats.length === 0) return "NONE";
-    return stats.genre_stats[0].genre.toUpperCase();
-  }, [stats?.genre_stats]);
+  const topGenre =
+    !stats?.genre_stats || stats.genre_stats.length === 0
+      ? "NONE"
+      : stats.genre_stats[0].genre.toUpperCase();
 
   // ジャンルデータをrecharts用に整形
-  const genreData = React.useMemo(() => {
-    if (!stats?.genre_stats) return [];
-    return stats.genre_stats.map((item) => ({
-      name: item.genre.toUpperCase(),
-      value: item.count,
-    }));
-  }, [stats?.genre_stats]);
+  const genreData = !stats?.genre_stats
+    ? []
+    : stats.genre_stats.map((item) => ({
+        name: item.genre.toUpperCase(),
+        value: item.count,
+      }));
 
-  // 曜日別データを整形 (0=日曜 ~ 6=土曜)
-  const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const weeklyData = React.useMemo(() => {
-    const fullData = DAY_NAMES.map((name) => ({ day: name, count: 0 }));
-    if (!stats?.weekly_activity) return fullData;
-    stats.weekly_activity.forEach((item) => {
-      fullData[item.day_of_week].count = item.count;
-    });
-    return fullData;
-  }, [stats?.weekly_activity]);
+  // 曜日別データを整形
+  const fullWeeklyData = DAY_NAMES.map((name) => ({ day: name, count: 0 }));
+  const weeklyData = !stats?.weekly_activity
+    ? fullWeeklyData
+    : stats.weekly_activity.reduce((acc, item) => {
+        acc[item.day_of_week].count = item.count;
+        return acc;
+      }, fullWeeklyData);
 
   if (isLoading) {
     return (

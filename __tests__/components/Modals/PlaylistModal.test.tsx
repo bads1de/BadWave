@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
 import PlaylistModal from "@/components/Modals/PlaylistModal";
 import usePlaylistModal from "@/hooks/modal/usePlaylistModal";
 import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
@@ -14,9 +15,9 @@ jest.mock("@/hooks/auth/useUser", () => ({
 jest.mock("@/components/Modals/Modal", () => {
   return {
     __esModule: true,
-    default: ({ isOpen, children }: any) => {
+    default: ({ isOpen, children }: { isOpen: boolean; children: ReactNode }) => {
       if (!isOpen) return null;
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "playlist-modal" }, children);
     },
   };

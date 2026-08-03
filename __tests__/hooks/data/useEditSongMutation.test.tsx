@@ -211,7 +211,7 @@ describe("useEditSongMutation", () => {
           genre: ["Pop"],
           currentSong: mockSong,
         });
-      } catch (error) {
+      } catch {
         // エラーが発生することを期待
       }
     });
@@ -291,7 +291,7 @@ describe("useEditSongMutation", () => {
           genre: ["Pop"],
           currentSong: mockSong,
         });
-      } catch (error) {
+      } catch {
         // エラーが発生することを期待
       }
     });

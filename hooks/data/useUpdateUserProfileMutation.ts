@@ -111,7 +111,7 @@ const useUpdateUserProfileMutation = (accountModal: ModalHook) => {
       let avatarUrl: string | null;
       try {
         avatarUrl = await uploadFile(avatarFile, "image", `avatar-${userId}`);
-      } catch (error) {
+      } catch {
         toast.error(ERROR_MESSAGES.UPLOAD_FAILED);
         throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }

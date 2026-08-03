@@ -6,7 +6,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getPulses", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockOrder: jest.Mock;
 
   beforeEach(() => {

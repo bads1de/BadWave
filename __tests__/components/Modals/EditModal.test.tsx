@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
 import EditModal from "@/components/Modals/EditModal";
 import useEditSongMutation from "@/hooks/data/useEditSongMutation";
 import { Song } from "@/types";
@@ -16,9 +17,9 @@ jest.mock("@/hooks/data/useEditSongMutation");
 jest.mock("@/components/Modals/Modal", () => {
   return {
     __esModule: true,
-    default: ({ isOpen, children }: any) => {
+    default: ({ isOpen, children }: { isOpen: boolean; children: ReactNode }) => {
       if (!isOpen) return null;
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "edit-modal" }, children);
     },
   };
@@ -28,8 +29,8 @@ jest.mock("@/components/Modals/Modal", () => {
 jest.mock("@/components/Genre/GenreSelect", () => {
   return {
     __esModule: true,
-    default: ({ onGenreChange }: any) => {
-      const React = require("react");
+    default: ({ onGenreChange }: { onGenreChange: (genre: string) => void }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("button", { 
         onClick: () => onGenreChange("Rock"),
         "data-testid": "genre-select" 
@@ -48,7 +49,8 @@ describe("components/Modals/EditModal", () => {
     genre: "Pop",
     image_path: "img.jpg",
     song_path: "audio.mp3",
-  } as any;
+    created_at: "2024-01-01",
+  };
 
   const mockMutateAsync = jest.fn();
   const mockOnClose = jest.fn();

@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import UserProvider from "@/providers/UserProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 jest.mock("@/hooks/auth/useUser", () => ({
-  MyUserContextProvider: ({ children }: any) => children,
+  MyUserContextProvider: ({ children }: { children: ReactNode }) => children,
   useUser: () => ({ user: null, isLoading: false }),
 }));
 

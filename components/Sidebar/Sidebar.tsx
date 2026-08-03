@@ -263,7 +263,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                         )}
                       >
                         <RiPlayListFill size={20} />
-                        <p className="font-bold">// PLAYLISTS</p>
+                        <p className="font-bold">{"// PLAYLISTS"}</p>
                       </Link>
                       <Link
                         href={ROUTES.LIKED}
@@ -275,7 +275,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                         )}
                       >
                         <FaHeart size={20} />
-                        <p className="font-bold">// LIKED_LOG</p>
+                        <p className="font-bold">{"// LIKED_LOG"}</p>
                       </Link>
                     </div>
                   </PopoverContent>
@@ -336,7 +336,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                           className="flex items-center gap-x-3 px-3 py-3 rounded-none transition-all duration-300 border border-transparent hover:border-theme-500/30 text-theme-500/60 hover:text-white hover:bg-theme-500/10 w-full text-left cyber-glitch"
                         >
                           <item.icon size={20} />
-                          <p className="font-bold">// {item.label}</p>
+                          <p className="font-bold">{"// "}{item.label}</p>
                         </button>
                       ))}
                     </div>

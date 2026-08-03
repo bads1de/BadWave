@@ -5,10 +5,15 @@ import "@testing-library/jest-dom";
 
 // Mock child components
 jest.mock("@/app/pulse/components/RetroPlayer", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
-    default: function RetroPlayer(props: any) {
+    default: function RetroPlayer(props: {
+      trackTitle: string;
+      togglePlay: () => void;
+      onNext: () => void;
+      onPrev: () => void;
+    }) {
       return React.createElement(
         "div",
         { "data-testid": "retro-player" },
@@ -34,7 +39,7 @@ jest.mock("@/app/pulse/components/RetroPlayer", () => {
 });
 
 jest.mock("@/app/pulse/components/Visualizer", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: function Visualizer() {
@@ -48,7 +53,7 @@ jest.mock("@/app/pulse/components/Visualizer", () => {
 });
 
 jest.mock("@/app/pulse/components/WireframeBackground", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: function WireframeBackground() {
@@ -62,7 +67,7 @@ jest.mock("@/app/pulse/components/WireframeBackground", () => {
 });
 
 jest.mock("@/app/pulse/components/PulseWaveform", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
     default: function PulseWaveform() {

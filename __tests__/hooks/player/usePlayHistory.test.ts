@@ -1,6 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import usePlayHistory from "@/hooks/player/usePlayHistory";
 import { createClient } from "@/libs/supabase/client";
+import { useUser } from "@/hooks/auth/useUser";
 
 jest.mock("@/libs/supabase/client", () => {
   const mockFrom = jest.fn().mockReturnValue({
@@ -58,7 +59,7 @@ describe("usePlayHistory", () => {
   });
 
   it("ユーザーがログインしていない場合、再生履歴を記録しないこと", async () => {
-    require("@/hooks/auth/useUser").useUser.mockImplementationOnce(() => ({
+    (useUser as jest.Mock).mockImplementationOnce(() => ({
       userDetails: null,
     }));
 

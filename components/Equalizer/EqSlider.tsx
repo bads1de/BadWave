@@ -28,8 +28,6 @@ const EqSlider: React.FC<EqSliderProps> = ({
   max = 12,
   step = 1,
   className,
-  accentFrom = "#7c3aed",
-  accentTo = "#ec4899",
 }) => {
   return (
     <div

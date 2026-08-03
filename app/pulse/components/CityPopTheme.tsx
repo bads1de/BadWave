@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { FaPlay, FaPause, FaStepBackward, FaStepForward } from "react-icons/fa";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
@@ -30,9 +30,7 @@ interface CityPopThemeProps {
  * パステルカラー、幾何学模様、CDプレイヤー、ビジュアライザーを特徴としています。
  */
 const CityPopTheme: React.FC<CityPopThemeProps> = ({
-  pulses,
   currentPulse,
-  currentPulseIndex,
   isPlaying,
   hasStarted,
   togglePlay,
@@ -161,21 +159,31 @@ const CityPopTheme: React.FC<CityPopThemeProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // 星空のランダム配置はマウント時に一度だけ生成する
+  const [stars] = useState(() =>
+    [...Array(30)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 5}s`,
+      opacity: Math.random() * 0.5 + 0.2,
+    }))
+  );
+
   return (
     <div className="relative w-full h-full bg-[#FFFBEB] overflow-hidden flex flex-col font-sans text-gray-800">
       {/* 動的な背景パターン */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* 星空 / キラキラ */}
         <div className="absolute inset-0 z-0">
-          {[...Array(30)].map((_, i) => (
+          {stars.map((star, i) => (
             <div
               key={i}
               className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
               style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                opacity: Math.random() * 0.5 + 0.2,
+                top: star.top,
+                left: star.left,
+                animationDelay: star.animationDelay,
+                opacity: star.opacity,
               }}
             />
           ))}

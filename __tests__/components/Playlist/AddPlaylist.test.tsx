@@ -4,13 +4,11 @@ import { toast } from "react-hot-toast";
 import AddPlaylist from "@/components/Playlist/AddPlaylist";
 import useMutatePlaylistSong from "@/hooks/data/useMutatePlaylistSong";
 import { useUser } from "@/hooks/auth/useUser";
-import useAuthModal from "@/hooks/auth/useAuthModal";
-import { createClient } from "@/libs/supabase/client";
 import usePlaylistSongStatus from "@/hooks/data/usePlaylistSongStatus";
 
-// モックの設定
+// ���b�N�̐ݒ�
 jest.mock("@/components/ui/dropdown-menu", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     DropdownMenu: ({ children }: { children: React.ReactNode }) =>
       React.createElement("div", null, children),

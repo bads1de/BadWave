@@ -5,7 +5,7 @@ import "@testing-library/jest-dom";
 
 // Mock react-icons
 jest.mock("react-icons/fa", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     FaPlay: () => React.createElement("div", { "data-testid": "fa-play" }),
     FaPause: () => React.createElement("div", { "data-testid": "fa-pause" }),
@@ -17,7 +17,7 @@ jest.mock("react-icons/fa", () => {
 });
 
 jest.mock("react-icons/md", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     MdSkipPrevious: () =>
       React.createElement("div", { "data-testid": "md-skip-previous" }),
@@ -59,7 +59,7 @@ describe("CityPopTheme", () => {
   beforeAll(() => {
     Object.defineProperty(window, "requestAnimationFrame", {
       writable: true,
-      value: jest.fn().mockImplementation((cb) => 1),
+      value: jest.fn().mockImplementation(() => 1),
     });
     Object.defineProperty(window, "cancelAnimationFrame", {
       writable: true,

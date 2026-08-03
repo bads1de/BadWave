@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider, QueryCache } from "@tanstack/react-qu
 import toast from "react-hot-toast";
 import { getErrorMessage } from "@/libs/utils/error";
 
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CACHE_CONFIG } from "@/constants";
 
 interface Props {

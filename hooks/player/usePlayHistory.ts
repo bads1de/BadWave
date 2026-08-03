@@ -1,5 +1,5 @@
 import { createClient } from "@/libs/supabase/client";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useUser } from "../auth/useUser";
 
 /**
@@ -14,20 +14,17 @@ const usePlayHistory = () => {
    * 曲の再生を記録する関数
    * @param {string} songId - 再生された曲のID
    */
-  const recordPlay = useCallback(
-    async (songId: string) => {
-      if (!userDetails?.id || !songId) return;
+  const recordPlay = async (songId: string) => {
+    if (!userDetails?.id || !songId) return;
 
-      const { error } = await supabase
-        .from("play_history")
-        .insert({ user_id: userDetails.id, song_id: songId });
+    const { error } = await supabase
+      .from("play_history")
+      .insert({ user_id: userDetails.id, song_id: songId });
 
-      if (error) {
-        console.error("再生の記録中にエラーが発生しました:", error);
-      }
-    },
-    [supabase, userDetails?.id]
-  );
+    if (error) {
+      console.error("再生の記録中にエラーが発生しました:", error);
+    }
+  };
 
   return { recordPlay };
 };

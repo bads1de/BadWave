@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, memo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Heart, Clock, Music2, ClipboardCopy } from "lucide-react";
 import { MdLyrics } from "react-icons/md";
@@ -46,7 +46,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const primaryColor = hasHydrated ? colorScheme.colors.accentFrom : "#7c3aed";
   const secondaryColor = hasHydrated ? colorScheme.colors.accentTo : "#ec4899";
 
-  const handlePlayClick = useCallback(async () => {
+  const handlePlayClick = async () => {
     if (!song?.song_path) {
       console.error("曲のパスが存在しません");
       return;
@@ -66,20 +66,12 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
     } catch (error) {
       console.error("再生処理中にエラーが発生しました:", error);
     }
-  }, [
-    song?.song_path,
-    songId,
-    currentSongId,
-    isPlaying,
-    initializeAudio,
-    play,
-    pause,
-  ]);
+  };
 
-  const handlePlaybackEnded = useCallback(() => {
+  const handlePlaybackEnded = () => {
     pause();
     setAudioWaveformKey((prevKey) => prevKey + 1);
-  }, [pause]);
+  };
 
   useEffect(() => {
     if (song?.song_path) {
@@ -90,7 +82,7 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
     }
   }, [song?.song_path]);
 
-  const handleDownloadClick = useCallback(async () => {
+  const handleDownloadClick = async () => {
     setIsLoading(true);
 
     if (song?.song_path) {
@@ -98,16 +90,16 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
     }
 
     setIsLoading(false);
-  }, [song?.song_path, song?.title]);
+  };
 
-  const copyLyricsToClipboard = useCallback(() => {
+  const copyLyricsToClipboard = () => {
     try {
       navigator.clipboard.writeText(song?.lyrics || "");
       toast.success("Lyrics copied to clipboard!");
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.COPY_LYRICS_FAILED);
     }
-  }, [song?.lyrics]);
+  };
 
   if (!song) return null;
 

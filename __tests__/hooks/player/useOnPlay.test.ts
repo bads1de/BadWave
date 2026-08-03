@@ -16,13 +16,29 @@ describe("hooks/player/useOnPlay", () => {
   let mockSetId: jest.Mock;
   let mockSetIds: jest.Mock;
   let mockPlay: jest.Mock;
-  let mockSupabase: any;
+  let mockSupabase: { rpc: jest.Mock };
   let mockRpc: jest.Mock;
   let mockRecordPlay: jest.Mock;
 
   const mockSongs: Song[] = [
-    { id: "song-1", title: "Song 1", author: "Author 1" } as any,
-    { id: "song-2", title: "Song 2", author: "Author 2" } as any,
+    {
+      id: "song-1",
+      user_id: "user-1",
+      title: "Song 1",
+      author: "Author 1",
+      song_path: "song1.mp3",
+      image_path: "img1.jpg",
+      created_at: "2024-01-01",
+    },
+    {
+      id: "song-2",
+      user_id: "user-1",
+      title: "Song 2",
+      author: "Author 2",
+      song_path: "song2.mp3",
+      image_path: "img2.jpg",
+      created_at: "2024-01-01",
+    },
   ];
 
   beforeEach(() => {

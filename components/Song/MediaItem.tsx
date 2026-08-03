@@ -5,7 +5,7 @@ import { Song } from "@/types";
 import usePlayer from "@/hooks/player/usePlayer";
 import { twMerge } from "tailwind-merge";
 import ScrollingText from "../common/ScrollingText";
-import { memo, useCallback } from "react";
+import { memo } from "react";
 
 interface MediaItemProps {
   data: Song;
@@ -18,8 +18,8 @@ const MediaItem: React.FC<MediaItemProps> = memo(
   ({ data, onClick, isCollapsed, className }) => {
     const player = usePlayer();
 
-    // クリックハンドラーをメモ化
-    const handleClick = useCallback(() => {
+    // クリックハンドラー
+    const handleClick = () => {
       if (onClick) {
         return onClick(data.id!);
       }
@@ -27,7 +27,7 @@ const MediaItem: React.FC<MediaItemProps> = memo(
       if ("author" in data && data.id) {
         return player.setId(data.id);
       }
-    }, [onClick, data.id, player]);
+    };
 
     return (
       <div
@@ -86,7 +86,7 @@ const MediaItem: React.FC<MediaItemProps> = memo(
               <ScrollingText text={data.title} limitCharacters={15} />
             </div>
             <p className="text-[10px] text-theme-500/60 truncate uppercase tracking-widest">
-              // AUTH: {data.author}
+              {"// AUTH: "}{data.author}
             </p>
           </div>
         )}

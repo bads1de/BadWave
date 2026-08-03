@@ -26,9 +26,10 @@ describe("useLikeMutation", () => {
   };
 
   const createWrapper = () => {
-    return ({ children }: { children: React.ReactNode }) => (
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
+    return Wrapper;
   };
 
   beforeEach(() => {
@@ -117,7 +118,7 @@ describe("useLikeMutation", () => {
     await act(async () => {
       try {
         await result.current.mutateAsync(false);
-      } catch (e) {}
+      } catch {}
     });
 
     expect(toast.error).toHaveBeenCalled();
@@ -214,7 +215,7 @@ describe("useLikeMutation", () => {
       await act(async () => {
         try {
           await result.current.mutateAsync(false);
-        } catch (e) {}
+        } catch {}
       });
 
       await waitFor(() => {

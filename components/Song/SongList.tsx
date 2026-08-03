@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import Image from "next/image";
 import { Song } from "@/types";
 import usePlayer from "@/hooks/player/usePlayer";
@@ -19,8 +19,8 @@ const SongList: React.FC<SongListProps> = memo(
   ({ data, onClick, className }) => {
     const player = usePlayer();
 
-    // クリックハンドラーをメモ化
-    const handleClick = useCallback(() => {
+    // クリックハンドラー
+    const handleClick = () => {
       if (onClick) {
         return onClick(data.id!);
       }
@@ -28,7 +28,7 @@ const SongList: React.FC<SongListProps> = memo(
       if ("author" in data && data.id) {
         return player.setId(data.id);
       }
-    }, [onClick, data.id, player]);
+    };
 
     return (
       <motion.div
@@ -96,7 +96,7 @@ const SongList: React.FC<SongListProps> = memo(
           <div className="flex gap-x-2 items-center mt-0.5">
             <Link href={`/genre/${data.genre}`}>
               <p className="text-theme-500 text-[10px] truncate hover:text-theme-300 transition-colors">
-                // {data?.genre}
+                {"// "}{data?.genre}
               </p>
             </Link>
             <span className="text-theme-900 text-[10px]">•</span>

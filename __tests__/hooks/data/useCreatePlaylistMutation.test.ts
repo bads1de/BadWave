@@ -1,4 +1,3 @@
-import { renderHook, waitFor } from "@testing-library/react";
 import useCreatePlaylistMutation from "@/hooks/data/useCreatePlaylistMutation";
 import { createClient } from "@/libs/supabase/client";
 import { renderHookWithQueryClient } from "../../test-utils"; // Correct path
@@ -22,7 +21,7 @@ jest.mock("react-hot-toast", () => ({
 }));
 
 describe("hooks/data/useCreatePlaylistMutation", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockInsert: jest.Mock;
   let mockOnClose: jest.Mock;
 

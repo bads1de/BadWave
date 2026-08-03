@@ -22,10 +22,10 @@ jest.mock("@/hooks/modal/useSpotlightModal", () => ({
 }));
 
 jest.mock("@/components/common/ScrollableContainer", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
-    default: function ScrollableContainer(props: any) {
+    default: function ScrollableContainer(props: { children?: React.ReactNode }) {
       return React.createElement(
         "div",
         { "data-testid": "scrollable-container" },
@@ -59,7 +59,7 @@ describe("SpotlightBoard", () => {
 
   beforeEach(() => {
     // Reset internal state if possible, though SpotlightBoard uses it internally
-    (useSpotlightModal as any).mockReturnValue({
+    (useSpotlightModal as unknown as jest.Mock).mockReturnValue({
       onOpen: mockOnOpen,
     });
     jest.clearAllMocks();

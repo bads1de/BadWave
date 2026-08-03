@@ -3,7 +3,7 @@ import { useUser } from "@/hooks/auth/useUser";
 import useLikeStatus from "@/hooks/data/useLikeStatus";
 import useLikeMutation from "@/hooks/data/useLikeMutation";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { memo, useCallback } from "react";
+import { memo } from "react";
 
 interface LikeButtonProps {
   songId: string;
@@ -13,7 +13,7 @@ interface LikeButtonProps {
 }
 
 const LikeButton: React.FC<LikeButtonProps> = memo(
-  ({ songId, songType, size, showText = false }) => {
+  ({ songId, size, showText = false }) => {
     const { user } = useUser();
     const authModal = useAuthModal();
 
@@ -25,14 +25,14 @@ const LikeButton: React.FC<LikeButtonProps> = memo(
 
     const Icon = isLiked ? AiFillHeart : AiOutlineHeart;
 
-    // いいねボタンのクリックハンドラーをメモ化
-    const handleLike = useCallback(() => {
+    // いいねボタンのクリックハンドラー
+    const handleLike = () => {
       if (!user) {
         return authModal.onOpen();
       }
 
       likeMutation.mutate(isLiked);
-    }, [authModal, likeMutation, user]);
+    };
 
     return (
       <button

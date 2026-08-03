@@ -58,8 +58,8 @@ describe("useOnPlay", () => {
   };
 
   beforeEach(() => {
-    (usePlayer as unknown as any).mockReturnValue(mockPlayer);
-    (createClient as unknown as any).mockReturnValue(mockSupabase);
+    (usePlayer as unknown as jest.Mock).mockReturnValue(mockPlayer);
+    (createClient as unknown as jest.Mock).mockReturnValue(mockSupabase);
     jest.clearAllMocks();
     jest.useFakeTimers();
   });

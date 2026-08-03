@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactNode } from "react";
 import LatestBoard from "@/components/Latest/LatestBoard";
 import useOnPlay from "@/hooks/player/useOnPlay";
 import { Song } from "@/types";
@@ -12,10 +13,10 @@ jest.mock("@/hooks/player/usePlayer", () => ({
 
 // Mock framer-motion
 jest.mock("framer-motion", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     motion: {
-      div: (props: any) => {
+      div: (props: { children?: ReactNode; className?: string }) => {
         const { children } = props;
         const otherProps = Object.assign({}, props);
         delete otherProps.children;
@@ -31,8 +32,8 @@ jest.mock("framer-motion", () => {
 jest.mock("@/components/Song/SongItem", () => {
   return {
     __esModule: true,
-    default: ({ data, onClick }: any) => {
-      const React = require("react");
+    default: ({ data, onClick }: { data: { id: string; title: string }; onClick: (id: string) => void }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", {
         "data-testid": "song-item",
         onClick: () => onClick(data.id),
@@ -44,8 +45,8 @@ jest.mock("@/components/Song/SongItem", () => {
 jest.mock("@/components/common/ScrollableContainer", () => {
   return {
     __esModule: true,
-    default: ({ children }: any) => {
-      const React = require("react");
+    default: ({ children }: { children: ReactNode }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "scrollable-container" }, children);
     },
   };
@@ -54,8 +55,24 @@ jest.mock("@/components/common/ScrollableContainer", () => {
 describe("components/Latest/LatestBoard", () => {
   const mockOnPlay = jest.fn();
   const mockSongs: Song[] = [
-    { id: "1", title: "Latest Song 1" } as any,
-    { id: "2", title: "Latest Song 2" } as any,
+    {
+      id: "1",
+      user_id: "user-1",
+      title: "Latest Song 1",
+      author: "Author 1",
+      song_path: "/songs/1.mp3",
+      image_path: "/images/1.jpg",
+      created_at: "2024-01-01",
+    },
+    {
+      id: "2",
+      user_id: "user-1",
+      title: "Latest Song 2",
+      author: "Author 2",
+      song_path: "/songs/2.mp3",
+      image_path: "/images/2.jpg",
+      created_at: "2024-01-01",
+    },
   ];
 
   beforeEach(() => {

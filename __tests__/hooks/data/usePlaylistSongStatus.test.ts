@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import usePlaylistSongStatus from "@/hooks/data/usePlaylistSongStatus";
 import { createClient } from "@/libs/supabase/client";
 import { renderHookWithQueryClient } from "../../test-utils";
@@ -12,7 +12,7 @@ jest.mock("@/hooks/auth/useUser", () => ({
 }));
 
 describe("hooks/data/usePlaylistSongStatus", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockIn: jest.Mock;
 
   beforeEach(() => {

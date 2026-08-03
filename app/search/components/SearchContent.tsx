@@ -111,7 +111,7 @@ const PlaylistSection = memo(({ playlists }: PlaylistSectionProps) => {
                 {playlist.title}
               </h3>
               <p className="text-[10px] font-mono text-theme-500/60 uppercase">
-                // PLAYLIST_DATA
+                {"// PLAYLIST_DATA"}
               </p>
             </div>
           </div>

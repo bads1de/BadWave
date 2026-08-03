@@ -32,7 +32,7 @@ jest.mock("@aws-sdk/client-s3", () => ({
 }));
 
 describe("hooks/data/useUpdateUserProfileMutation", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock; auth: { updateUser: jest.Mock } };
   let mockUpdate: jest.Mock;
   let mockUpdateUser: jest.Mock;
   let mockOnClose: jest.Mock;

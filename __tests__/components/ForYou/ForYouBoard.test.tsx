@@ -15,21 +15,6 @@ jest.mock("@/hooks/player/useOnPlay", () => ({
 }));
 
 describe("components/ForYou/ForYouBoard", () => {
-  const mockSongs = [
-    {
-      id: "song-1",
-      title: "Recommended Song 1",
-      author: "Artist 1",
-      song_path: "/songs/song1.mp3",
-      image_path: "/images/song1.jpg",
-      genre: "Electronic",
-      duration: 180,
-      count: 100,
-      like_count: 50,
-      created_at: "2024-01-01",
-    },
-  ];
-
   it("レコメンドがない場合、メッセージが表示される", () => {
     render(<ForYouBoard recommendations={[]} />);
     expect(screen.getByText(/まだ推薦曲がありません/)).toBeInTheDocument();

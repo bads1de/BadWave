@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * 値を常に最新の状態で保持するRefを返すカスタムフック
@@ -19,8 +19,10 @@ import { useRef } from "react";
  */
 function useLatestRef<T>(value: T): React.RefObject<T> {
   const ref = useRef<T>(value);
-  // 毎レンダリング時に同期（useEffectより前に実行される）
-  ref.current = value;
+  // レンダリング後に最新値へ同期
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
   return ref;
 }
 

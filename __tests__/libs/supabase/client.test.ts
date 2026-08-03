@@ -1,13 +1,13 @@
 import { createClient } from "@/libs/supabase/client";
 
 // @supabase/ssr のモック
-const mockCreateBrowserClient = jest.fn((..._args: any[]) => ({
+const mockCreateBrowserClient = jest.fn(() => ({
   auth: { getSession: jest.fn(), onAuthStateChange: jest.fn() },
   from: jest.fn(() => ({ select: jest.fn(), insert: jest.fn(), update: jest.fn(), delete: jest.fn() })),
 }));
 
 jest.mock("@supabase/ssr", () => ({
-  createBrowserClient: (...args: string[]) => mockCreateBrowserClient(...args),
+  createBrowserClient: () => mockCreateBrowserClient(),
 }));
 
 describe("libs/supabase/client", () => {

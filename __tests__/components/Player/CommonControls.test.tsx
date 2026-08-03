@@ -4,7 +4,7 @@ import React from "react";
 
 jest.mock("@/hooks/stores/useColorSchemeStore", () => ({
   __esModule: true,
-  default: (selector?: (state: any) => any) => {
+  default: (selector?: (state: unknown) => unknown) => {
     const state = {
       colorSchemeId: "neon",
       getColorScheme: () => ({

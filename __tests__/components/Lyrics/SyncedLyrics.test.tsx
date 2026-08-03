@@ -40,7 +40,7 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  delete (Element.prototype as any).scrollIntoView;
+  delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView;
 });
 
 describe("components/Lyrics/SyncedLyrics", () => {

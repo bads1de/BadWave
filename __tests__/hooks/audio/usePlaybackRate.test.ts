@@ -5,7 +5,6 @@ import { renderHook, act } from "@testing-library/react";
 import usePlaybackRate from "@/hooks/audio/usePlaybackRate";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useNightCoreStore from "@/hooks/stores/useNightCoreStore";
-import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 // Mock AudioEngine
 const mockAudio = {
@@ -72,7 +71,7 @@ describe("hooks/audio/usePlaybackRate", () => {
       useNightCoreStore.setState({ isEnabled: true });
     });
 
-    const { result } = renderHook(() => usePlaybackRate());
+    renderHook(() => usePlaybackRate());
 
     expect(mockAudio.playbackRate).toBe(1.35);
 

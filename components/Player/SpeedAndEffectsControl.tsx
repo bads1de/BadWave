@@ -2,7 +2,6 @@
 
 import React from "react";
 import * as RadixSlider from "@radix-ui/react-slider";
-import { HelpCircle } from "lucide-react";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
 import useEffectStore, { RotationSpeed } from "@/hooks/stores/useEffectStore";
@@ -146,7 +145,7 @@ const SpeedAndEffectsControl: React.FC = () => {
                   <span
                     className={`text-[10px] font-black tracking-widest uppercase transition-colors duration-300 ${effect.active ? "text-white" : "text-theme-500/60"}`}
                   >
-                    // {effect.label}
+                    {"// "}{effect.label}
                   </span>
                   {effect.active && (
                     <div className="w-1 h-1 bg-theme-500 rounded-full animate-ping" />

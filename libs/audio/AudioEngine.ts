@@ -296,11 +296,10 @@ class AudioEngine {
   public setPreservesPitch(preserve: boolean): void {
     if (!this.audio) return;
 
-    // @ts-ignore
     this.audio.preservesPitch = preserve;
-    // @ts-ignore
+    // @ts-expect-error 非標準プロパティ (Firefox)
     this.audio.mozPreservesPitch = preserve;
-    // @ts-ignore
+    // @ts-expect-error 非標準プロパティ (Safari)
     this.audio.webkitPreservesPitch = preserve;
   }
 

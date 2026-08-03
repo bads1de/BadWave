@@ -62,7 +62,7 @@ const useUploadSongMutation = (uploadModal: ModalHook) => {
       try {
         songUrl = await uploadFile(songFile, "song", songFileNamePrefix);
         imageUrl = await uploadFile(imageFile, "image", imageFileNamePrefix);
-      } catch (error) {
+      } catch {
         toast.error(ERROR_MESSAGES.UPLOAD_FAILED);
         throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }

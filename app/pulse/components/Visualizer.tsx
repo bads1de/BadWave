@@ -1,10 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useState } from "react";
 import { DURATIONS } from "@/constants";
 
 const Visualizer = React.memo(() => {
+  // バーごとのランダム値はマウント時に一度だけ生成する
+  const [bars] = useState(() =>
+    [...Array(20)].map(() => ({
+      height: `${Math.random() * 80 + 20}%`,
+      duration: DURATIONS.NORMAL + Math.random() * 0.5,
+    }))
+  );
+
   return (
     <div className="w-64 h-32 border-2 border-cyan-500/50 bg-black/40 backdrop-blur-sm p-4 relative overflow-hidden rounded-lg shadow-[0_0_15px_rgba(0,255,255,0.3)]">
       {/* Grid Background Overlay */}
@@ -18,15 +26,15 @@ const Visualizer = React.memo(() => {
       />
 
       <div className="flex items-end justify-between h-full gap-1 pt-4 pb-1">
-        {[...Array(20)].map((_, i) => (
+        {bars.map((bar, i) => (
           <motion.div
             key={i}
             className="w-full bg-gradient-to-t from-cyan-600 via-cyan-400 to-white rounded-t-sm opacity-80"
             animate={{
-              height: ["20%", `${Math.random() * 80 + 20}%`, "20%"],
+              height: ["20%", bar.height, "20%"],
             }}
             transition={{
-              duration: DURATIONS.NORMAL + Math.random() * 0.5,
+              duration: bar.duration,
               repeat: Infinity,
               ease: "easeInOut",
               repeatType: "mirror",

@@ -28,7 +28,7 @@ const AccountContent = () => {
       await supabaseClient.auth.signOut();
       router.push("/");
       toast.success("ログアウトしました");
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.GENERIC_ERROR);
     } finally {
       setIsLoading(false);
@@ -88,10 +88,10 @@ const AccountContent = () => {
                 className="group relative px-4 md:px-6 py-2.5 md:py-3 border border-theme-500/50 bg-theme-500/10 text-theme-300 hover:text-white hover:bg-theme-500/30 hover:shadow-[0_0_20px_rgba(var(--theme-500),0.4)] transition-all duration-300"
               >
                 <span className="relative z-10 font-bold md:hidden">
-                  // EDIT
+                  {"// EDIT"}
                 </span>
                 <span className="relative z-10 font-bold hidden md:inline">
-                  // MODIFY_PROFILE
+                  {"// MODIFY_PROFILE"}
                 </span>
                 <div className="absolute inset-0 bg-theme-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>

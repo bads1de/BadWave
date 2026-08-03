@@ -6,7 +6,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getPlaylistsByTitle", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockIlike: jest.Mock;
   let mockOrder: jest.Mock;
   let mockEq: jest.Mock;
@@ -29,7 +29,7 @@ describe("actions/getPlaylistsByTitle", () => {
     const result = await getPlaylistsByTitle("");
     expect(result).toEqual({ playlists: [] });
     expect(createClient).toHaveBeenCalled();
-    expect(mockSupabase.from).not.toBeDefined; // This is not quite right, but we expect no calls to from
+    expect(mockSupabase.from).not.toHaveBeenCalled();
   });
 
   it("should return playlists matching the title", async () => {

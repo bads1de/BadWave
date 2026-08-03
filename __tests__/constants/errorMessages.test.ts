@@ -2,7 +2,7 @@ import { ERROR_MESSAGES } from "@/constants/errorMessages";
 
 describe("constants/errorMessages", () => {
   it("all error messages should be non-empty strings", () => {
-    for (const [key, value] of Object.entries(ERROR_MESSAGES)) {
+    for (const value of Object.values(ERROR_MESSAGES)) {
       expect(typeof value).toBe("string");
       expect(value.length).toBeGreaterThan(0);
     }

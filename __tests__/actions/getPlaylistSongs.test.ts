@@ -6,7 +6,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getPlaylistSongs", () => {
-  let mockSupabase: any;
+  let mockSupabase: { auth: { getUser: jest.Mock }; from: jest.Mock };
   let mockGetUser: jest.Mock;
   let mockEq: jest.Mock;
   let mockSingle: jest.Mock;
@@ -24,10 +24,6 @@ describe("actions/getPlaylistSongs", () => {
     // Setup generic chain for playlist songs
     // Needs to handle multiple .eq calls.
     // select -> eq -> eq -> order
-    const mockOrderChain = { order: mockOrder };
-    const mockEqChain2 = { eq: () => mockOrderChain };
-    const mockEqChain1 = { eq: () => mockEqChain2 };
-    
     // Mock select. It's called twice with different params.
     const mockSelect = jest.fn().mockImplementation((query) => {
       if (query.includes("is_public")) {

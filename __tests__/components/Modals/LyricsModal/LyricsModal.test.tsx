@@ -37,7 +37,7 @@ const mockSong = {
   image_path: "/images/test.jpg",
   song_path: "/songs/test.mp3",
   genre: "Rock",
-  count: 100,
+  count: "100",
   user_id: "user-1",
   created_at: "2024-01-01",
 };

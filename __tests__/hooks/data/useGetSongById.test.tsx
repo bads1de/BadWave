@@ -2,7 +2,6 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import useGetSongById from "@/hooks/data/useGetSongById";
 import { createClient } from "@/libs/supabase/client";
-import toast from "react-hot-toast";
 import React from "react";
 
 // Mock Dependencies

@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import type { ReactNode } from "react";
 import AudioWaveform from "@/components/AudioWaveform";
 
 jest.mock("@/libs/audio/AudioEngine", () => {
@@ -43,7 +44,7 @@ jest.mock("@/hooks/stores/useEqualizerStore", () => ({
 
 jest.mock("framer-motion", () => ({
   motion: { div: "div", canvas: "canvas" },
-  AnimatePresence: ({ children }: any) => children,
+  AnimatePresence: ({ children }: { children: ReactNode }) => children,
 }));
 
 jest.mock("next/image", () => "img");
@@ -69,8 +70,8 @@ class MockAudioContext {
 }
 
 const mockAudioContext = new MockAudioContext();
-(window as any).AudioContext = jest.fn(() => mockAudioContext);
-(window as any).webkitAudioContext = undefined;
+(window as { AudioContext?: unknown }).AudioContext = jest.fn(() => mockAudioContext);
+(window as { webkitAudioContext?: unknown }).webkitAudioContext = undefined;
 
 beforeEach(() => {
   const mockContext = {

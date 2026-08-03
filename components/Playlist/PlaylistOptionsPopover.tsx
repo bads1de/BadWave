@@ -97,7 +97,7 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
                 onClick={() => setIsEditing(true)}
               >
                 <Edit2 size={14} className="mr-3 group-hover:text-theme-500" />
-                // MODIFY_NAME
+                {"// MODIFY_NAME"}
               </button>
             )}
           </div>
@@ -110,12 +110,12 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
               {isPublic ? (
                 <>
                   <Lock size={14} className="mr-3 group-hover:text-theme-500" />
-                  // STATUS: PRIVATE
+                  {"// STATUS: PRIVATE"}
                 </>
               ) : (
                 <>
                   <Globe2 size={14} className="mr-3 group-hover:text-theme-500" />
-                  // STATUS: PUBLIC
+                  {"// STATUS: PUBLIC"}
                 </>
               )}
             </button>
@@ -127,7 +127,7 @@ const PlaylistOptionsPopover: React.FC<PlaylistOptionsPopoverProps> = ({
               disabled={deletePlaylistMutation.isPending}
             >
               <Trash2 size={14} className="mr-3 group-hover:text-red-500" />
-              // TERMINATE_DATA
+              {"// TERMINATE_DATA"}
             </button>
           </div>
         </div>

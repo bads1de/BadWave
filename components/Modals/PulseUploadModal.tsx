@@ -1,29 +1,26 @@
 "use client";
 
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
-import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
+import React, { memo, useCallback, useRef, useState } from "react";
+import { useForm, SubmitHandler, FieldValues, useWatch } from "react-hook-form";
 import { RiPulseLine } from "react-icons/ri";
 
-import { useUser } from "@/hooks/auth/useUser";
 import usePulseUploadModal from "@/hooks/modal/usePulseUploadModal";
 import usePulseUploadMutation from "@/hooks/data/usePulseUploadMutation";
 
 import Modal from "./Modal";
 import Input from "@/components/common/Input";
-import Button from "@/components/common/Button";
 
 const PulseUploadModal: React.FC = memo(() => {
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const pulseUploadModal = usePulseUploadModal();
-  const { user } = useUser();
 
   // TanStack Queryを使用したミューテーション
   const { mutateAsync, isPending: isLoading } =
     usePulseUploadMutation(pulseUploadModal);
 
-  const { register, handleSubmit, reset, setValue, watch } =
+  const { register, handleSubmit, reset, setValue, control } =
     useForm<FieldValues>({
       defaultValues: {
         music: null,
@@ -32,21 +29,26 @@ const PulseUploadModal: React.FC = memo(() => {
       },
     });
 
-  const music = watch("music");
+  const music = useWatch({ control, name: "music" });
 
-  useEffect(() => {
+  // 選択ファイルが変わったらプレビューを更新 (レンダー中の状態調整パターン)
+  const [prevMusic, setPrevMusic] = useState<FileList | null>(null);
+  if (music !== prevMusic) {
+    setPrevMusic(music);
     if (music && music.length > 0) {
-      const file = music[0];
-      setAudioPreview(URL.createObjectURL(file));
+      setAudioPreview(URL.createObjectURL(music[0]));
     }
-  }, [music]);
+  }
 
-  useEffect(() => {
+  // モーダルが閉じたらフォームとプレビューをリセット (レンダー中の状態調整パターン)
+  const [prevOpen, setPrevOpen] = useState(pulseUploadModal.isOpen);
+  if (pulseUploadModal.isOpen !== prevOpen) {
+    setPrevOpen(pulseUploadModal.isOpen);
     if (!pulseUploadModal.isOpen) {
       reset();
       setAudioPreview(null);
     }
-  }, [pulseUploadModal.isOpen, reset]);
+  }
 
   const onFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

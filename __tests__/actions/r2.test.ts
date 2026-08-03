@@ -43,7 +43,7 @@ describe("actions/r2", () => {
         if (key === "bucketName") return "song";
         if (key === "fileNamePrefix") return "prefix";
         return null;
-      }) as any;
+      });
 
       const result = await uploadFileToR2(formData);
 
@@ -85,7 +85,7 @@ describe("actions/r2", () => {
         if (key === "file") return largeFile;
         if (key === "bucketName") return "song";
         return null;
-      }) as any;
+      });
 
       const result = await uploadFileToR2(formData);
 

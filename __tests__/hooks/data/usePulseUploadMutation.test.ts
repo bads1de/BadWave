@@ -13,7 +13,7 @@ jest.mock("@/libs/supabase/client", () => ({
 jest.mock("@/actions/checkAdmin");
 jest.mock("@/actions/r2");
 
-const mockUseUser = jest.fn(() => ({ user: { id: "user-1" } }));
+const mockUseUser = jest.fn<{ user: { id: string } | null }, []>(() => ({ user: { id: "user-1" } }));
 jest.mock("@/hooks/auth/useUser", () => ({
   useUser: () => mockUseUser(),
 }));
@@ -24,7 +24,7 @@ jest.mock("react-hot-toast", () => ({
 }));
 
 describe("hooks/data/usePulseUploadMutation", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockInsert: jest.Mock;
   let mockOnClose: jest.Mock;
 
@@ -84,7 +84,7 @@ describe("hooks/data/usePulseUploadMutation", () => {
   });
 
   it("should fail if user is null", async () => {
-    mockUseUser.mockReturnValue({ user: null } as any);
+    mockUseUser.mockReturnValue({ user: null });
 
     const { result } = setupHook();
     const file = new File([""], "audio.mp3", { type: "audio/mpeg" });

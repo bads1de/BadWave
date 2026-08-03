@@ -30,7 +30,7 @@ const PlaylistPageContent: React.FC<PlaylistPageContentProps> = memo(
           {songs.length ? (
             <div className="relative">
               <div className="mb-4 flex items-center justify-between text-[10px] text-theme-500/60 tracking-[0.3em] uppercase">
-                 <span>// TRACK_LISTING_v1.0</span>
+                 <span>{"// TRACK_LISTING_v1.0"}</span>
                  <span>SCAN_COMPLETE</span>
               </div>
               <LikedContent

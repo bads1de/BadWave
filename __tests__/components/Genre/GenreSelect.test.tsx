@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import GenreSelect from "@/components/Genre/GenreSelect";
 
 jest.mock("@radix-ui/react-select", () => ({
@@ -6,7 +7,7 @@ jest.mock("@radix-ui/react-select", () => ({
   Trigger: "button",
   Value: "span",
   Icon: "span",
-  Portal: ({ children }: any) => children,
+  Portal: ({ children }: { children: ReactNode }) => children,
   Content: "div",
   Viewport: "div",
   Item: "div",

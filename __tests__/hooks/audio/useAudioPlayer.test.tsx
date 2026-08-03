@@ -1,8 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import useAudioPlayer from "@/hooks/audio/useAudioPlayer";
 import usePlayer from "@/hooks/player/usePlayer";
-import useAudioWaveStore from "@/hooks/audio/useAudioWave";
-import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 // Mock AudioEngine
 const mockAudio = {
@@ -42,7 +40,7 @@ jest.mock("@/hooks/player/usePlayer", () => {
     getPreviousSongId: jest.fn(),
     setId: jest.fn(),
   };
-  const fn = (selector: any) => (selector ? selector(mockState) : mockState);
+  const fn = (selector: (state: unknown) => unknown) => (selector ? selector(mockState) : mockState);
   Object.assign(fn, mockState);
   return {
     __esModule: true,
@@ -54,7 +52,7 @@ jest.mock("@/hooks/audio/useAudioWave", () => {
   const mockState = {
     pause: jest.fn(),
   };
-  const fn = (selector: any) => (selector ? selector(mockState) : mockState);
+  const fn = (selector: (state: unknown) => unknown) => (selector ? selector(mockState) : mockState);
   return {
     __esModule: true,
     default: fn,
@@ -115,7 +113,7 @@ describe("useAudioPlayer", () => {
   });
 
   it("should handle next song logic", () => {
-    const player = usePlayer as any;
+    const player = usePlayer as unknown as { getNextSongId: jest.Mock; setId: jest.Mock };
     player.getNextSongId.mockReturnValue("next-id");
 
     const { result } = renderHook(() => useAudioPlayer(songUrl));

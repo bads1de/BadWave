@@ -72,7 +72,7 @@ const PreviewDownloadModal: React.FC<PreviewDownloadModalProps> = ({
                 className="w-full bg-theme-500/10 border border-theme-500/40 hover:bg-theme-500 text-theme-300 hover:text-[#0a0a0f] font-black tracking-[0.2em]"
                 onClick={() => handleDownloadClick("video")}
               >
-                // EXTRACT_MP4
+                {"// EXTRACT_MP4"}
               </Button>
             </div>
           )}
@@ -98,7 +98,7 @@ const PreviewDownloadModal: React.FC<PreviewDownloadModalProps> = ({
                 className="w-full bg-theme-500/10 border border-theme-500/40 hover:bg-theme-500 text-theme-300 hover:text-[#0a0a0f] font-black tracking-[0.2em]"
                 onClick={() => handleDownloadClick("audio")}
               >
-                // EXTRACT_MP3
+                {"// EXTRACT_MP3"}
               </Button>
             </div>
           )}

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/popover";
 import LikeButton from "@/components/LikeButton";
 import DeletePlaylistSongsBtn from "@/components/Playlist/DeletePlaylistSongsBtn";
-import { useState, memo, useCallback } from "react";
+import { useState, memo } from "react";
 import PreviewDownloadModal from "@/components/Modals/DownloadPreviewModal";
 import useDownload from "@/hooks/data/useDownload";
 import { Download } from "lucide-react";
@@ -27,28 +27,25 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = memo(
     const { user } = useUser();
     const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
     const { fileUrl: audioUrl } = useDownload(song.song_path);
-    const [isLoading, setIsLoading] = useState(false);
+    const [, setIsLoading] = useState(false);
 
-    // ダウンロードハンドラーをメモ化
-    const handleDownloadClick = useCallback(
-      async (type: "audio" | "video") => {
-        setIsLoading(true);
+    // ダウンロードハンドラー
+    const handleDownloadClick = async (type: "audio" | "video") => {
+      setIsLoading(true);
 
-        if (type === "audio" && song?.song_path && audioUrl) {
-          await downloadFile(audioUrl, `${song.title || "Untitled"}.mp3`);
-        }
+      if (type === "audio" && song?.song_path && audioUrl) {
+        await downloadFile(audioUrl, `${song.title || "Untitled"}.mp3`);
+      }
 
-        if (type === "video" && song?.video_path) {
-          await downloadFile(
-            song.video_path,
-            `${song.title || "Untitled"}.mp4`
-          );
-        }
+      if (type === "video" && song?.video_path) {
+        await downloadFile(
+          song.video_path,
+          `${song.title || "Untitled"}.mp4`
+        );
+      }
 
-        setIsLoading(false);
-      },
-      [audioUrl, song?.song_path, song?.title, song?.video_path]
-    );
+      setIsLoading(false);
+    };
 
     const isPlaylistCreator =
       playlistId && playlistUserId && user?.id === playlistUserId;
@@ -101,7 +98,7 @@ const SongOptionsPopover: React.FC<SongOptionsPopoverProps> = memo(
                   onClick={() => setIsDownloadModalOpen(true)}
                 >
                   <Download size={16} className="mr-3 group-hover:text-theme-500" />
-                  // EXTRACT_ASSET
+                  {"// EXTRACT_ASSET"}
                 </button>
               </div>
             </div>

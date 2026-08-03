@@ -101,7 +101,7 @@ const AudioSettingsButton: React.FC = () => {
         {/* コンテンツエリア */}
         <div className="p-6 max-h-[450px] overflow-y-auto custom-scrollbar relative z-10">
           <div className="mb-4 text-[8px] text-theme-500/40 tracking-[0.4em] uppercase border-b border-theme-500/10 pb-1">
-             // INITIALIZING_SIGNAL_PROCESSOR_v4.2
+             {"// INITIALIZING_SIGNAL_PROCESSOR_v4.2"}
           </div>
           {activeTab === "effects" ? (
             <SpeedAndEffectsControl />

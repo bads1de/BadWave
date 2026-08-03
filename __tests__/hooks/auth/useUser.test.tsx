@@ -18,7 +18,10 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe("hooks/auth/useUser", () => {
-  let mockSupabase: any;
+  let mockSupabase: {
+    auth: { getSession: jest.Mock; onAuthStateChange: jest.Mock };
+    from: jest.Mock;
+  };
   let mockGetSession: jest.Mock;
   let mockOnAuthStateChange: jest.Mock;
 

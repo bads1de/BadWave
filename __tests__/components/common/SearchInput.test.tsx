@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import SearchInput from "@/components/common/SearchInput";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSearchHistoryStore } from "@/hooks/stores/useSearchHistoryStore";

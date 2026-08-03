@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { CiPlay1 } from "react-icons/ci";
 import { AiOutlineHeart } from "react-icons/ai";
-import { BiChevronRight } from "react-icons/bi";
 import { Song } from "@/types";
 import { splitTags } from "@/libs/utils/utils";
 import ScrollingText from "../common/ScrollingText";
@@ -65,7 +64,7 @@ const CurrentSongDisplay: React.FC<CurrentSongDisplayProps> = React.memo(
               </Link>
             </h1>
             <p className="text-theme-400 text-lg uppercase tracking-widest border-l-2 border-theme-500 pl-3">
-              // AUTH: {song.author}
+              {"// AUTH: "}{song.author}
             </p>
           </div>
 

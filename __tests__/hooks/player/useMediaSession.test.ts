@@ -14,7 +14,7 @@ const mockSong: Song = {
 };
 
 describe("useMediaSession", () => {
-  let originalMediaSession: any;
+  let originalMediaSession: typeof navigator.mediaSession;
   let mockSetActionHandler: jest.Mock;
 
   beforeAll(() => {
@@ -31,7 +31,7 @@ describe("useMediaSession", () => {
     });
 
     // Mock MediaMetadata
-    (global as any).MediaMetadata = jest.fn((metadata) => metadata);
+    (global as { MediaMetadata?: unknown }).MediaMetadata = jest.fn((metadata) => metadata);
   });
 
   afterAll(() => {

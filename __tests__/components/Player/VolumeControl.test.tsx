@@ -1,7 +1,6 @@
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import VolumeControl from "@/components/Player/VolumeControl";
 import useVolumeStore from "@/hooks/stores/useVolumeStore";
-import * as deviceDetect from "react-device-detect";
 
 // Mock dependencies
 jest.mock("@/hooks/stores/useVolumeStore");
@@ -13,13 +12,13 @@ jest.mock("react-device-detect", () => ({
 jest.mock("@/components/Player/Slider", () => {
   return {
     __esModule: true,
-    default: ({ value, onChange }: any) => {
-      const React = require("react");
+    default: ({ value, onChange }: { value: number; onChange: (v: number) => void }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("input", {
         type: "range",
         "data-testid": "volume-slider",
         value: value,
-        onChange: (e: any) => onChange(parseFloat(e.target.value)),
+        onChange: (e: { target: { value: string } }) => onChange(parseFloat(e.target.value)),
         min: 0,
         max: 1,
         step: 0.1,
@@ -85,7 +84,6 @@ describe("components/Player/VolumeControl", () => {
     // container.firstChild.firstChild should be the icon.
     // container.firstChild.lastChild should be the slider wrapper.
     
-    /* eslint-disable testing-library/no-node-access */
     const { container } = render(<VolumeControl />);
     const icon = container.querySelector("svg");
     const sliderWrapper = container.querySelector(".absolute");

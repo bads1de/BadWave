@@ -7,7 +7,7 @@ jest.mock("@/components/common/ScrollingText", () => {
   return {
     __esModule: true,
     default: ({ text }: { text: string }) => {
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("span", null, text);
     },
   };

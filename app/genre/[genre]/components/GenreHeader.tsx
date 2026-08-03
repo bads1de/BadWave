@@ -136,7 +136,7 @@ const GenreHeader: React.FC<GenreHeaderProps> = ({ genre }) => {
           </div>
           
           <div className="text-[10px] text-theme-500/40 uppercase tracking-widest mt-4">
-             // SECTOR_INDEX: 0x{genre.length.toString(16).toUpperCase()} // SIGNAL_STRENGTH: OPTIMAL
+             {"// SECTOR_INDEX: 0x"}{genre.length.toString(16).toUpperCase()}{" // SIGNAL_STRENGTH: OPTIMAL"}
           </div>
         </motion.div>
       </div>

@@ -6,7 +6,7 @@ jest.mock("@/libs/supabase/server", () => ({
 }));
 
 describe("actions/getPublicPlaylists", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockLimit: jest.Mock;
   let mockOrder: jest.Mock;
   let mockEq: jest.Mock;

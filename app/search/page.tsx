@@ -28,7 +28,7 @@ const Search = async (props: SearchProps) => {
         <div className="flex flex-col gap-y-6 relative z-10 px-4">
           <div className="flex flex-col gap-y-1">
             <p className="text-[10px] text-theme-500/60 tracking-[0.4em] uppercase">
-              // SEARCH_QUERY_INTERFACE
+              {"// SEARCH_QUERY_INTERFACE"}
             </p>
             <h1 className="text-white text-4xl font-bold uppercase tracking-widest drop-shadow-[0_0_10px_rgba(var(--theme-500),0.8)]">
               SEARCH_SCAN

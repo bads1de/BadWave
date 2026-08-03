@@ -34,7 +34,7 @@ const GenreContent: React.FC<Props> = memo(({ songs }) => {
       return (
         <div className="flex flex-col gap-y-4 w-full px-8 font-mono">
           <div className="mb-4 flex items-center justify-between text-[10px] text-theme-500/40 tracking-[0.3em] uppercase">
-             <span>// SECTOR_SCAN_RESULTS</span>
+             <span>{"// SECTOR_SCAN_RESULTS"}</span>
              <span>NODES_IDENTIFIED: {songs.length}</span>
           </div>
           {songs.map((song) => (

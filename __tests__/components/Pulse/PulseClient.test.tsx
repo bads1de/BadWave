@@ -15,10 +15,13 @@ jest.mock("@/hooks/data/useGetPulses", () => ({
 
 // Mock child components
 jest.mock("@/app/pulse/components/VaporwaveTheme", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
-    default: function VaporwaveTheme(props: any) {
+    default: function VaporwaveTheme(props: {
+      handleNextPulse: () => void;
+      handleStart: () => void;
+    }) {
       return React.createElement(
         "div",
         { "data-testid": "vaporwave-theme" },
@@ -39,10 +42,10 @@ jest.mock("@/app/pulse/components/VaporwaveTheme", () => {
 });
 
 jest.mock("@/app/pulse/components/CityPopTheme", () => {
-  const React = require("react");
+  const React = jest.requireActual<typeof import("react")>("react");
   return {
     __esModule: true,
-    default: function CityPopTheme(props: any) {
+    default: function CityPopTheme() {
       return React.createElement(
         "div",
         { "data-testid": "citypop-theme" },

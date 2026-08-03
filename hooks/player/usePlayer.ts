@@ -53,7 +53,7 @@ const usePlayer = create<PlayerStore>()(
       toggleRepeat: () => set((state) => ({ isRepeating: !state.isRepeating })),
       toggleShuffle: () =>
         set((state) => {
-          let newShuffledIds = [...state.ids];
+          const newShuffledIds = [...state.ids];
           if (!state.isShuffling) {
             for (let i = newShuffledIds.length - 1; i > 0; i--) {
               const j = Math.floor(Math.random() * (i + 1));

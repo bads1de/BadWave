@@ -6,7 +6,6 @@ import useAudioEffects from "@/hooks/audio/useAudioEffects";
 import useEffectStore from "@/hooks/stores/useEffectStore";
 import useSpatialStore from "@/hooks/stores/useSpatialStore";
 import usePlaybackRateStore from "@/hooks/stores/usePlaybackRateStore";
-import { AudioEngine } from "@/libs/audio/AudioEngine";
 
 // AudioEngine Mock
 const mockSetPreservesPitch = jest.fn();

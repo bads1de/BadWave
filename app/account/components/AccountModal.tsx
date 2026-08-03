@@ -222,7 +222,7 @@ const AccountModal = ({ isOpen, onClose, user }: AccountModalProps) => {
               disabled={isLoading}
               className="w-full py-4 border border-theme-500 text-theme-500 font-black uppercase tracking-[0.4em] hover:bg-theme-500/10 transition-all duration-500"
             >
-              // REWRITE_CREDENTIALS
+              {"// REWRITE_CREDENTIALS"}
             </button>
           </form>
         )}

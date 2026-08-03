@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/hooks/auth/useUser";
@@ -18,8 +19,8 @@ jest.mock("@/hooks/player/usePlayer");
 jest.mock("@/components/Sidebar/SidebarItem", () => {
   return {
     __esModule: true,
-    default: ({ label, active }: any) => {
-      const React = require("react");
+    default: ({ label, active }: { label: string; active: boolean }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", {
         "data-testid": `sidebar-item-${label}`,
         "data-active": active,
@@ -32,7 +33,7 @@ jest.mock("@/components/Sidebar/UserCard", () => {
   return {
     __esModule: true,
     default: () => {
-      const React = require("react");
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { "data-testid": "user-card" }, "UserCard");
     },
   };
@@ -41,8 +42,8 @@ jest.mock("@/components/Sidebar/UserCard", () => {
 jest.mock("@/components/common/Box", () => {
   return {
     __esModule: true,
-    default: ({ children, className }: any) => {
-      const React = require("react");
+    default: ({ children, className }: { children: ReactNode; className?: string }) => {
+      const React = jest.requireActual<typeof import("react")>("react");
       return React.createElement("div", { className, "data-testid": "box" }, children);
     },
   };

@@ -55,7 +55,7 @@ const GenreSelect: React.FC<GenreSelectProps> = ({
           <RadixSelect.Viewport className="p-1.5 relative z-10">
             <div className="w-full max-h-[300px] overflow-x-auto custom-scrollbar font-mono">
               <div className="px-3 py-2 text-[8px] text-theme-500/40 border-b border-theme-500/10 mb-1 tracking-widest uppercase">
-                 // SECTOR_INDEX_AVAILABLE
+                 {"// SECTOR_INDEX_AVAILABLE"}
               </div>
               {genres.map((genre) => (
                 <RadixSelect.Item

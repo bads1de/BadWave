@@ -1,4 +1,3 @@
-import { renderHook, waitFor } from "@testing-library/react";
 import useDeleteSongMutation from "@/hooks/data/useDeleteSongMutation";
 import { createClient } from "@/libs/supabase/client";
 import { renderHookWithQueryClient } from "../../test-utils";
@@ -35,7 +34,7 @@ jest.mock("react-hot-toast", () => ({
 }));
 
 describe("hooks/data/useDeleteSongMutation", () => {
-  let mockSupabase: any;
+  let mockSupabase: { from: jest.Mock };
   let mockDelete: jest.Mock;
   let mockSelect: jest.Mock;
 

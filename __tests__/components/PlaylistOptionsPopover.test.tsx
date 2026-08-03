@@ -2,7 +2,6 @@ import * as React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createClient } from "@/libs/supabase/client";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
 

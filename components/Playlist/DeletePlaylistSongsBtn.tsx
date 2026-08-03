@@ -39,7 +39,7 @@ const DeletePlaylistSongsBtn: React.FC<DeletePlaylistSongsBtnProps> = ({
       <div className="p-2 border border-red-500/20 group-hover:border-red-500 transition-colors mr-3">
         <RiDeleteBin5Line size={18} />
       </div>
-      {showText && <span className="text-[10px] font-black tracking-widest">// PURGE_ENTRY</span>}
+      {showText && <span className="text-[10px] font-black tracking-widest">{"// PURGE_ENTRY"}</span>}
     </button>
   );
 };

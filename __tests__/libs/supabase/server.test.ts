@@ -1,11 +1,19 @@
 import { createClient } from "@/libs/supabase/server";
 
 // Track the cookies config passed to createServerClient
-let capturedConfig: { cookies: { getAll: () => any[]; setAll: (cookies: any[]) => void } } | undefined;
+interface CookiesConfig {
+  cookies: {
+    getAll: () => { name: string; value: string }[];
+    setAll: (
+      cookies: { name: string; value: string; options: Record<string, unknown> }[]
+    ) => void;
+  };
+}
+let capturedConfig: CookiesConfig | undefined;
 
-// next/headers のモック
+// next/headers �̃��b�N
 const mockCookieStore = {
-  getAll: jest.fn(() => []),
+  getAll: jest.fn<{ name: string; value: string }[], []>(() => []),
   set: jest.fn(),
 };
 
@@ -13,17 +21,20 @@ jest.mock("next/headers", () => ({
   cookies: jest.fn(() => mockCookieStore),
 }));
 
-// @supabase/ssr のモック
-const mockCreateServerClient = jest.fn((...args: any[]) => {
-  capturedConfig = args[2];
-  return {
-    auth: { getSession: jest.fn() },
-    from: jest.fn(() => ({ select: jest.fn() })),
-  };
-});
+// @supabase/ssr �̃��b�N
+const mockCreateServerClient = jest.fn(
+  (...args: [url: string, key: string, options: CookiesConfig]) => {
+    capturedConfig = args[2];
+    return {
+      auth: { getSession: jest.fn() },
+      from: jest.fn(() => ({ select: jest.fn() })),
+    };
+  }
+);
 
 jest.mock("@supabase/ssr", () => ({
-  createServerClient: (...args: string[]) => mockCreateServerClient(...args),
+  createServerClient: (...args: [string, string, CookiesConfig]) =>
+    mockCreateServerClient(...args),
 }));
 
 describe("libs/supabase/server", () => {
@@ -65,7 +76,7 @@ describe("libs/supabase/server", () => {
   describe("cookies.getAll", () => {
     it("cookieStore.getAllを呼び出して結果を返す", async () => {
       const mockCookiesArray = [{ name: "session", value: "abc123" }];
-      mockCookieStore.getAll.mockReturnValue(mockCookiesArray as any);
+      mockCookieStore.getAll.mockReturnValue(mockCookiesArray);
 
       await createClient();
       const getAll = capturedConfig!.cookies.getAll;

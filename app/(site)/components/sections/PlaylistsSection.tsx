@@ -23,7 +23,7 @@ const PlaylistsSection: React.FC<PlaylistsSectionProps> = ({
             FEATURED_PLAYLISTS
           </h2>
           <p className="text-[10px] text-theme-500/60 mt-1 font-mono tracking-widest uppercase">
-            // COMMUNITY_DATA_SYNC_SUCCESS
+            {"// COMMUNITY_DATA_SYNC_SUCCESS"}
           </p>
         </div>
       </div>

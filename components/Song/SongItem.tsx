@@ -69,7 +69,7 @@ const SongItem: React.FC<SongItemProps> = memo(({ onClick, data }) => {
           </Link>
 
           <p className="text-theme-500/60 text-[8px] truncate uppercase tracking-tighter group-hover:text-theme-300 transition-colors">
-            // AUTH: {data.author}
+            {"// AUTH: "}{data.author}
           </p>
 
           <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-500/10">
