@@ -5,7 +5,6 @@ import Image from "next/image";
 
 interface GenreCardProps {
   genre: string;
-  color: string;
 }
 
 const GenreCard: React.FC<GenreCardProps> = memo(({ genre }) => {
