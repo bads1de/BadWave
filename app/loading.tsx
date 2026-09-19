@@ -1,15 +1,12 @@
 "use client";
 
+import GridBackground from "@/components/common/GridBackground";
+
 const Loading = () => {
   return (
     <div className="h-full w-full flex items-center justify-center bg-[#0a0a0f] relative overflow-hidden font-mono">
       {/* 背景装飾 */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-             backgroundSize: '40px 40px'
-           }} 
-      />
+      <GridBackground />
       <div className="absolute inset-0 pointer-events-none opacity-5 bg-[length:100%_2px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
 
       <div className="relative z-10 flex flex-col items-center gap-6 p-12 border border-theme-500/20 bg-[#0a0a0f]/80 backdrop-blur-xl shadow-[0_0_50px_rgba(var(--theme-500),0.1)]">

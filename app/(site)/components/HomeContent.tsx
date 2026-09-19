@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { Song, Spotlight, Playlist } from "@/types";
 import HomeHeader from "@/components/Header/HomeHeader";
 import useMobilePlayer from "@/hooks/player/useMobilePlayer";
@@ -46,11 +47,11 @@ const HomeContent: React.FC<HomeClientProps> = ({
     <div className="flex bg-[#0a0a0f] h-full overflow-hidden font-mono">
       <div className="w-full h-full overflow-y-auto custom-scrollbar relative">
         {/* 背景装飾 */}
-        <div className="fixed inset-0 opacity-[0.03] pointer-events-none" 
-             style={{ 
-               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-               backgroundSize: '100px 100px'
-             }} 
+        <GridBackground
+          cellSize="100px 100px"
+          lineOpacity={0.5}
+          opacity={0.03}
+          className="fixed"
         />
         
         {isMobile && !isMobilePlayer && (

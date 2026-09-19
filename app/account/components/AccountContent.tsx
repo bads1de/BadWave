@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { createClient } from "@/libs/supabase/client";
@@ -46,13 +47,7 @@ const AccountContent = () => {
         <div className="absolute bottom-0 right-0 w-8 md:w-16 h-8 md:h-16 border-b-2 border-r-2 border-theme-500/40 pointer-events-none rounded-br-2xl" />
 
         {/* スキャンライン / グリッド背景 */}
-        <div
-          className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-            backgroundSize: "20px 20px",
-          }}
-        />
+        <GridBackground cellSize="20px 20px" />
 
         <div className="relative flex flex-col md:flex-row items-center md:items-center gap-6 md:gap-10">
           <div className="relative group/avatar">

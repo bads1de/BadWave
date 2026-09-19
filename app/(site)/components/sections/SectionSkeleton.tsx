@@ -1,5 +1,6 @@
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import SectionHeader from "@/components/common/SectionHeader";
 
 type SectionType =
   | "trend"
@@ -30,26 +31,11 @@ interface SkeletonSectionProps {
  * @param type - セクションタイプ（指定するとそのセクション専用のスケルトンが表示される）
  */
 
-// 基本のセクションヘッダー (Cyberpunk Style)
-const SectionHeader: React.FC<SkeletonSectionProps> = ({ title, description }) => (
-  <div className="flex items-center gap-x-4 mb-6 animate-pulse">
-    <div className="h-10 w-1 bg-theme-500 shadow-[0_0_15px_rgba(var(--theme-500),0.8)]" />
-    <div>
-      <h2 className="text-3xl font-bold text-white tracking-[0.2em] uppercase font-mono drop-shadow-[0_0_8px_rgba(var(--theme-500),0.5)]">
-        {title}
-      </h2>
-      <p className="text-[10px] text-theme-500/60 mt-1 font-mono tracking-widest uppercase">
-        {"// "}{description}
-      </p>
-    </div>
-  </div>
-);
-
 // トレンドセクション用スケルトン
 const TrendSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, description }) => (
   <section className="relative">
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-      <SectionHeader title={title} description={description} />
+      <SectionHeader title={title} subtitle={description} className="animate-pulse" />
       <div
         data-testid="trend-period-selector-skeleton"
         className="flex space-x-2 bg-theme-900/20 p-1 border border-theme-500/20"
@@ -88,7 +74,7 @@ const TrendSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, descripti
 // スポットライトセクション用スケルトン
 const SpotlightSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, description }) => (
   <section>
-    <SectionHeader title={title} description={description} />
+    <SectionHeader title={title} subtitle={description} className="animate-pulse" />
     <div className="flex space-x-4 overflow-hidden p-6 bg-[#0a0a0f]/40 border border-theme-500/10 rounded-xl">
       {[1, 2, 3, 4, 5].map((i) => (
         <div
@@ -106,7 +92,7 @@ const SpotlightSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, descr
 // 曲カードスケルトン（Latest, ForYou共通）
 const SongCardsSkeleton: React.FC<SkeletonSectionProps> = ({ title, description }) => (
   <section>
-    <SectionHeader title={title} description={description} />
+    <SectionHeader title={title} subtitle={description} className="animate-pulse" />
     <div className="flex space-x-4 overflow-hidden">
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div
@@ -128,7 +114,7 @@ const SongCardsSkeleton: React.FC<SkeletonSectionProps> = ({ title, description 
 // プレイリストセクション用スケルトン
 const PlaylistsSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, description }) => (
   <section>
-    <SectionHeader title={title} description={description} />
+    <SectionHeader title={title} subtitle={description} className="animate-pulse" />
     <div className="flex space-x-4 overflow-hidden">
       {[1, 2, 3, 4, 5].map((i) => (
         <div
@@ -150,7 +136,7 @@ const PlaylistsSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, descr
 // ジャンルセクション用スケルトン
 const GenreSectionSkeleton: React.FC<SkeletonSectionProps> = ({ title, description }) => (
   <section>
-    <SectionHeader title={title} description={description} />
+    <SectionHeader title={title} subtitle={description} className="animate-pulse" />
     <div className="flex space-x-4 overflow-hidden p-8 bg-[#0a0a0f]/60 border-y border-theme-500/10">
       {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
         <div
@@ -183,7 +169,11 @@ const SectionSkeleton: React.FC<SectionSkeletonProps> = ({
   // タイプが指定されていない場合は汎用的なスケルトンを返す
   return (
     <section>
-      <SectionHeader {...headerProps} />
+      <SectionHeader
+        title={title}
+        subtitle={description}
+        className="animate-pulse"
+      />
       <Skeleton className={`w-full ${height}`} />
     </section>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { motion, AnimatePresence } from "framer-motion";
 import { SPRING_CONFIG } from "@/constants";
 import { BsChevronDown } from "react-icons/bs";
@@ -53,13 +54,7 @@ const LyricsDrawer: React.FC<LyricsDrawerProps> = ({
         >
           <div className="w-full h-full bg-[#0a0a0f] border-t-2 border-theme-500/40 shadow-[0_-15px_50px_rgba(0,0,0,0.9),0_-5px_20px_rgba(var(--theme-500),0.15)] overflow-hidden relative flex flex-col">
             {/* スキャンライン / グリッド装飾 */}
-            <div
-              className="absolute inset-0 opacity-[0.03] pointer-events-none"
-              style={{
-                backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-                backgroundSize: "20px 20px",
-              }}
-            />
+            <GridBackground cellSize="20px 20px" lineOpacity={0.5} opacity={0.03} />
             <div className="absolute inset-0 pointer-events-none opacity-5 bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
 
             {/* HUDコーナー */}

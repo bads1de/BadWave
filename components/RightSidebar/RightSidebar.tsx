@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import GridBackground from "@/components/common/GridBackground";
 import usePlayer from "@/hooks/player/usePlayer";
 import useGetSongById from "@/hooks/data/useGetSongById";
 import FullScreenLayout from "./FullScreenLayout";
@@ -37,12 +38,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ children }) => {
           )}
         >
           {/* 背景装飾 */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-               style={{ 
-                 backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-                 backgroundSize: '40px 40px'
-               }} 
-          />
+          <GridBackground lineOpacity={0.5} opacity={0.03} />
           
           <FullScreenLayout
             song={currentSong!}

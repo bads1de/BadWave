@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, memo, useCallback } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import Image from "next/image";
 import useGetTopPlayedSongs from "@/hooks/data/useGetTopPlayedSongs";
 import useOnPlay from "@/hooks/player/useOnPlay";
@@ -40,12 +41,7 @@ const TopPlayedSongs: React.FC<TopPlayedSongsProps> = memo(({ user }) => {
   return (
     <div className="bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/20 shadow-[inset_0_0_20px_rgba(var(--theme-500),0.05)] rounded-none p-6 font-mono relative overflow-hidden group">
       {/* 背景装飾 */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-             backgroundSize: '30px 30px'
-           }} 
-      />
+      <GridBackground cellSize="30px 30px" lineOpacity={0.5} opacity={0.03} />
       
       {/* HUDコーナー */}
       <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/40" />

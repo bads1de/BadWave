@@ -1,7 +1,9 @@
+"use server";
+
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
 import { extractSongsFromJoin } from "@/libs/song/songUtils";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -28,10 +30,7 @@ const getLikedSongs = async (): Promise<Song[]> => {
     .eq("user_id", user?.id) // ユーザーIDで絞り込み
     .order("created_at", { ascending: false }); // 作成日時で降順ソート
 
-  if (error) {
-    console.error("Error fetching liked songs:", error);
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching liked songs");
 
   // データがなければ空の配列を返す
   if (!data) return [];

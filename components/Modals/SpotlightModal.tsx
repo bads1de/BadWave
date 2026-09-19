@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { Dialog } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import useSpotlightModal from "@/hooks/modal/useSpotlightModal";
@@ -70,12 +71,7 @@ const SpotlightModal = () => {
       <div className="fixed inset-0 bg-[#0a0a0f]/90 z-50 backdrop-blur-xl transition-all duration-500 font-mono">
         <div className="fixed inset-0 overflow-y-auto">
           {/* 背景装飾 */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-               style={{ 
-                 backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-                 backgroundSize: '100px 100px'
-               }} 
-          />
+          <GridBackground cellSize="100px 100px" lineOpacity={0.5} opacity={0.03} />
           
           <div className="flex min-h-full items-center justify-center p-4 md:p-10 pb-24 md:pb-32">
             <div className="relative w-full max-w-6xl mx-auto flex flex-col md:flex-row bg-[#0a0a0f] h-[85vh] md:h-[80vh] rounded-none overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.9),0_0_20px_rgba(var(--theme-500),0.1)] border border-theme-500/30 cyber-glitch">

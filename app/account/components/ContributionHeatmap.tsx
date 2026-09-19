@@ -1,6 +1,7 @@
 "use client";
 
 import React, { memo, useMemo } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import type { DailyActivity } from "@/types/stats";
 
 interface ContributionHeatmapProps {
@@ -121,12 +122,7 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = memo(
     return (
       <div className="bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/20 rounded-none p-8 font-mono relative overflow-hidden group">
         {/* 背景装飾 */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-             style={{ 
-               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-               backgroundSize: '20px 20px'
-             }} 
-        />
+        <GridBackground cellSize="20px 20px" lineOpacity={0.5} opacity={0.03} />
         
         {/* HUDコーナー */}
         <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-theme-500/40" />

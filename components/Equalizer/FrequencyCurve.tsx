@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { EqBand } from "@/hooks/stores/useEqualizerStore";
 
 interface FrequencyCurveProps {
@@ -73,13 +74,7 @@ const FrequencyCurve: React.FC<FrequencyCurveProps> = ({
   return (
     <div className="relative group overflow-hidden bg-[#0a0a0f] border border-theme-500/20 p-2 shadow-[inset_0_0_15px_rgba(var(--theme-500),0.05)]">
       {/* HUD装飾背景 */}
-      <div
-        className="absolute inset-0 opacity-5 pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-          backgroundSize: "10px 10px",
-        }}
-      />
+      <GridBackground cellSize="10px 10px" opacity={0.05} />
 
       {/* テクニカルラベル */}
       <div className="absolute top-1 left-2 text-[8px] font-mono text-theme-500/60 uppercase tracking-widest z-10">

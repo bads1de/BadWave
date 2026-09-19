@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -17,10 +17,7 @@ const getPublicPlaylists = async (limit: number = 6): Promise<Playlist[]> => {
     .order("created_at", { ascending: false })
     .limit(limit);
 
-  if (error) {
-    console.error("Error fetching public playlists:", getErrorMessage(error));
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching public playlists");
 
   return (data as Playlist[]) || [];
 };

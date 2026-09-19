@@ -11,3 +11,17 @@ export function getErrorMessage(error: unknown, fallback = "Unknown error"): str
   }
   return fallback;
 }
+
+/**
+ * Supabaseクエリが返したエラーを検査し、エラーがあればログ出力して例外を投げる
+ * 各Server Actionで重複していたエラーハンドリングを一元化する
+ * @param error - Supabaseから返されたエラー
+ * @param context - ログに含めるエラー発生箇所
+ */
+export function throwOnSupabaseError(error: unknown, context: string): void {
+  if (!error) return;
+
+  const message = getErrorMessage(error);
+  console.error(`${context}:`, message);
+  throw new Error(message);
+}

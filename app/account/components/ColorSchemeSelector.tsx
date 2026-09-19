@@ -1,6 +1,7 @@
 "use client";
 
 import { colorSchemes } from "@/constants/colorSchemes";
+import GridBackground from "@/components/common/GridBackground";
 import useColorSchemeStore from "@/hooks/stores/useColorSchemeStore";
 import { motion } from "framer-motion";
 import { HiCheck } from "react-icons/hi";
@@ -11,13 +12,7 @@ const ColorSchemeSelector = () => {
   return (
     <div className="relative overflow-hidden bg-[#0a0a0f]/80 backdrop-blur-xl border border-theme-500/30 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-none p-5 md:p-8 font-mono group">
       {/* 背景装飾 */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
-        }}
-      />
+      <GridBackground cellSize="20px 20px" lineOpacity={0.5} opacity={0.03} />
 
       {/* HUDコーナー */}
       <div className="absolute top-0 right-0 w-6 md:w-8 h-6 md:h-8 border-t border-r border-theme-500/40" />

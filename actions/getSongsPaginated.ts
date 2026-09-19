@@ -2,7 +2,7 @@
 
 import { Song, type PaginatedSongsResult } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -28,10 +28,9 @@ const getSongsPaginated = async (
     supabase.from(TABLES.SONGS).select("*", { count: "exact", head: true }),
   ]);
 
-  if (songsResult.error) {
-    console.error("Error fetching songs:", getErrorMessage(songsResult.error));
-    throw new Error(getErrorMessage(songsResult.error));
-  }
+  // 曲取得・件数取得の両方のエラーを検査する
+  throwOnSupabaseError(songsResult.error, "Error fetching songs");
+  throwOnSupabaseError(countResult.error, "Error fetching songs count");
 
   const totalCount = countResult.count || 0;
   const totalPages = Math.ceil(totalCount / pageSize);

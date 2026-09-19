@@ -1,6 +1,7 @@
 "use client";
 
 import React, { memo } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { DURATIONS } from "@/constants";
@@ -50,12 +51,7 @@ const PlaylistHeader: React.FC<PlaylistHeaderProps> = memo(
         {/* グラデーションオーバーレイ */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-theme-900/40 to-[#0a0a0f]/90" />
         {/* スキャンライン / グリッド効果 */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none" 
-             style={{ 
-               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.1) 1px, transparent 1px)`,
-               backgroundSize: '30px 30px'
-             }} 
-        />
+        <GridBackground cellSize="30px 30px" lineOpacity={0.1} opacity={0.2} />
         {/* コンテンツ */}
         <div className="relative h-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex items-end">
           <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-x-8 w-full">

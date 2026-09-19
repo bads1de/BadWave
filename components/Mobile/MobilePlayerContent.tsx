@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import Image from "next/image";
 import { BsPauseFill, BsPlayFill, BsChevronDown } from "react-icons/bs";
 import { Mic2 } from "lucide-react";
@@ -106,13 +107,7 @@ const MobilePlayerContent = React.memo(
           )}
           {/* Cyberpunk Overlay Effects */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-transparent to-[#0a0a0f]" />
-          <div
-            className="absolute inset-0 opacity-10 pointer-events-none"
-            style={{
-              backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-              backgroundSize: "30px 30px",
-            }}
-          />
+          <GridBackground cellSize="30px 30px" />
           <div className="absolute inset-0 pointer-events-none opacity-5 bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
         </div>
 

@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -24,10 +24,7 @@ const getPlaylists = async (): Promise<Playlist[]> => {
     .eq("user_id", user?.id)
     .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error(`Failed to fetch playlists: ${getErrorMessage(error)}`);
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Failed to fetch playlists");
 
   return (data as Playlist[]) || [];
 };

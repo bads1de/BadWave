@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Playlist } from "@/types";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -25,10 +25,7 @@ const getPlaylistsByTitle = async (title: string) => {
     .ilike("title", `%${title}%`) // タイトルで検索
     .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Error fetching playlists:", error);
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching playlists");
 
   return {
     playlists: (data as Playlist[]) || [],

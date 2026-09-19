@@ -2,7 +2,7 @@
 
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 import { subMonths, subWeeks, subDays } from "date-fns";
 
@@ -38,10 +38,7 @@ const getTrendSongs = async (
     .order("count", { ascending: false })
     .limit(10);
 
-  if (error) {
-    console.error("Error fetching trend songs:", getErrorMessage(error));
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching trend songs");
 
   return (data as Song[]) || [];
 };

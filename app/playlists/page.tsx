@@ -1,4 +1,5 @@
 import Header from "@/components/Header/Header";
+import GridBackground from "@/components/common/GridBackground";
 import getPlaylists from "@/actions/getPlaylists";
 import PlaylistContent from "./components/PlaylistContent";
 
@@ -9,13 +10,7 @@ const Playlist = async () => {
     <div className="bg-[#0a0a0f] h-full w-full overflow-hidden overflow-y-auto custom-scrollbar font-mono">
       <Header className="relative overflow-hidden">
         {/* 背景装飾 */}
-        <div
-          className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
+        <GridBackground />
         <div className="mt-20 relative z-10 px-8">
           <div className="flex flex-col gap-y-3 max-w-full">
             <p className="text-theme-500 text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.5em] uppercase animate-pulse break-words">

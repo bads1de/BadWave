@@ -1,7 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 import { parseGenres } from "@/libs/song/songUtils";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -21,10 +21,7 @@ const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
     .or(genreArray.map((genre) => `genre.ilike.%${genre}%`).join(","))
     .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Error fetching songs by genre:", getErrorMessage(error));
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching songs by genre");
 
   return (data as Song[]) || [];
 };

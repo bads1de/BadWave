@@ -1,6 +1,7 @@
 "use client";
 
 import { twMerge } from "tailwind-merge";
+import GridBackground from "@/components/common/GridBackground";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { HiHome } from "react-icons/hi";
@@ -129,13 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         )}
       >
         {/* スキャンライン / グリッド装飾 */}
-        <div
-          className="absolute inset-0 opacity-5 pointer-events-none"
-          style={{
-            backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.1) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
+        <GridBackground lineOpacity={0.1} opacity={0.05} />
 
         <div className="flex items-center justify-between px-2 py-3 relative z-10">
           <div className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 import { Playlist } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -17,10 +17,7 @@ const getPlaylist = async (playlistId: string): Promise<Playlist | null> => {
     .eq("id", playlistId)
     .maybeSingle();
 
-  if (error) {
-    console.error("Error fetching playlist:", error);
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching playlist");
 
   return playlist;
 };

@@ -1,6 +1,6 @@
 import { Song } from "@/types";
 import { createClient } from "@/libs/supabase/server";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -16,10 +16,7 @@ const getSongs = async (): Promise<Song[]> => {
     .order("created_at", { ascending: false })
     .limit(12);
 
-  if (error) {
-    console.error("Error fetching songs:", getErrorMessage(error));
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching songs");
 
   return (data as Song[]) || [];
 };

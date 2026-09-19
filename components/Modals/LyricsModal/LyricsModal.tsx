@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import GridBackground from "@/components/common/GridBackground";
 import * as Dialog from "@radix-ui/react-dialog";
 import { IoMdClose } from "react-icons/io";
 import { HiOutlineQueueList } from "react-icons/hi2";
@@ -68,12 +69,7 @@ const LyricsModal: React.FC<LyricsModalProps> = ({ song }) => {
           "
         >
           {/* 背景装飾 */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-               style={{ 
-                 backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-                 backgroundSize: '100px 100px'
-               }} 
-          />
+          <GridBackground cellSize="100px 100px" lineOpacity={0.5} opacity={0.03} />
 
           {/* アクセシビリティ用の非表示タイトル */}
           <Dialog.Title className="sr-only">Lyrics_Interface</Dialog.Title>

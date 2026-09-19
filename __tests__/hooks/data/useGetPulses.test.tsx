@@ -1,14 +1,12 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import useGetPulses from "@/hooks/data/useGetPulses";
-import { createClient } from "@/libs/supabase/client";
+import getPulses from "@/actions/getPulses";
 import React from "react";
 import { Pulse } from "@/types";
 
 // Mock Dependencies
-jest.mock("@/libs/supabase/client", () => ({
-  createClient: jest.fn(),
-}));
+jest.mock("@/actions/getPulses");
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -21,19 +19,15 @@ const createTestQueryClient = () =>
 
 describe("useGetPulses", () => {
   let queryClient: QueryClient;
-  const mockSupabase = {
-    from: jest.fn(),
-  };
 
   beforeEach(() => {
     queryClient = createTestQueryClient();
-    (createClient as jest.Mock).mockReturnValue(mockSupabase);
-    mockSupabase.from.mockReset();
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
   });
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 
   it("should return initial data when provided", async () => {
     const initialData: Pulse[] = [
@@ -45,25 +39,16 @@ describe("useGetPulses", () => {
       },
     ];
 
-    const { result } = renderHook(() => useGetPulses(initialData), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      ),
-    });
+    const { result } = renderHook(() => useGetPulses(initialData), { wrapper });
 
     // 初期データがあるのですぐに結果が返る
     expect(result.current.pulses).toEqual(initialData);
     expect(result.current.isLoading).toBe(false);
+    // 初期データがある場合は再取得しない
+    expect(getPulses).not.toHaveBeenCalled();
   });
 
-  it("should fetch pulses when no initial data provided", async () => {
-    const mockOrder = jest.fn();
-    const mockSelect = jest.fn(() => ({ order: mockOrder }));
-
-    mockSupabase.from.mockReturnValue({ select: mockSelect });
-
+  it("should fetch pulses via the server action when no initial data provided", async () => {
     const mockData: Pulse[] = [
       {
         id: "pulse-1",
@@ -73,48 +58,22 @@ describe("useGetPulses", () => {
       },
     ];
 
-    mockOrder.mockResolvedValue({
-      data: mockData,
-      error: null,
-    });
+    (getPulses as jest.Mock).mockResolvedValue(mockData);
 
-    const { result } = renderHook(() => useGetPulses([]), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      ),
-    });
+    const { result } = renderHook(() => useGetPulses([]), { wrapper });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    expect(mockSupabase.from).toHaveBeenCalledWith("pulses");
-    expect(mockSelect).toHaveBeenCalledWith("*");
-    expect(mockOrder).toHaveBeenCalledWith("created_at", { ascending: false });
-
+    expect(getPulses).toHaveBeenCalledTimes(1);
     expect(result.current.pulses).toEqual(mockData);
   });
 
-  it("should handle error correctly", async () => {
-    const mockOrder = jest.fn();
-    const mockSelect = jest.fn(() => ({ order: mockOrder }));
+  it("should propagate the server action error", async () => {
+    (getPulses as jest.Mock).mockRejectedValue(new Error("Database error"));
 
-    mockSupabase.from.mockReturnValue({ select: mockSelect });
-
-    mockOrder.mockResolvedValue({
-      data: null,
-      error: { message: "Database error" },
-    });
-
-    const { result } = renderHook(() => useGetPulses([]), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      ),
-    });
+    const { result } = renderHook(() => useGetPulses([]), { wrapper });
 
     await waitFor(() => expect(result.current.error).toBeTruthy());
-    expect(result.current.error?.message).toBe("Pulseの取得に失敗しました");
+    expect(result.current.error?.message).toBe("Database error");
   });
 });

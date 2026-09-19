@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -59,12 +60,7 @@ export default function AllSongsPage() {
   return (
     <div className="flex bg-[#0a0a0f] h-full overflow-hidden font-mono relative">
       {/* グローバル装飾 */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-             backgroundSize: '100px 100px'
-           }} 
-      />
+      <GridBackground cellSize="100px 100px" lineOpacity={0.5} opacity={0.02} />
 
       <div className="w-full h-full overflow-y-auto custom-scrollbar relative z-10">
         <main className="px-8 py-12 pb-32 max-w-[1600px] mx-auto">

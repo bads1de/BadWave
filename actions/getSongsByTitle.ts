@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
-import { getErrorMessage } from "@/libs/utils/error";
+import { throwOnSupabaseError } from "@/libs/utils/error";
 import { TABLES } from "@/constants";
 
 /**
@@ -23,10 +23,7 @@ const getSongsByTitle = async (title: string) => {
 
   const { data, error } = await query.limit(20); // 必要な数だけ取得
 
-  if (error) {
-    console.error("Error fetching songs:", error);
-    throw new Error(getErrorMessage(error));
-  }
+  throwOnSupabaseError(error, "Error fetching songs");
 
   return {
     songs: (data as Song[]) || [],

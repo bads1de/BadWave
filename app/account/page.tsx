@@ -1,17 +1,12 @@
 import AccountContent from "./components/AccountContent";
+import GridBackground from "@/components/common/GridBackground";
 
 const Account = () => {
   return (
     <div className="bg-[#0a0a0f] h-full w-full overflow-hidden font-mono">
       <div className="h-full overflow-y-auto custom-scrollbar relative">
         {/* 背景装飾 */}
-        <div
-          className="absolute inset-0 opacity-5 pointer-events-none"
-          style={{
-            backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-            backgroundSize: "100px 100px",
-          }}
-        />
+        <GridBackground cellSize="100px 100px" opacity={0.05} />
 
         <div className="px-8 py-12 md:px-16 space-y-12 relative z-10">
           <div className="space-y-2 border-l-4 border-theme-500 pl-4 md:pl-6 max-w-full">

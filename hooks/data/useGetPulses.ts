@@ -1,38 +1,26 @@
 "use client";
 
 import { Pulse } from "@/types";
-import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import getPulses from "@/actions/getPulses";
 
 /**
  * Pulseデータを取得するカスタムフック
+ *
+ * Server Action を単一の情報源として利用する。
  *
  * @param initialData - サーバーから取得した初期データ（オプション）
  * @returns Pulseのリストとローディング状態
  */
 const useGetPulses = (initialData: Pulse[] = []) => {
-  const supabaseClient = createClient();
-
   const {
     data: pulses = [],
     isLoading,
     error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.pulse],
-    queryFn: async () => {
-      const { data, error } = await supabaseClient
-        .from(TABLES.PULSES)
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching pulses:", error);
-        throw new Error("Pulseの取得に失敗しました");
-      }
-
-      return (data as Pulse[]) || [];
-    },
+    queryFn: () => getPulses(),
     initialData: initialData.length > 0 ? initialData : undefined,
     staleTime: CACHE_CONFIG.staleTime,
     gcTime: CACHE_CONFIG.gcTime,

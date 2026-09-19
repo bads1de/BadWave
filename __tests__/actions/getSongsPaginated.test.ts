@@ -79,4 +79,23 @@ describe("actions/getSongsPaginated", () => {
     expect(consoleSpy).toHaveBeenCalled();
     consoleSpy.mockRestore();
   });
+
+  it("should handle db error in count result (previously swallowed)", async () => {
+    mockRange.mockResolvedValue({
+      data: [{ id: "1", title: "Song 1" }],
+      error: null,
+    });
+    mockCountSelect.mockResolvedValue({
+      count: null,
+      error: { message: "Count Error" },
+    });
+
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation();
+    await expect(getSongsPaginated()).rejects.toThrow("Count Error");
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error fetching songs count:",
+      "Count Error"
+    );
+    consoleSpy.mockRestore();
+  });
 });

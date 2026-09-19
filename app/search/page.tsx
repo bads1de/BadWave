@@ -1,4 +1,5 @@
 import getSongsByTitle from "@/actions/getSongsByTitle";
+import GridBackground from "@/components/common/GridBackground";
 import Header from "@/components/Header/Header";
 import SearchInput from "@/components/common/SearchInput";
 import SearchContent from "./components/SearchContent";
@@ -19,12 +20,7 @@ const Search = async (props: SearchProps) => {
     <div className="bg-[#0a0a0f] h-full w-full overflow-hidden overflow-y-auto custom-scrollbar font-mono">
       <Header className="sticky top-0 z-10 relative overflow-hidden">
         {/* 背景装飾 */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none" 
-             style={{ 
-               backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-               backgroundSize: '40px 40px'
-             }} 
-        />
+        <GridBackground />
         <div className="flex flex-col gap-y-6 relative z-10 px-4">
           <div className="flex flex-col gap-y-1">
             <p className="text-[10px] text-theme-500/60 tracking-[0.4em] uppercase">

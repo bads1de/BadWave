@@ -1,38 +1,26 @@
 "use client";
 
 import { Spotlight } from "@/types";
-import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
+import { CACHE_CONFIG, CACHED_QUERIES } from "@/constants";
+import getSpotlight from "@/actions/getSpotlight";
 
 /**
  * スポットライトデータを取得するカスタムフック
+ *
+ * Server Action を単一の情報源として利用する。
  *
  * @param initialData - サーバーから取得した初期データ（オプション）
  * @returns スポットライトのリストとローディング状態
  */
 const useGetSpotlight = (initialData: Spotlight[] = []) => {
-  const supabaseClient = createClient();
-
   const {
     data: spotlights = [],
     isLoading,
     error,
   } = useQuery({
     queryKey: [CACHED_QUERIES.spotlight],
-    queryFn: async () => {
-      const { data, error } = await supabaseClient
-        .from(TABLES.SPOTLIGHTS)
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching spotlights:", error);
-        throw new Error("スポットライトの取得に失敗しました");
-      }
-
-      return (data as Spotlight[]) || [];
-    },
+    queryFn: () => getSpotlight(),
     initialData: initialData.length > 0 ? initialData : undefined,
     staleTime: CACHE_CONFIG.staleTime,
     gcTime: CACHE_CONFIG.gcTime,

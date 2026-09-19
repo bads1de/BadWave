@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { useRouter } from "next/navigation";
 
 const ErrorPage = ({
@@ -23,11 +24,10 @@ const ErrorPage = ({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0f] p-8 relative overflow-hidden font-mono">
       {/* 背景装飾 */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(239, 68, 68, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(239, 68, 68, 0.2) 1px, transparent 1px)`,
-             backgroundSize: '20px 20px'
-           }} 
+      <GridBackground
+        cellSize="20px 20px"
+        color="239, 68, 68"
+        opacity={0.2}
       />
       <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none" />
 

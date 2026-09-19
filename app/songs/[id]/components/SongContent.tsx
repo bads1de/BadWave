@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, memo } from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Heart, Clock, Music2, ClipboardCopy } from "lucide-react";
 import { MdLyrics } from "react-icons/md";
@@ -106,12 +107,11 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white font-mono relative overflow-hidden">
       {/* 背景装飾 */}
-      <div
-        className="fixed inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.5) 1px, transparent 1px)`,
-          backgroundSize: "100px 100px",
-        }}
+      <GridBackground
+        cellSize="100px 100px"
+        lineOpacity={0.5}
+        opacity={0.03}
+        className="fixed"
       />
 
       {/* Hero Section (HUD Analysis Style) */}

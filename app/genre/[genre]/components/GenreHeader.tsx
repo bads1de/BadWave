@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import GridBackground from "@/components/common/GridBackground";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { DURATIONS } from "@/constants";
@@ -101,12 +102,7 @@ const GenreHeader: React.FC<GenreHeaderProps> = ({ genre }) => {
       </div>
       
       {/* 背景装飾 */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(var(--theme-500), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-500), 0.2) 1px, transparent 1px)`,
-             backgroundSize: '40px 40px'
-           }} 
-      />
+      <GridBackground />
       <div className="absolute inset-0 pointer-events-none opacity-5 bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
 
       {/* グラデーションオーバーレイ */}

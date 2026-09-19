@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GridBackground from "@/components/common/GridBackground";
 import React, { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -107,12 +108,7 @@ const GenreCard: React.FC<GenreCardProps> = memo(({ genre }) => {
 
           {/* スキャンライン / グリッド */}
           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[length:100%_4px] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.5)_50%)]" />
-          <div className="absolute inset-0 opacity-5 pointer-events-none" 
-               style={{ 
-                 backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)`,
-                 backgroundSize: '20px 20px'
-               }} 
-          />
+          <GridBackground cellSize="20px 20px" color="255, 255, 255" opacity={0.05} />
 
           {/* HUDコーナー */}
           <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-white/20 group-hover:border-theme-500 transition-colors" />
