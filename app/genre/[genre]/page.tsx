@@ -1,6 +1,7 @@
 import getSongsByGenre from "@/actions/getSongsByGenre";
 import GenreContent from "./components/GenreContent";
 import GenreHeader from "./components/GenreHeader";
+import { safeDecodeURIComponent } from "@/libs/utils/utils";
 
 interface genreProps {
   params: Promise<{
@@ -11,7 +12,7 @@ interface genreProps {
 const page = async (props: genreProps) => {
   const params = await props.params;
   const { genre } = params;
-  const decodedGenre = decodeURIComponent(genre);
+  const decodedGenre = safeDecodeURIComponent(genre);
   const songs = await getSongsByGenre(decodedGenre);
 
   return (

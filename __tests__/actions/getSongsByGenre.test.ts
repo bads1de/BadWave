@@ -50,4 +50,21 @@ describe("actions/getSongsByGenre", () => {
     // ["Jazz", "Blues"] -> "genre.ilike.%Jazz%,genre.ilike.%Blues%"
     expect(mockOr).toHaveBeenCalledWith("genre.ilike.%Jazz%,genre.ilike.%Blues%");
   });
+
+  it("should return an empty array without querying when the genre is empty", async () => {
+    const result = await getSongsByGenre("");
+
+    expect(result).toEqual([]);
+    expect(createClient).not.toHaveBeenCalled();
+    expect(mockOr).not.toHaveBeenCalled();
+  });
+
+  it("should ignore blank entries instead of matching every song", async () => {
+    mockOrder.mockResolvedValue({ data: [], error: null });
+
+    await getSongsByGenre(["Pop", "  "]);
+
+    // 空要素が残ると "genre.ilike.%%" になり全件ヒットしてしまう
+    expect(mockOr).toHaveBeenCalledWith("genre.ilike.%Pop%");
+  });
 });

@@ -10,7 +10,14 @@ import { TABLES } from "@/constants";
  * @returns {Promise<Song[]>} 曲の配列
  */
 const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
-  const genreArray = typeof genre === "string" ? parseGenres(genre) : genre;
+  const genreArray =
+    typeof genre === "string"
+      ? parseGenres(genre)
+      : (genre ?? []).map((g) => g.trim()).filter(Boolean);
+
+  // ジャンルが未指定の場合は空で返す。
+  // `.or("")` は不正なフィルタになり、`genre.ilike.%%` は全件一致になってしまうため。
+  if (genreArray.length === 0) return [];
 
   const supabase = await createClient();
 

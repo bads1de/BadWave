@@ -75,12 +75,27 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   };
 
   useEffect(() => {
-    if (song?.song_path) {
-      const audio = new Audio(song.song_path);
-      audio.addEventListener("loadedmetadata", () => {
-        setDuration(formatTime(audio.duration));
-      });
+    if (!song?.song_path) {
+      return;
     }
+
+    // 長さの取得だけが目的なので、音声本体のダウンロードは抑える
+    const audio = new Audio();
+    audio.preload = "metadata";
+    audio.src = song.song_path;
+
+    const handleLoadedMetadata = () => {
+      setDuration(formatTime(audio.duration));
+    };
+
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+
+    // 曲を切り替えたときに古い要素の読み込みが残らないようにする
+    return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeAttribute("src");
+      audio.load();
+    };
   }, [song?.song_path]);
 
   const handleDownloadClick = async () => {

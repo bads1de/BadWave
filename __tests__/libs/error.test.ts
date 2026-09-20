@@ -48,14 +48,31 @@ describe("libs/utils/error", () => {
       expect(getErrorMessage(error, "Fallback")).toBe("Error wins");
     });
 
-    it("空のmessageを持つオブジェクトの場合は空文字を返す", () => {
-      const error = { message: "" };
-      expect(getErrorMessage(error)).toBe("");
+    it("空のmessageを持つオブジェクトの場合はfallbackを返す", () => {
+      expect(getErrorMessage({ message: "" })).toBe("Unknown error");
+      expect(getErrorMessage({ message: "   " })).toBe("Unknown error");
+    });
+
+    it("空のmessageを持つErrorの場合はfallbackを返す", () => {
+      expect(getErrorMessage(new Error(""))).toBe("Unknown error");
+    });
+
+    it("messageが文字列・数値以外のオブジェクトの場合はfallbackを返す", () => {
+      expect(getErrorMessage({ message: true })).toBe("Unknown error");
+      expect(getErrorMessage({ message: {} })).toBe("Unknown error");
     });
 
     it("messageが数値のオブジェクトの場合は文字列に変換して返す", () => {
       const error = { message: 123 };
       expect(getErrorMessage(error)).toBe("123");
+    });
+
+    it("messageがnullのオブジェクトの場合はfallbackを返す（\"null\"にしない）", () => {
+      expect(getErrorMessage({ message: null })).toBe("Unknown error");
+    });
+
+    it("messageがundefinedのオブジェクトの場合はfallbackを返す（\"undefined\"にしない）", () => {
+      expect(getErrorMessage({ message: undefined })).toBe("Unknown error");
     });
   });
 });
