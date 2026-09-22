@@ -8,11 +8,18 @@ import { createClient } from "@/libs/supabase/client";
 import { CACHED_QUERIES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
+import {
+  applyOptimisticUpdate,
+  rollbackOptimisticUpdate,
+} from "@/libs/query/optimistic";
 import type { ModalHook, Playlist } from "@/types";
 
 interface CreatePlaylistParams {
   title: string;
 }
+
+/** プレイリスト一覧のクエリキー */
+const PLAYLISTS_QUERY_KEY = [CACHED_QUERIES.playlists] as const;
 
 /**
  * プレイリストの作成処理を行うカスタムフック
@@ -48,32 +55,25 @@ const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
 
       return { title };
     },
-    onMutate: async ({ title }) => {
-      await queryClient.cancelQueries({
-        queryKey: [CACHED_QUERIES.playlists],
-      });
-
-      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
-        CACHED_QUERIES.playlists,
-      ]);
-
-      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) => [
-        ...(old || []),
-        {
-          id: `temp_${Date.now()}`,
-          title,
-          is_public: false,
-          user_id: user?.id ?? "",
-          user_name: user?.full_name,
-          created_at: new Date().toISOString(),
-        },
-      ]);
-
-      return { previousPlaylists };
-    },
+    onMutate: ({ title }) =>
+      applyOptimisticUpdate<Playlist[]>(
+        queryClient,
+        PLAYLISTS_QUERY_KEY,
+        (old) => [
+          ...(old || []),
+          {
+            id: `temp_${Date.now()}`,
+            title,
+            is_public: false,
+            user_id: user?.id ?? "",
+            user_name: user?.full_name,
+            created_at: new Date().toISOString(),
+          },
+        ]
+      ),
     onSuccess: () => {
       // キャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      queryClient.invalidateQueries({ queryKey: PLAYLISTS_QUERY_KEY });
 
       // UIを更新
       router.refresh();
@@ -83,12 +83,7 @@ const useCreatePlaylistMutation = (playlistModal: ModalHook) => {
       playlistModal.onClose();
     },
     onError: (_error, _variables, context) => {
-      if (context?.previousPlaylists) {
-        queryClient.setQueryData(
-          [CACHED_QUERIES.playlists],
-          context.previousPlaylists,
-        );
-      }
+      rollbackOptimisticUpdate(queryClient, PLAYLISTS_QUERY_KEY, context);
     },
   });
 };

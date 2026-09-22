@@ -8,6 +8,10 @@ import { createClient } from "@/libs/supabase/client";
 import { CACHED_QUERIES, ROUTES, TABLES } from "@/constants";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { getErrorMessage } from "@/libs/utils/error";
+import {
+  applyOptimisticUpdate,
+  rollbackOptimisticUpdate,
+} from "@/libs/query/optimistic";
 import { Playlist } from "@/types";
 
 interface UpdatePlaylistTitleParams {
@@ -23,6 +27,9 @@ interface TogglePlaylistPublicParams {
 interface DeletePlaylistParams {
   playlistId: string;
 }
+
+/** プレイリスト一覧のクエリキー */
+const PLAYLISTS_QUERY_KEY = [CACHED_QUERIES.playlists] as const;
 
 /**
  * プレイリストのタイトルを更新するミューテーション
@@ -47,35 +54,22 @@ export const useUpdatePlaylistTitle = () => {
 
       return { playlistId, newTitle };
     },
-    onMutate: async ({ playlistId, newTitle }) => {
-      await queryClient.cancelQueries({
-        queryKey: [CACHED_QUERIES.playlists],
-      });
-
-      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
-        CACHED_QUERIES.playlists,
-      ]);
-
-      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) =>
-        (old || []).map((p) =>
-          p.id === playlistId ? { ...p, title: newTitle } : p,
-        ),
-      );
-
-      return { previousPlaylists };
-    },
+    onMutate: ({ playlistId, newTitle }) =>
+      applyOptimisticUpdate<Playlist[]>(
+        queryClient,
+        PLAYLISTS_QUERY_KEY,
+        (old) =>
+          (old || []).map((p) =>
+            p.id === playlistId ? { ...p, title: newTitle } : p,
+          ),
+      ),
     onSuccess: ({ playlistId, newTitle }) => {
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      queryClient.invalidateQueries({ queryKey: PLAYLISTS_QUERY_KEY });
       toast.success("プレイリスト名を更新しました");
       router.push(`${ROUTES.PLAYLISTS_DETAIL(playlistId)}?title=${encodeURIComponent(newTitle)}`);
     },
     onError: (_error, _variables, context) => {
-      if (context?.previousPlaylists) {
-        queryClient.setQueryData(
-          [CACHED_QUERIES.playlists],
-          context.previousPlaylists,
-        );
-      }
+      rollbackOptimisticUpdate(queryClient, PLAYLISTS_QUERY_KEY, context);
       toast.error(getErrorMessage(_error, ERROR_MESSAGES.PLAYLIST_UPDATE_FAILED));
     },
   });
@@ -103,25 +97,17 @@ export const useTogglePlaylistPublic = () => {
       if (error) throw error;
       return { isPublic: !isPublic, playlistId };
     },
-    onMutate: async ({ playlistId, isPublic }) => {
-      await queryClient.cancelQueries({
-        queryKey: [CACHED_QUERIES.playlists],
-      });
-
-      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
-        CACHED_QUERIES.playlists,
-      ]);
-
-      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) =>
-        (old || []).map((p) =>
-          p.id === playlistId ? { ...p, is_public: !isPublic } : p,
-        ),
-      );
-
-      return { previousPlaylists };
-    },
+    onMutate: ({ playlistId, isPublic }) =>
+      applyOptimisticUpdate<Playlist[]>(
+        queryClient,
+        PLAYLISTS_QUERY_KEY,
+        (old) =>
+          (old || []).map((p) =>
+            p.id === playlistId ? { ...p, is_public: !isPublic } : p,
+          ),
+      ),
     onSuccess: ({ isPublic }) => {
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      queryClient.invalidateQueries({ queryKey: PLAYLISTS_QUERY_KEY });
       toast.success(
         isPublic
           ? "プレイリストを公開しました"
@@ -130,12 +116,7 @@ export const useTogglePlaylistPublic = () => {
       router.refresh();
     },
     onError: (_error, _variables, context) => {
-      if (context?.previousPlaylists) {
-        queryClient.setQueryData(
-          [CACHED_QUERIES.playlists],
-          context.previousPlaylists,
-        );
-      }
+      rollbackOptimisticUpdate(queryClient, PLAYLISTS_QUERY_KEY, context);
       toast.error(getErrorMessage(_error, ERROR_MESSAGES.PLAYLIST_VISIBILITY_UPDATE_FAILED));
     },
   });
@@ -166,34 +147,20 @@ export const useDeletePlaylist = () => {
         .eq("id", playlistId)
         .eq("user_id", user.id);
     },
-    onMutate: async ({ playlistId }) => {
-      await queryClient.cancelQueries({
-        queryKey: [CACHED_QUERIES.playlists],
-      });
-
-      const previousPlaylists = queryClient.getQueryData<Playlist[]>([
-        CACHED_QUERIES.playlists,
-      ]);
-
-      queryClient.setQueryData<Playlist[]>([CACHED_QUERIES.playlists], (old) =>
-        (old || []).filter((p) => p.id !== playlistId),
-      );
-
-      return { previousPlaylists };
-    },
+    onMutate: ({ playlistId }) =>
+      applyOptimisticUpdate<Playlist[]>(
+        queryClient,
+        PLAYLISTS_QUERY_KEY,
+        (old) => (old || []).filter((p) => p.id !== playlistId),
+      ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CACHED_QUERIES.playlists] });
+      queryClient.invalidateQueries({ queryKey: PLAYLISTS_QUERY_KEY });
       toast.success("プレイリストを削除しました");
       router.push(ROUTES.PLAYLISTS);
       router.refresh();
     },
     onError: (_error, _variables, context) => {
-      if (context?.previousPlaylists) {
-        queryClient.setQueryData(
-          [CACHED_QUERIES.playlists],
-          context.previousPlaylists,
-        );
-      }
+      rollbackOptimisticUpdate(queryClient, PLAYLISTS_QUERY_KEY, context);
       toast.error(getErrorMessage(_error, ERROR_MESSAGES.PLAYLIST_DELETE_FAILED));
     },
   });
