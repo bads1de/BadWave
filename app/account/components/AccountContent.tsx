@@ -1,13 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import GridBackground from "@/components/common/GridBackground";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
-import { createClient } from "@/libs/supabase/client";
 import { useUser } from "@/hooks/auth/useUser";
+import useLogout from "@/hooks/auth/useLogout";
 import Image from "next/image";
-import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import AccountModal from "./AccountModal";
 import ColorSchemeSelector from "./ColorSchemeSelector";
 import TopPlayedSongs from "./TopPlayedSongs";
@@ -16,25 +13,9 @@ import { Palette, Activity, BarChart2 } from "lucide-react";
 import StatsOverview from "./StatsOverview";
 
 const AccountContent = () => {
-  const router = useRouter();
   const { userDetails: user } = useUser();
-  const supabaseClient = useMemo(() => createClient(), []);
-  const [isLoading, setIsLoading] = useState(false);
+  const { logout, isLoading } = useLogout();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  const handleLogout = async () => {
-    setIsLoading(true);
-
-    try {
-      await supabaseClient.auth.signOut();
-      router.push("/");
-      toast.success("ログアウトしました");
-    } catch {
-      toast.error(ERROR_MESSAGES.GENERIC_ERROR);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="space-y-10 font-mono">
@@ -91,7 +72,7 @@ const AccountContent = () => {
                 <div className="absolute inset-0 bg-theme-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 disabled={isLoading}
                 className="group relative px-4 md:px-6 py-2.5 md:py-3 border border-red-500/50 bg-red-500/10 text-red-400 hover:text-white hover:bg-red-500/30 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all duration-300"
               >

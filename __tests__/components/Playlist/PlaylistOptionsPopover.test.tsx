@@ -1,115 +1,180 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import type { ReactNode } from "react";
-import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
+import * as React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createClient } from "@/libs/supabase/client";
+import toast from "react-hot-toast";
+import PlaylistOptionsPopover from "@/components/Playlist/PlaylistOptionsPopover";
 
-// Mock dependencies
+// モックの設定
 jest.mock("@/libs/supabase/client", () => ({
   createClient: jest.fn(),
 }));
 
-jest.mock("@/hooks/auth/useUser", () => ({
-  useUser: () => ({ user: { id: "user-1" } }),
-}));
-
 jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(() => ({ push: jest.fn(), refresh: jest.fn() })),
+  useRouter: () => ({
+    push: jest.fn(),
+    refresh: jest.fn(),
+  }),
 }));
 
 jest.mock("react-hot-toast", () => ({
-  success: jest.fn(),
-  error: jest.fn(),
+  __esModule: true,
+  default: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
-// Mock @tanstack/react-query
-// We mock useMutation to return a mock mutate function
-const mockMutate = jest.fn();
-jest.mock("@tanstack/react-query", () => ({
-  useMutation: jest.fn(() => ({
-    mutate: mockMutate,
-    isPending: false,
-  })),
-  useQueryClient: jest.fn(() => ({
-    invalidateQueries: jest.fn(),
+jest.mock("@/hooks/auth/useUser", () => ({
+  useUser: jest.fn(() => ({
+    user: { id: "test-user-id" },
   })),
 }));
-
-// Mock Popover components from shadcn/ui
-// Since they rely on Radix UI, simple mocking is safer for unit tests
-jest.mock("@/components/ui/popover", () => {
-  const React = jest.requireActual<typeof import("react")>("react");
-  return {
-    Popover: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover" }, children),
-    PopoverTrigger: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover-trigger" }, children),
-    PopoverContent: ({ children }: { children: ReactNode }) => React.createElement("div", { "data-testid": "popover-content" }, children),
-  };
-});
 
 describe("components/Playlist/PlaylistOptionsPopover", () => {
-  let mockSupabase: { from: jest.Mock };
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  const mockProps = {
+    playlistId: "test-playlist-id",
+    currentTitle: "テストプレイリスト",
+    isPublic: false,
+  };
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 
   beforeEach(() => {
+    queryClient.clear();
     jest.clearAllMocks();
-    mockSupabase = {
-      from: jest.fn(() => ({
-        update: jest.fn(() => ({ eq: jest.fn(() => ({ eq: jest.fn() })) })),
-        delete: jest.fn(() => ({ eq: jest.fn(() => ({ eq: jest.fn() })) })),
-      })),
+
+    // Supabaseクライアントのモック
+    const mockPostgrestBuilder = {
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn().mockReturnThis(),
+      then: jest.fn((resolve) => resolve({ error: null })),
+    };
+
+    const mockSupabase = {
+      from: jest.fn().mockReturnValue({
+        update: jest.fn().mockReturnValue(mockPostgrestBuilder),
+        delete: jest.fn().mockReturnValue(mockPostgrestBuilder),
+        select: jest.fn().mockReturnValue(mockPostgrestBuilder),
+      }),
     };
     (createClient as jest.Mock).mockReturnValue(mockSupabase);
   });
 
-  it("renders trigger button", () => {
-    render(
-      <PlaylistOptionsPopover 
-        playlistId="1" 
-        currentTitle="My Playlist" 
-        isPublic={false} 
-      />
-    );
+  it("トリガーボタンが表示されること", () => {
+    render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
+
     expect(screen.getByLabelText("More Options")).toBeInTheDocument();
   });
 
-  it("shows options when content is rendered", () => {
-    // Since we mocked Popover to always render children, content is visible
-    render(
-      <PlaylistOptionsPopover 
-        playlistId="1" 
-        currentTitle="My Playlist" 
-        isPublic={false} 
-      />
-    );
-    
+  it("ポップオーバーが正しく表示されること", () => {
+    render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
+
+    // 三点リーダーボタンをクリック
+    const optionsButton = screen.getByLabelText("More Options");
+    fireEvent.click(optionsButton);
+
+    // メニュー項目の確認
     expect(screen.getByText("// MODIFY_NAME")).toBeInTheDocument();
     expect(screen.getByText("// STATUS: PUBLIC")).toBeInTheDocument();
     expect(screen.getByText("// TERMINATE_DATA")).toBeInTheDocument();
   });
 
-  it("switches to edit mode", () => {
-    render(
-      <PlaylistOptionsPopover 
-        playlistId="1" 
-        currentTitle="My Playlist" 
-        isPublic={false} 
-      />
-    );
+  it("プレイリスト名の更新が正しく動作すること", async () => {
+    render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
 
-    fireEvent.click(screen.getByText("// MODIFY_NAME"));
-    
-    expect(screen.getByPlaceholderText("NEW_IDENTIFIER")).toHaveValue("My Playlist");
-    expect(screen.getByText("[ COMMIT ]")).toBeInTheDocument();
+    // 編集モードを開始
+    const optionsButton = screen.getByLabelText("More Options");
+    fireEvent.click(optionsButton);
+    const editButton = screen.getByText("// MODIFY_NAME");
+    fireEvent.click(editButton);
+
+    // 現在のタイトルが入力されていること
+    const input = screen.getByPlaceholderText("NEW_IDENTIFIER");
+    expect(input).toHaveValue("テストプレイリスト");
+
+    // 新しい名前を入力
+    fireEvent.change(input, { target: { value: "新しいプレイリスト名" } });
+
+    // 保存ボタンをクリック
+    const saveButton = screen.getByText("[ COMMIT ]");
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("プレイリスト名を更新しました");
+    });
   });
 
-  it("triggers delete mutation", () => {
-    render(
-      <PlaylistOptionsPopover 
-        playlistId="1" 
-        currentTitle="My Playlist" 
-        isPublic={false} 
-      />
-    );
+  it("プレイリストの削除が正しく動作すること", async () => {
+    render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
 
-    fireEvent.click(screen.getByText("// TERMINATE_DATA"));
-    expect(mockMutate).toHaveBeenCalled();
+    // 削除ボタンをクリック
+    const optionsButton = screen.getByLabelText("More Options");
+    fireEvent.click(optionsButton);
+    const deleteButton = screen.getByText("// TERMINATE_DATA");
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("プレイリストを削除しました");
+    });
+  });
+
+  it("編集をキャンセルできること", () => {
+    render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
+
+    // 編集モードを開始
+    const optionsButton = screen.getByLabelText("More Options");
+    fireEvent.click(optionsButton);
+    const editButton = screen.getByText("// MODIFY_NAME");
+    fireEvent.click(editButton);
+
+    // キャンセルボタンをクリック
+    const cancelButton = screen.getByText("[ ABORT ]");
+    fireEvent.click(cancelButton);
+
+    // 編集モードが終了していることを確認
+    expect(
+      screen.queryByPlaceholderText("NEW_IDENTIFIER")
+    ).not.toBeInTheDocument();
+  });
+
+  it("エラー時に適切なメッセージを表示すること", async () => {
+    // Supabaseエラーをモック
+    const mockError = new Error("Database error");
+    const mockPostgrestBuilder = {
+      eq: jest.fn().mockReturnThis(),
+      then: jest.fn((resolve) => resolve({ error: mockError })),
+    };
+
+    const mockSupabase = {
+      from: jest.fn().mockReturnValue({
+        update: jest.fn().mockReturnValue(mockPostgrestBuilder),
+      }),
+    };
+    (createClient as jest.Mock).mockReturnValue(mockSupabase);
+
+    render(<PlaylistOptionsPopover {...mockProps} />, { wrapper });
+
+    // 編集モードを開始して保存
+    const optionsButton = screen.getByLabelText("More Options");
+    fireEvent.click(optionsButton);
+    const editButton = screen.getByText("// MODIFY_NAME");
+    fireEvent.click(editButton);
+    const saveButton = screen.getByText("[ COMMIT ]");
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Database error");
+    });
   });
 });

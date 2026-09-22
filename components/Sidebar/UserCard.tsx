@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { User, Settings, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/libs/supabase/client";
-import { toast } from "react-hot-toast";
 import useAuthModal from "@/hooks/auth/useAuthModal";
-import { ERROR_MESSAGES } from "@/constants/errorMessages";
+import useLogout from "@/hooks/auth/useLogout";
 import { ROUTES } from "@/constants";
 import { UserDetails } from "@/types";
 
@@ -19,24 +17,9 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
   const router = useRouter();
-  const supabaseClient = useMemo(() => createClient(), []);
-  const [, setIsLoading] = useState(false);
+  const { logout } = useLogout();
   const authModal = useAuthModal();
   const [, setIsHovered] = useState(false);
-
-  const handleLogout = async () => {
-    setIsLoading(true);
-
-    try {
-      await supabaseClient.auth.signOut();
-      router.push("/");
-      toast.success("ログアウトしました");
-    } catch {
-      toast.error(ERROR_MESSAGES.GENERIC_ERROR);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (!userDetails) {
     if (isCollapsed) {
@@ -157,7 +140,7 @@ const UserCard: React.FC<UserCardProps> = ({ userDetails, isCollapsed }) => {
                 <Settings size={14} />
               </button>
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="p-1.5 bg-red-500/10 hover:bg-red-500/30 border border-red-500/30 text-red-400 hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
               >
                 <LogOut size={14} />

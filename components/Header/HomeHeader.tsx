@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect, memo, useMemo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { useUser } from "@/hooks/auth/useUser";
 import useAuthModal from "@/hooks/auth/useAuthModal";
+import useLogout from "@/hooks/auth/useLogout";
 import Image from "next/image";
 import { User, LogOut, Menu, X, Home, Search, Settings } from "lucide-react";
 import Link from "next/link";
-import toast from "react-hot-toast";
-import { createClient } from "@/libs/supabase/client";
-import { ERROR_MESSAGES } from "@/constants/errorMessages";
 import { ROUTES } from "@/constants";
 import { RiPlayListFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa";
@@ -23,7 +21,10 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
   const router = useRouter();
   const authModal = useAuthModal();
   const { user, userDetails } = useUser();
-  const supabaseClient = useMemo(() => createClient(), []);
+  const { logout } = useLogout({
+    successMessage: "LOGOUT_SUCCESSFUL",
+    redirectTo: null,
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -36,17 +37,6 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Handle logout
-  const handleLogout = async () => {
-    try {
-      await supabaseClient.auth.signOut();
-      toast.success("LOGOUT_SUCCESSFUL");
-      router.refresh();
-    } catch {
-      toast.error(ERROR_MESSAGES.LOGOUT_FAILED);
-    }
-  };
 
   return (
     <div
@@ -202,7 +192,7 @@ const HomeHeader: React.FC<HeaderProps> = memo(({ className }) => {
                 </Link>
               ))}
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="flex items-center gap-x-4 px-4 py-4 border border-red-500/20 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white transition-all mt-4"
               >
                 <LogOut size={18} />
