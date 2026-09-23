@@ -2,6 +2,7 @@ import { createClient } from "@/libs/supabase/server";
 import { Song } from "@/types";
 import { parseGenres } from "@/libs/song/songUtils";
 import { throwOnSupabaseError } from "@/libs/utils/error";
+import { buildPostgrestFilter } from "@/libs/utils/postgrest";
 import { TABLES } from "@/constants";
 
 /**
@@ -25,7 +26,11 @@ const getSongsByGenre = async (genre: string | string[]): Promise<Song[]> => {
   const { data, error } = await supabase
     .from(TABLES.SONGS)
     .select("*")
-    .or(genreArray.map((genre) => `genre.ilike.%${genre}%`).join(","))
+    .or(
+      genreArray
+        .map((genre) => buildPostgrestFilter("genre", "ilike", `%${genre}%`))
+        .join(",")
+    )
     .order("created_at", { ascending: false });
 
   throwOnSupabaseError(error, "Error fetching songs by genre");

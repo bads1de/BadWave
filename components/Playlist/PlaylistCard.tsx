@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Playlist } from "@/types";
 import { motion } from "framer-motion";
 import { memo, ReactNode, useCallback } from "react";
-import { DURATIONS } from "@/constants";
 import { twMerge } from "tailwind-merge";
 
 type PlaylistCardAnimation = "rise" | "scale";
@@ -57,8 +56,8 @@ const PlaylistCard: React.FC<PlaylistCardProps> = memo(
     playlist,
     href,
     index = 0,
-    duration = DURATIONS.NORMAL,
-    delayStep = 0.05,
+    duration = 0.4,
+    delayStep = 0.1,
     animation = "rise",
     className,
     cardClassName,
@@ -82,7 +81,7 @@ const PlaylistCard: React.FC<PlaylistCardProps> = memo(
         initial={isScale ? { opacity: 0, scale: 0.9 } : { opacity: 0, y: 20 }}
         animate={isScale ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0 }}
         transition={{ duration, delay: index * delayStep }}
-        className={twMerge("group relative cursor-pointer", className)}
+        className={twMerge("group relative cursor-pointer cyber-glitch", className)}
         onClick={handleClick}
       >
         {/* HUD装飾背後 */}

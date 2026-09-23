@@ -36,14 +36,22 @@ export const applyOptimisticUpdate = async <T>(
 /**
  * applyOptimisticUpdate で退避した値にキャッシュを戻す
  *
- * 退避した値が無い（キャッシュ未取得だった）場合は何もしない。
+ * 退避した値が無い（キャッシュ未取得だった）場合は、
+ * 楽観更新で入った仮想項目（temp_* など）がゴースト残存しないよう
+ * クエリを削除して未初期化状態に戻す。
  */
 export const rollbackOptimisticUpdate = <T>(
   queryClient: QueryClient,
   queryKey: QueryKey,
   context: OptimisticContext<T> | undefined
 ): void => {
-  if (context?.previous !== undefined) {
+  if (!context) return;
+
+  if (context.previous !== undefined) {
     queryClient.setQueryData(queryKey, context.previous);
+    return;
   }
+
+  // exact を付けないと前方一致で子キー（例: ["playlists", id, "songs"]）まで消える
+  queryClient.removeQueries({ queryKey, exact: true });
 };

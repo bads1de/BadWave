@@ -107,4 +107,29 @@ describe("useGetSongsByGenres", () => {
       expect(result.current.error?.message).toContain("APIエラー");
     });
   });
+
+  it(".or() の値をエスケープしてフィルタ注入を防ぐべき", async () => {
+    const mockOr = jest.fn(() => ({
+      limit: () => Promise.resolve({ data: mockSongs, error: null }),
+    }));
+
+    (createClient as jest.Mock).mockImplementation(() => ({
+      from: () => ({
+        select: () => ({ or: mockOr }),
+      }),
+    }));
+
+    const { result } = renderHook(
+      () => useGetSongsByGenres(['evil"),count.eq.0,x']),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(mockOr).toHaveBeenCalledWith(
+      'genre.ilike."%evil""),count.eq.0,x%"'
+    );
+  });
 });

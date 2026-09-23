@@ -28,8 +28,8 @@ describe("actions/getSongsByGenre", () => {
 
     await getSongsByGenre("Pop");
 
-    // "Pop" -> split -> ["Pop"] -> "genre.ilike.%Pop%"
-    expect(mockOr).toHaveBeenCalledWith("genre.ilike.%Pop%");
+    // "Pop" -> split -> ["Pop"] -> 引用符付きでエスケープ
+    expect(mockOr).toHaveBeenCalledWith('genre.ilike."%Pop%"');
     expect(mockOrder).toHaveBeenCalledWith("created_at", { ascending: false });
   });
 
@@ -38,8 +38,8 @@ describe("actions/getSongsByGenre", () => {
 
     await getSongsByGenre("Pop, Rock");
 
-    // "Pop, Rock" -> split -> ["Pop", "Rock"] -> "genre.ilike.%Pop%,genre.ilike.%Rock%"
-    expect(mockOr).toHaveBeenCalledWith("genre.ilike.%Pop%,genre.ilike.%Rock%");
+    // "Pop, Rock" -> split -> ["Pop", "Rock"]
+    expect(mockOr).toHaveBeenCalledWith('genre.ilike."%Pop%",genre.ilike."%Rock%"');
   });
 
   it("should fetch songs for multiple genres (array)", async () => {
@@ -47,8 +47,7 @@ describe("actions/getSongsByGenre", () => {
 
     await getSongsByGenre(["Jazz", "Blues"]);
 
-    // ["Jazz", "Blues"] -> "genre.ilike.%Jazz%,genre.ilike.%Blues%"
-    expect(mockOr).toHaveBeenCalledWith("genre.ilike.%Jazz%,genre.ilike.%Blues%");
+    expect(mockOr).toHaveBeenCalledWith('genre.ilike."%Jazz%",genre.ilike."%Blues%"');
   });
 
   it("should return an empty array without querying when the genre is empty", async () => {
@@ -65,6 +64,18 @@ describe("actions/getSongsByGenre", () => {
     await getSongsByGenre(["Pop", "  "]);
 
     // 空要素が残ると "genre.ilike.%%" になり全件ヒットしてしまう
-    expect(mockOr).toHaveBeenCalledWith("genre.ilike.%Pop%");
+    expect(mockOr).toHaveBeenCalledWith('genre.ilike."%Pop%"');
+  });
+
+  it("should escape reserved characters to prevent filter injection", async () => {
+    mockOrder.mockResolvedValue({ data: [], error: null });
+
+    // 文字列経由だと parseGenres がカンマで分割するため、配列で1値として渡す
+    await getSongsByGenre(['evil"),count.eq.0,x']);
+
+    // , ) " などが区切りとして解釈されないよう値全体を引用符で括る
+    expect(mockOr).toHaveBeenCalledWith(
+      'genre.ilike."%evil""),count.eq.0,x%"'
+    );
   });
 });

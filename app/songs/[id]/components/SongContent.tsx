@@ -30,8 +30,18 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"lyrics" | "similar">("lyrics");
-  const [duration, setDuration] = useState<string>("");
+  // duration は取得元の path と一緒に保持し、現在の曲と一致するときだけ表示する。
+  // 曲切り替時に古い長さが残らない（effect 内での同期 setState も不要になる）。
+  const [loadedDuration, setLoadedDuration] = useState<{
+    path: string;
+    value: string;
+  } | null>(null);
   const [audioWaveformKey, setAudioWaveformKey] = useState(0);
+
+  const duration =
+    loadedDuration && loadedDuration.path === song?.song_path
+      ? loadedDuration.value
+      : "";
 
   const genres = useMemo(() => parseGenres(song?.genre), [song?.genre]);
 
@@ -79,13 +89,19 @@ const SongContent: React.FC<SongContentProps> = memo(({ songId }) => {
       return;
     }
 
+    const songPath = song.song_path;
+
     // 長さの取得だけが目的なので、音声本体のダウンロードは抑える
     const audio = new Audio();
     audio.preload = "metadata";
-    audio.src = song.song_path;
+    audio.src = songPath;
 
     const handleLoadedMetadata = () => {
-      setDuration(formatTime(audio.duration));
+      // path を添えて保存し、表示側で現在の曲と一致するときだけ使う
+      setLoadedDuration({
+        path: songPath,
+        value: formatTime(audio.duration),
+      });
     };
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);

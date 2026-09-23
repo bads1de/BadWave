@@ -3,6 +3,7 @@ import { createClient } from "@/libs/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_CONFIG, CACHED_QUERIES, TABLES } from "@/constants";
 import { getErrorMessage } from "@/libs/utils/error";
+import { buildPostgrestFilter } from "@/libs/utils/postgrest";
 
 /**
  * 指定されたジャンルに一致する曲を取得するカスタムフック
@@ -27,8 +28,10 @@ const useGetSongsByGenres = (genres: string[], excludeId?: string) => {
 
       let query = supabaseClient.from(TABLES.SONGS).select("*");
 
-      // ジャンルのOR条件を構築
-      const genreConditions = genres.map((genre) => `genre.ilike.%${genre}%`);
+      // ジャンルのOR条件を構築（値はエスケープしてフィルタ注入を防ぐ）
+      const genreConditions = genres.map((genre) =>
+        buildPostgrestFilter("genre", "ilike", `%${genre}%`)
+      );
       query = query.or(genreConditions.join(","));
 
       if (excludeId) {

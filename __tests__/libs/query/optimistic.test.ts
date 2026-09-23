@@ -66,7 +66,24 @@ describe("libs/query/optimistic", () => {
     expect(queryClient.getQueryData(queryKey)).toEqual([]);
   });
 
-  it("退避した値が無い場合は何もしないこと", async () => {
+  it("キャッシュ未取得時は楽観値を残さないようクエリを削除すること", async () => {
+    const context = await applyOptimisticUpdate<number[]>(
+      queryClient,
+      queryKey,
+      () => [1]
+    );
+
+    expect(queryClient.getQueryData(queryKey)).toEqual([1]);
+
+    rollbackOptimisticUpdate(queryClient, queryKey, context);
+
+    expect(queryClient.getQueryData(queryKey)).toBeUndefined();
+  });
+
+  it("クエリ削除は完全一致で、前方一致の子キーを消さないこと", async () => {
+    const childKey = ["test", "list", "child", "songs"];
+    queryClient.setQueryData(childKey, [{ id: "keep" }]);
+
     const context = await applyOptimisticUpdate<number[]>(
       queryClient,
       queryKey,
@@ -75,6 +92,15 @@ describe("libs/query/optimistic", () => {
 
     rollbackOptimisticUpdate(queryClient, queryKey, context);
 
-    expect(queryClient.getQueryData(queryKey)).toEqual([1]);
+    expect(queryClient.getQueryData(queryKey)).toBeUndefined();
+    expect(queryClient.getQueryData(childKey)).toEqual([{ id: "keep" }]);
+  });
+
+  it("コンテキストが無い場合は何もしないこと", () => {
+    queryClient.setQueryData(queryKey, [9]);
+
+    rollbackOptimisticUpdate(queryClient, queryKey, undefined);
+
+    expect(queryClient.getQueryData(queryKey)).toEqual([9]);
   });
 });
