@@ -1,0 +1,51 @@
+# Supabase Free プランの pause（約7日の非アクティブ）を防ぐ。
+# 鍵は Secrets に置く。Service Role は絶対に入れないこと。
+#
+# Secrets (GitHub Environment "supabase" 配下):
+#   secrets.SUPABASE_URL          … https://xxxx.supabase.co
+#   secrets.SUPABASE_ANON_KEY     … anon (publishable) key のみ
+#
+# 第三者 Action は使わず、runner 組み込みの curl のみで叩く。
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    # 毎日 UTC 6:00（JST 15:00）。7日より十分短い間隔。
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Environment secrets (Settings → Environments → supabase) を参照する
+    environment: supabase
+    steps:
+      - name: Hit Supabase API (keep project active)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL}" ] || [ -z "${SUPABASE_ANON_KEY}" ]; then
+            echo "SUPABASE_URL / SUPABASE_ANON_KEY secrets are required" >&2
+            exit 1
+          fi
+          BASE="${SUPABASE_URL%/}"
+          for path in /rest/v1/ /auth/v1/health; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 20 \
+              -H "apikey: ${SUPABASE_ANON_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+              "${BASE}${path}") || code=000
+            echo "${path} -> HTTP ${code}"
+            # 401/404 でもプロジェクト API への到達はアクティビティになる。
+            # 000 など接続失敗だけを異常とみなす。
+            if [ "${code}" = "000" ]; then
+              echo "connection failed: ${BASE}${path}" >&2
+              exit 1
+            fi
+          done
+          echo "keep-alive done"
