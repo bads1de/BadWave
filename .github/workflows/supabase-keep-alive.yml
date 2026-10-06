@@ -35,17 +35,20 @@ jobs:
             exit 1
           fi
           BASE="${SUPABASE_URL%/}"
-          for path in /rest/v1/ /auth/v1/health; do
-            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 20 \
-              -H "apikey: ${SUPABASE_ANON_KEY}" \
-              -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
-              "${BASE}${path}") || code=000
-            echo "${path} -> HTTP ${code}"
-            # 401/404 でもプロジェクト API への到達はアクティビティになる。
-            # 000 など接続失敗だけを異常とみなす。
-            if [ "${code}" = "000" ]; then
-              echo "connection failed: ${BASE}${path}" >&2
-              exit 1
-            fi
-          done
+          # 注意: /rest/v1/ のルートや /auth/v1/health はゲートウェイ応答のみで
+          # Postgres に届かず、pause判定の database activity としてカウントされない。
+          # PostgREST 経由で実テーブルに SELECT を投げること（空配列 [] でも可）。
+          echo "Querying songs (PostgREST -> Postgres)..."
+          code=$(curl -sS -o /tmp/keepalive_resp.json -w "%{http_code}" --max-time 20 \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            -H "Accept: application/json" \
+            "${BASE}/rest/v1/songs?select=id&limit=1") || code=000
+          echo "songs -> HTTP ${code}"
+          head -c 500 /tmp/keepalive_resp.json; echo
+          # 200 のみ成功扱い。401/404 を無視すると「グリーンなのに pause」が再発する。
+          if [ "${code}" != "200" ]; then
+            echo "DB query failed (expected HTTP 200, got ${code}). Check RLS / anon key." >&2
+            exit 1
+          fi
           echo "keep-alive done"
