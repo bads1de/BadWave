@@ -1,5 +1,11 @@
 /**
  * 汎用エラーメッセージ定数 (badwave-web)
+ *
+ * ⚠️ desktop / mobile にも同名の ERROR_MESSAGES があるが、環境ごとに
+ *    キー名・値・構造が異なる。統合や値変更の際は必ず 3 環境すべてで差分を確認すること。
+ *    - 値が異なる例: TITLE_REQUIRED は mobile では「プレイリスト名を入力してください」
+ *    - キー名が異なる例: LOGOUT_FAILED(web/desktop) と SIGNOUT_FAILED(mobile)
+ *    - 構造が異なる例: mobile は AUTH_ERRORS 等のカテゴリ別辞書を持つ
  */
 export const ERROR_MESSAGES = {
   ADMIN_REQUIRED: "管理者権限が必要です",
