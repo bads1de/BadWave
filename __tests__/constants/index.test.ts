@@ -75,6 +75,7 @@ describe("constants/index", () => {
     it("should contain expected routes", () => {
       expect(PROTECTED_ROUTES).toContain("/account");
       expect(PROTECTED_ROUTES).toContain("/liked");
+      expect(PROTECTED_ROUTES).toContain("/playlists");
     });
   });
 

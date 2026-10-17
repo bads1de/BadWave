@@ -66,14 +66,22 @@
   - 環境固有: `PROTECTED_ROUTES` / `DURATIONS`（web/desktop は秒・mobile は
     `ANIMATION_DURATION` ミリ秒）/ `SPRING_*` / `ROUTES`
 - 知見: web の `PROTECTED_ROUTES` は `"/playlist"`（単数）で、実ルート `"/playlists"` を
-  `startsWith` の prefix 一致で偶然カバーしている。desktop は `"/playlists"` を保護しない（経緯不明）
+  `startsWith` の prefix 一致で偶然カバーしている。desktop は `"/playlists"` を保護しない（→ 5 で対応・判断記録）
 - 対応: 3環境の `constants/index.ts` 冒頭に定数単位の drift マップ注記を追加
 - 検証: 定数テスト web 25 / desktop 33 / mobile 62 件 + 3環境 tsc PASS。実コード差分ゼロ
 
+### 5. `PROTECTED_ROUTES` の単数/複数整理（web）
+
+- 状態: web の `"/playlist"`（単数）は実ルート `"/playlists"` と不一致。
+  `startsWith` の prefix 一致で偶然 /playlists と配下を保護していた
+- 対応: `"/playlists"` に修正し、`proxy.ts` のテストに「未認証で /playlists・/playlists/abc123 →
+  ホームへリダイレクト」を追加。`constants` テストにも `/playlists` の存在チェックを追加
+- desktop 側は変更なし（matcher が `/account/:path*`・`/liked/:path*` のみで、`/playlists` は
+  未認証時も空状態を表示する設計。詳細は desktop 側メモの 5）
+- 検証: proxy/constants テスト 29 件 PASS、tsc PASS
+
 ## 次の候補（未着手）
 
-- `PROTECTED_ROUTES` の単数/複数整理: web の `"/playlist"` を `"/playlists"` に直し、
-  `proxy.ts` のテストに `/playlists` 保護のケースを追加（desktop 側の扱いも要検討）
 - web↔desktop のバイト一致ファイルの棚卸し: 件数が計測方法で揺れる（初版 14 個 / 再計測 11 個）。
   スクリプトを固定して再計測し、統合候補リストを確定させる
 - 将来的に `@badwave/shared` パッケージを作り、真実を1箇所に集約する

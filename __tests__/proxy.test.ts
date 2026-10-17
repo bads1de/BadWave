@@ -88,6 +88,37 @@ describe("Proxy", () => {
     );
   });
 
+  it("未認証ユーザーが /playlists 配下にアクセスした場合、ホームページにリダイレクトすること", async () => {
+    const mockRedirectResponse = {
+      cookies: {
+        set: jest.fn(),
+      },
+    };
+    (NextResponse.redirect as jest.Mock).mockReturnValue(mockRedirectResponse);
+
+    const mockResponse = {
+      type: "response",
+      cookies: {
+        getAll: jest.fn().mockReturnValue([]),
+      },
+    };
+    (updateSession as jest.Mock).mockResolvedValue({
+      response: mockResponse,
+      user: null,
+    });
+
+    mockRequest.nextUrl.pathname = "/playlists";
+    await proxy(mockRequest as NextRequest);
+    expect(NextResponse.redirect).toHaveBeenCalledTimes(1);
+
+    mockRequest.nextUrl.pathname = "/playlists/abc123";
+    await proxy(mockRequest as NextRequest);
+    expect(NextResponse.redirect).toHaveBeenCalledTimes(2);
+    expect(NextResponse.redirect).toHaveBeenLastCalledWith(
+      expect.objectContaining({ pathname: "/" })
+    );
+  });
+
   it("未認証ユーザーが公開ルートにアクセスした場合、レスポンスをそのまま返すこと", async () => {
     mockRequest.nextUrl.pathname = "/search";
     const mockResponse = { type: "response" };
