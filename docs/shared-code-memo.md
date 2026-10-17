@@ -7,7 +7,7 @@
 ## 背景（調査で判明した事実）
 
 - web↔desktop は同一パスのソースファイルが **164個**（テスト除く）存在
-- うち **14個はバイト単位で完全一致**
+- うち **14個はバイト単位で完全一致**（→ 2026-10-18 再計測: 改行正規化後 12。「対応済み 6」参照）
 - ただし中核ロジックは既に drift している:
   - `constants/errorMessages.ts` — 38行(web) / 78行(desktop) / 66行(mobile)
   - `libs/utils/error.ts` — 実装は同一だが drift しやすい
@@ -80,10 +80,33 @@
   未認証時も空状態を表示する設計。詳細は desktop 側メモの 5）
 - 検証: proxy/constants テスト 29 件 PASS、tsc PASS
 
+### 6. バイト一致ファイルの棚卸し（計測の固定）
+
+- 対応: 機械比較スクリプト `scripts/compare-shared-code.mjs` を web に追加
+  - 対象: *.ts / *.tsx（`__tests__` は既定で除外、`--include-tests` で含む）
+  - 同一パス（大文字小文字は区別しない）を内容比較。改行コード（CRLF/LF）は既定で正規化
+    （`--raw` でバイト単位）。`next-env.d.ts`（gitignore 対象の自動生成物）と
+    `node_modules` 等の生成物ディレクトリは除外
+- 確定値（2026-10-18、web↔desktop、テスト除く）:
+  - 同一パス **164** ファイル（初版メモの 164 と一致）
+  - 内容一致（改行正規化後）**12** / バイト完全一致 **11**
+    （差の 1 件は `hooks/stores/useLyricsModalStore.ts` の改行のみ）
+  - 参考: web↔mobile は同一パス 12 ファイル・一致 0（mobile メモの「実体もほぼ別物」を確認）
+- 統合候補 12 ファイル:
+  - `components/common/Hover.tsx` / `components/common/ScrollingText.tsx`
+  - `components/Genre/GenreBoard.tsx` / `components/KeyboardShortcuts.tsx`
+  - `components/Song/SongItemSkeleton.tsx` / `hooks/data/useDownload.ts`
+  - `hooks/modal/useSpotlightModal.ts` / `hooks/stores/useLyricsModalStore.ts`
+  - `hooks/stores/useLyricsStore.ts` / `hooks/utils/useDebounce.ts`
+  - `libs/supabase/client.ts` / `providers/UserProvider.tsx`
+- 初版メモの「14 個」は現存コミットの組み合わせでは再現できず（最大 13: web@0e57fac^ 時点）。
+  計測条件の差と推定し、**以後は本スクリプトの出力を正**とする
+  （手作業計測は `next-env.d.ts` の混入などでずれる）
+- 検証: スクリプト出力（再実行可能）。コード変更なし
+
 ## 次の候補（未着手）
 
-- web↔desktop のバイト一致ファイルの棚卸し: 件数が計測方法で揺れる（初版 14 個 / 再計測 11 個）。
-  スクリプトを固定して再計測し、統合候補リストを確定させる
+- 統合候補 12 ファイルの扱い決め（`@badwave/shared` 第一期の対象選定）
 - 将来的に `@badwave/shared` パッケージを作り、真実を1箇所に集約する
 
 ## 原則
