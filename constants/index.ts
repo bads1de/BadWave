@@ -1,3 +1,12 @@
+// 3環境（web / desktop / mobile）で共通化候補となる純粋定数。
+//
+// ※ drift 状況（2026-10-18 調査時点。変更する際は 3 環境すべてで差分を確認すること）:
+//   - CACHE_PREFIX: 3 環境すべて同一（"@query-cache"）
+//   - videoIds / genres: web=desktop 完全に同一（mobile は対応定義なし）
+//   - CACHE_CONFIG: staleTime は 3 環境同一（10分）。gcTime は web/desktop=30分・mobile=7日で意図的に異なる
+//   - CACHED_QUERIES: desktop は本ファイルの上位集合（共通キーは値まで一致）。mobile は別キー体系
+//   - TABLES: desktop は本ファイル + PLAY_HISTORY。mobile は SUPABASE_TABLES（キー命名が異なる）
+//   - PROTECTED_ROUTES / DURATIONS / SPRING_CONFIG / ROUTES: 環境ごとに異なる（統合しない）
 export const videoIds = [
   { id: 1, name: "synthwave radio", videoId: "4xDzrJKXOOY" },
   { id: 2, name: "lofi hip hop radio", videoId: "jfKfPfyJRdk" },
