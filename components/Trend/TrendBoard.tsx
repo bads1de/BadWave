@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, memo, useCallback } from "react";
+import { memo, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import useGetTrendSongs from "@/hooks/data/useGetTrendSongs";
 import { motion } from "framer-motion";
 import { DURATIONS } from "@/constants";
 import useOnPlay from "@/hooks/player/useOnPlay";
+import useHoverArrows from "@/hooks/utils/useHoverArrows";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { Song } from "@/types";
 import ScrollingText from "@/components/common/ScrollingText";
@@ -14,22 +15,17 @@ import ScrollingText from "@/components/common/ScrollingText";
 interface TrendBoardProps {
   className?: string;
   selectedPeriod: "all" | "month" | "week" | "day";
-  onPeriodChange: (period: "all" | "month" | "week" | "day") => void;
   initialSongs?: Song[];
 }
 
 const TrendBoard: React.FC<TrendBoardProps> = memo(
   ({ className = "", selectedPeriod, initialSongs = [] }) => {
-    const [showArrows, setShowArrows] = useState(false);
+    const { showArrows, onMouseEnter, onMouseLeave } = useHoverArrows();
     const { trends, isLoading, error } = useGetTrendSongs(
       selectedPeriod,
       initialSongs,
     );
     const onPlay = useOnPlay(trends || []);
-
-    // マウスイベントハンドラをメモ化
-    const handleMouseEnter = useCallback(() => setShowArrows(true), []);
-    const handleMouseLeave = useCallback(() => setShowArrows(false), []);
 
     // 再生クリックハンドラをメモ化
     const handlePlay = useCallback(
@@ -49,8 +45,8 @@ const TrendBoard: React.FC<TrendBoardProps> = memo(
     return (
       <div
         className={`${className} relative`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">

@@ -49,7 +49,6 @@ describe("components/Trend/TrendBoard", () => {
     render(
       <TrendBoard 
         selectedPeriod="all" 
-        onPeriodChange={jest.fn()} 
       />
     );
 
@@ -79,7 +78,6 @@ describe("components/Trend/TrendBoard", () => {
     render(
       <TrendBoard 
         selectedPeriod="all" 
-        onPeriodChange={jest.fn()} 
       />
     );
 
@@ -96,7 +94,6 @@ describe("components/Trend/TrendBoard", () => {
     render(
       <TrendBoard 
         selectedPeriod="all" 
-        onPeriodChange={jest.fn()} 
       />
     );
 
@@ -107,7 +104,6 @@ describe("components/Trend/TrendBoard", () => {
     render(
       <TrendBoard 
         selectedPeriod="all" 
-        onPeriodChange={jest.fn()} 
       />
     );
 

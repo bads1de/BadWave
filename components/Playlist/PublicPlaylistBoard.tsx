@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
-import { useState } from "react";
+import useHoverArrows from "@/hooks/utils/useHoverArrows";
 
 interface PublicPlaylistBoardProps {
   playlists: Playlist[];
@@ -15,14 +15,14 @@ const PublicPlaylistBoard: React.FC<PublicPlaylistBoardProps> = ({
   playlists,
 }) => {
   const router = useRouter();
-  const [showArrows, setShowArrows] = useState(false);
+  const { showArrows, onMouseEnter, onMouseLeave } = useHoverArrows();
 
   return (
     <section className="mb-4">
       {/* プレイリストスクロールエリア */}
       <div
-        onMouseEnter={() => setShowArrows(true)}
-        onMouseLeave={() => setShowArrows(false)}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         <ScrollableContainer showArrows={showArrows}>
           {playlists.map((playlist, i) => (

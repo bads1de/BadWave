@@ -8,25 +8,26 @@ import {
   memo,
   useCallback,
 } from "react";
-import { FieldValues, SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 
 import useUploadModal from "@/hooks/modal/useUploadModal";
 import { useUser } from "@/hooks/auth/useUser";
 import useUploadSongMutation from "@/hooks/data/useUploadSongMutation";
+import useFilePreview from "@/hooks/utils/useFilePreview";
+import useResetOnClose from "@/hooks/utils/useResetOnClose";
 import { ERROR_MESSAGES } from "@/constants/errorMessages";
 
 import Modal from "./Modal";
 import Input from "../common/Input";
 import { Textarea } from "../ui/textarea";
 import GenreSelect from "../Genre/GenreSelect";
+import UploadSubmitButton from "../common/UploadSubmitButton";
 import { RiUploadCloud2Line, RiMusic2Line } from "react-icons/ri";
 
 const UploadModal: React.FC = memo(() => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const dropRef = useRef<HTMLDivElement>(null);
@@ -38,19 +39,36 @@ const UploadModal: React.FC = memo(() => {
   const { mutateAsync, isPending: isLoading } =
     useUploadSongMutation(uploadModal);
 
-  const { register, handleSubmit, reset, control, setValue } =
-    useForm<FieldValues>({
-      defaultValues: {
-        author: "",
-        title: "",
-        lyrics: "",
-        song: null,
-        image: null,
-      },
-    });
+  const { register, handleSubmit, reset, setValue } = useForm<FieldValues>({
+    defaultValues: {
+      author: "",
+      title: "",
+      lyrics: "",
+      song: null,
+      image: null,
+    },
+  });
 
-  const song = useWatch({ control, name: "song" });
-  const image = useWatch({ control, name: "image" });
+  // Blob URL の生成・解放は共通フックに任せる
+  const {
+    previewUrl: imagePreview,
+    showPreview: showImagePreview,
+    clearPreview: clearImagePreview,
+  } = useFilePreview();
+  const {
+    previewUrl: audioPreview,
+    showPreview: showAudioPreview,
+    clearPreview: clearAudioPreview,
+  } = useFilePreview();
+
+  const resetForm = useCallback(() => {
+    reset();
+    clearImagePreview();
+    clearAudioPreview();
+  }, [reset, clearImagePreview, clearAudioPreview]);
+
+  // ストア経由で閉じられた場合もフォームをリセットする
+  useResetOnClose(uploadModal.isOpen, resetForm);
 
   const handleFiles = useCallback(
     (files: FileList) => {
@@ -59,16 +77,16 @@ const UploadModal: React.FC = memo(() => {
 
         if (file.type.startsWith("audio/")) {
           setValue("song", [file]);
-          setAudioPreview(URL.createObjectURL(file));
+          showAudioPreview(file);
         } else if (file.type.startsWith("image/")) {
           setValue("image", [file]);
-          setImagePreview(URL.createObjectURL(file));
+          showImagePreview(file);
         } else {
           toast.error(ERROR_MESSAGES.UNSUPPORTED_FILE_FORMAT);
         }
       }
     },
-    [setValue],
+    [setValue, showAudioPreview, showImagePreview],
   );
 
   const handleFileDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
@@ -96,45 +114,13 @@ const UploadModal: React.FC = memo(() => {
     setIsDragging(false);
   }, []);
 
-  // 選択ファイルが変わったらプレビューを更新 (レンダー中の状態調整パターン)
-  const [prevImage, setPrevImage] = useState<FileList | null>(null);
-  if (image !== prevImage) {
-    setPrevImage(image);
-    if (image && image.length > 0) {
-      setImagePreview(URL.createObjectURL(image[0]));
-    }
-  }
-  const [prevSong, setPrevSong] = useState<FileList | null>(null);
-  if (song !== prevSong) {
-    setPrevSong(song);
-    if (song && song.length > 0) {
-      setAudioPreview(URL.createObjectURL(song[0]));
-    }
-  }
-
-  // モーダルが閉じたらフォームとプレビューをリセット (レンダー中の状態調整パターン)
-  const [prevOpen, setPrevOpen] = useState(uploadModal.isOpen);
-  if (uploadModal.isOpen !== prevOpen) {
-    setPrevOpen(uploadModal.isOpen);
-    if (!uploadModal.isOpen) {
-      reset();
-      if (imagePreview) URL.revokeObjectURL(imagePreview);
-      if (audioPreview) URL.revokeObjectURL(audioPreview);
-      setImagePreview(null);
-      setAudioPreview(null);
-    }
-  }
-
   const onChange = useCallback(
     (open: boolean) => {
       if (!open) {
-        reset();
-        setImagePreview(null);
-        setAudioPreview(null);
         uploadModal.onClose();
       }
     },
-    [reset, uploadModal],
+    [uploadModal],
   );
 
   const onSubmit: SubmitHandler<FieldValues> = useCallback(
@@ -159,22 +145,13 @@ const UploadModal: React.FC = memo(() => {
         });
 
         // 成功時の処理（ミューテーションのonSuccessで処理されるため、ここでは最小限の処理のみ）
-        reset();
-        setImagePreview(null);
-        setAudioPreview(null);
+        resetForm();
       } catch (error) {
         // エラー処理はミューテーション内で行われるため、ここでは何もしない
         console.error("Upload error:", error);
       }
     },
-    [
-      mutateAsync,
-      reset,
-      user,
-      selectedGenres,
-      setImagePreview,
-      setAudioPreview,
-    ],
+    [mutateAsync, resetForm, user, selectedGenres],
   );
 
   return (
@@ -320,42 +297,13 @@ const UploadModal: React.FC = memo(() => {
           </div>
         </div>
 
-        <button
-          disabled={isLoading}
-          type="submit"
-          className="col-span-full relative group overflow-hidden bg-theme-500 text-[#0a0a0f] font-black py-4 uppercase tracking-[0.5em] transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] disabled:opacity-50 cyber-glitch"
-        >
-          <div className="relative z-10 flex items-center justify-center gap-3">
-            {isLoading ? (
-              <>
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                TRANSMITTING...
-              </>
-            ) : (
-              <>
-                <RiMusic2Line className="w-6 h-6" />
-                EXECUTE_INGESTION
-              </>
-            )}
-          </div>
-          {/* 背景装飾 */}
-          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
-        </button>
+        <UploadSubmitButton
+          isLoading={isLoading}
+          label="EXECUTE_INGESTION"
+          loadingLabel="TRANSMITTING..."
+          icon={<RiMusic2Line className="w-6 h-6" />}
+          className="col-span-full"
+        />
       </form>
     </Modal>
   );

@@ -46,7 +46,6 @@ const TrendSection: React.FC<TrendSectionProps> = ({
 
         <TrendBoard
           selectedPeriod={selectedPeriod}
-          onPeriodChange={onPeriodChange}
           initialSongs={initialSongs}
         />
       </div>

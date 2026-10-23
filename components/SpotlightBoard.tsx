@@ -5,6 +5,7 @@ import { Spotlight } from "@/types";
 import useSpotlightModal from "@/hooks/modal/useSpotlightModal";
 import ScrollableContainer from "./common/ScrollableContainer";
 import useGetSpotlight from "@/hooks/data/useGetSpotlight";
+import useHoverArrows from "@/hooks/utils/useHoverArrows";
 
 interface SpotlightBoardProps {
   spotlightData: Spotlight[];
@@ -14,8 +15,7 @@ interface SpotlightBoardProps {
 const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
   spotlightData,
 }) => {
-  const [, setHoveredIndex] = useState<number | null>(null);
-  const [showArrows, setShowArrows] = useState(false);
+  const { showArrows, onMouseEnter, onMouseLeave } = useHoverArrows();
   const [isMuted, setIsMuted] = useState(true);
   const videoRefs = useRef<HTMLVideoElement[]>([]);
   const spotlightModal = useSpotlightModal();
@@ -25,7 +25,6 @@ const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
   const { spotlights, isLoading, error } = useGetSpotlight(spotlightData);
 
   const handleVideoHover = (index: number) => {
-    setHoveredIndex(index);
     if (videoRefs.current[index]) {
       videoRefs.current[index]
         .play()
@@ -34,7 +33,6 @@ const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
   };
 
   const handleVideoLeave = () => {
-    setHoveredIndex(null);
     videoRefs.current.forEach((video) => {
       if (video) video.pause();
     });
@@ -47,8 +45,8 @@ const SpotlightBoardComponent: React.FC<SpotlightBoardProps> = ({
   return (
     <div
       className="w-full cursor-pointer relative"
-      onMouseEnter={() => setShowArrows(true)}
-      onMouseLeave={() => setShowArrows(false)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-10">

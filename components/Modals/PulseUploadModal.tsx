@@ -1,17 +1,19 @@
 "use client";
 
-import React, { memo, useCallback, useRef, useState } from "react";
-import { useForm, SubmitHandler, FieldValues, useWatch } from "react-hook-form";
+import React, { memo, useCallback, useRef } from "react";
+import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import { RiPulseLine } from "react-icons/ri";
 
 import usePulseUploadModal from "@/hooks/modal/usePulseUploadModal";
 import usePulseUploadMutation from "@/hooks/data/usePulseUploadMutation";
+import useFilePreview from "@/hooks/utils/useFilePreview";
+import useResetOnClose from "@/hooks/utils/useResetOnClose";
 
 import Modal from "./Modal";
 import Input from "@/components/common/Input";
+import UploadSubmitButton from "@/components/common/UploadSubmitButton";
 
 const PulseUploadModal: React.FC = memo(() => {
-  const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const pulseUploadModal = usePulseUploadModal();
@@ -20,56 +22,47 @@ const PulseUploadModal: React.FC = memo(() => {
   const { mutateAsync, isPending: isLoading } =
     usePulseUploadMutation(pulseUploadModal);
 
-  const { register, handleSubmit, reset, setValue, control } =
-    useForm<FieldValues>({
-      defaultValues: {
-        music: null,
-        title: "",
-        genre: "",
-      },
-    });
+  const { register, handleSubmit, reset, setValue } = useForm<FieldValues>({
+    defaultValues: {
+      music: null,
+      title: "",
+      genre: "",
+    },
+  });
 
-  const music = useWatch({ control, name: "music" });
+  // Blob URL の生成・解放は共通フックに任せる
+  const {
+    previewUrl: audioPreview,
+    showPreview,
+    clearPreview,
+  } = useFilePreview();
 
-  // 選択ファイルが変わったらプレビューを更新 (レンダー中の状態調整パターン)
-  const [prevMusic, setPrevMusic] = useState<FileList | null>(null);
-  if (music !== prevMusic) {
-    setPrevMusic(music);
-    if (music && music.length > 0) {
-      setAudioPreview(URL.createObjectURL(music[0]));
-    }
-  }
+  const resetForm = useCallback(() => {
+    reset();
+    clearPreview();
+  }, [reset, clearPreview]);
 
-  // モーダルが閉じたらフォームとプレビューをリセット (レンダー中の状態調整パターン)
-  const [prevOpen, setPrevOpen] = useState(pulseUploadModal.isOpen);
-  if (pulseUploadModal.isOpen !== prevOpen) {
-    setPrevOpen(pulseUploadModal.isOpen);
-    if (!pulseUploadModal.isOpen) {
-      reset();
-      setAudioPreview(null);
-    }
-  }
+  // ストア経由で閉じられた場合もフォームをリセットする
+  useResetOnClose(pulseUploadModal.isOpen, resetForm);
 
   const onFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
         setValue("music", [file]);
-        setAudioPreview(URL.createObjectURL(file));
+        showPreview(file);
       }
     },
-    [setValue]
+    [setValue, showPreview]
   );
 
   const onChange = useCallback(
     (open: boolean) => {
       if (!open) {
-        reset();
-        setAudioPreview(null);
         pulseUploadModal.onClose();
       }
     },
-    [reset, pulseUploadModal]
+    [pulseUploadModal]
   );
 
   const onSubmit: SubmitHandler<FieldValues> = useCallback(
@@ -83,14 +76,13 @@ const PulseUploadModal: React.FC = memo(() => {
         });
 
         // 成功時の処理はミューテーションのonSuccessで行われる
-        reset();
-        setAudioPreview(null);
+        resetForm();
       } catch (error) {
         // エラー処理はミューテーション内で行われる
         console.error("Pulse upload error:", error);
       }
     },
-    [mutateAsync, reset]
+    [mutateAsync, resetForm]
   );
 
   return (
@@ -188,29 +180,12 @@ const PulseUploadModal: React.FC = memo(() => {
         )}
 
         {/* 送信ボタン */}
-        <button
-          disabled={isLoading}
-          type="submit"
-          className="relative group overflow-hidden bg-theme-500 text-[#0a0a0f] font-black py-4 uppercase tracking-[0.5em] transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--theme-500),0.6)] disabled:opacity-50 cyber-glitch"
-        >
-          <div className="relative z-10 flex items-center justify-center gap-3">
-            {isLoading ? (
-              <>
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                BROADCASTING...
-              </>
-            ) : (
-              <>
-                <RiPulseLine className="w-6 h-6" />
-                EXECUTE_BROADCAST
-              </>
-            )}
-          </div>
-          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
-        </button>
+        <UploadSubmitButton
+          isLoading={isLoading}
+          label="EXECUTE_BROADCAST"
+          loadingLabel="BROADCASTING..."
+          icon={<RiPulseLine className="w-6 h-6" />}
+        />
       </form>
     </Modal>
   );
